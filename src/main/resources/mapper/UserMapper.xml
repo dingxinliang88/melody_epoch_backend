@@ -7,6 +7,7 @@
     <resultMap id="UserMapper" type="io.github.dingxinliang88.pojo.po.User">
         <id column="user_id" property="userId"/>
         <result column="type" property="type"/>
+        <result column="nickname" property="nickname"/>
         <result column="account" property="account"/>
         <result column="password" property="password"/>
         <result column="salt" property="salt"/>

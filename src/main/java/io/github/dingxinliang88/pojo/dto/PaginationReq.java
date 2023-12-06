@@ -1,6 +1,6 @@
 package io.github.dingxinliang88.pojo.dto;
 
-import io.github.dingxinliang88.constants.CommonConstants;
+import io.github.dingxinliang88.constants.CommonConstant;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Setter
 public class PaginationReq implements Serializable {
 
-    private static final long serialVersionUID = 1064870233672558906L;
+    private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
 
     private Long current = 1L;
     private Long pageSize = 10L;
@@ -23,5 +23,5 @@ public class PaginationReq implements Serializable {
     /**
      * 排序方式，默认升序
      */
-    private String sortOrder = CommonConstants.SORT_ORDER_ASC;
+    private String sortOrder = CommonConstant.SORT_ORDER_ASC;
 }

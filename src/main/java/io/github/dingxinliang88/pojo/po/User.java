@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户信息
@@ -13,6 +14,7 @@ import lombok.Data;
  */
 @Data
 @TableName(value = "user")
+@NoArgsConstructor
 public class User {
 
     /**
@@ -27,6 +29,11 @@ public class User {
      * @see io.github.dingxinliang88.pojo.enums.UserRoleType
      */
     private Integer type;
+
+    /**
+     * 账号
+     */
+    private String nickname;
 
     /**
      * 账号
@@ -59,4 +66,10 @@ public class User {
     @TableLogic
     private Integer isDelete;
 
+    public User(String account, String password, String salt, Integer type) {
+        this.type = type;
+        this.account = account;
+        this.password = password;
+        this.salt = salt;
+    }
 }

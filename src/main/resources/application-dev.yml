@@ -42,6 +42,19 @@ spring:
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 
+
+  # email
+  mail:
+    host: smtp.qq.com
+    username: ${email.username}
+    password: ${email.password}
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    from: ${email.username}
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -66,3 +79,4 @@ knife4j:
     contact-url: https://codejuzi.icu
     license: Apache License 2.0
     license-url: https://www.apache.org/licenses/LICENSE-2.0
+

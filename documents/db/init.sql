@@ -197,7 +197,8 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int NOT NULL AUTO_INCREMENT,
   `type` tinyint NOT NULL DEFAULT '0' COMMENT '0 - guest, 1 - admin , 2 - member, 3 - fan',
-  `account` varchar(32) NOT NULL COMMENT '账号',
+  `nickname` varchar(32) DEFAULT NULL COMMENT '昵称',
+  `account` varchar(32) DEFAULT NULL COMMENT '账号',
   `password` varchar(128) NOT NULL COMMENT '密码',
   `salt` varchar(16) NOT NULL COMMENT '盐值',
   `phone` varchar(11) DEFAULT NULL COMMENT '电话',

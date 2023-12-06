@@ -24,6 +24,8 @@ public enum StatusCode {
     METHOD_NOT_ALLOWED(40500, "不允许使用该方法请求"),
     CONFLICT(40900, "请求冲突"),
     TOO_MANY_REQUEST(42900, "请求频繁"),
+    PASSWORD_NOT_MATCH(43000, "两次密码不匹配"),
+    CODE_NOT_MATCH(43001, "验证码不匹配"),
     SYSTEM_ERROR(50000, "系统内部错误"),
     OPERATION_ERROR(50100, "操作错误"),
     INTERNAL_SERVER_ERROR(50000, "服务器内部错误"),
