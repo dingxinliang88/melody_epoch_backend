@@ -1,15 +1,24 @@
 package io.github.dingxinliang88.pojo.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 /**
  * 用户信息
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
+@Data
+@TableName(value = "user")
 public class User {
 
     /**
      * 用户ID
      */
+    @TableId(type = IdType.AUTO)
     private Integer userId;
 
     /**
@@ -30,6 +39,11 @@ public class User {
     private String password;
 
     /**
+     * 盐值
+     */
+    private String salt;
+
+    /**
      * 电话
      */
     private String phone;
@@ -39,51 +53,10 @@ public class User {
      */
     private String email;
 
-    public Integer getUserId() {
-        return userId;
-    }
+    /**
+     * 逻辑删除标志 0 - 未删除， 1 - 删除
+     */
+    @TableLogic
+    private Integer isDelete;
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

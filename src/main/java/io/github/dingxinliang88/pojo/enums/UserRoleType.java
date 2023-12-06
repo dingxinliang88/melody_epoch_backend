@@ -1,10 +1,13 @@
 package io.github.dingxinliang88.pojo.enums;
 
+import lombok.Getter;
+
 /**
  * 用户角色类型
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
+@Getter
 public enum UserRoleType {
 
     // 0 - guest, 1 - admin , 2 - member, 3 - fan
@@ -21,13 +24,5 @@ public enum UserRoleType {
     UserRoleType(Integer type, String desc) {
         this.type = type;
         this.desc = desc;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public String getDesc() {
-        return desc;
     }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <!-- 定义项目名称变量 -->
+    <property name="project-name" value="melody_epoch_backend"/>
+
+    <!-- 控制台输出日志配置 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%highlight(%d{HH:mm:ss.SSS}) %boldGreen([%thread]) %highlight(%cyan(%logger{50})) - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- 滚动输出文件日志配置 -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/${project-name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/${project-name}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 根节点日志级别设置为 INFO -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ROLLING"/>
+    </root>
+
+    <!-- 不同包名的日志级别设置 -->
+    <logger name="io.github.dingxinliang88.controller" level="INFO">
+        <appender-ref ref="ROLLING"/>
+    </logger>
+
+    <logger name="org.springframework" level="WARN"/>
+
+    <!--日志异步到数据库 -->
+    <!--<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+            日志异步到数据库
+            <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+               连接池
+               <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+                  <driverClass>com.mysql.jdbc.Driver</driverClass>
+                  <url>jdbc:mysql://127.0.0.1:3306/databaseName</url>
+                  <user>root</user>
+                  <password>root</password>
+                </dataSource>
+            </connectionSource>
+      </appender> -->
+
+</configuration>

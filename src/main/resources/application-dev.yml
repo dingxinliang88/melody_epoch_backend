@@ -11,7 +11,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
-      #druid 数据源专有配置
+      # druid 数据源专有配置
       # 初始化大小，最小，最大
       initialSize: 5
       minIdle: 5
@@ -34,12 +34,35 @@ spring:
       poolPreparedStatements: true
       # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
       max-pool-prepared-statement-per-connection-size: 50
-      #配置监控统计拦截的filters，stat:监控统计、log4j：日志记录、wall：防御sql注入
-      #如果允许时报错  java.lang.ClassNotFoundException: org.apache.log4j.Priority
-      #则导入 log4j 依赖即可，Maven 地址：https://mvnrepository.com/artifact/log4j/log4j
+      # 配置监控统计拦截的filters，stat:监控统计、slf4j：日志记录、wall：防御sql注入
       # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，比如不配置stat,我们在Druid的监控页面中就拿不到想要的信息。
       filters: stat,wall,slf4j
       # 合并多个DruidDataSource的监控数据
       useGlobalDataSourceStat: true
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+
+# knife4j
+knife4j:
+  conf:
+    base-package: io.github.dingxinliang88
+    title: Melody_Epoch接口文档
+    description: 音律纪元
+    version: 0.0.1
+    contact-name: codejuzi
+    contact-email: codejuzi@qq.com
+    contact-url: https://codejuzi.icu
+    license: Apache License 2.0
+    license-url: https://www.apache.org/licenses/LICENSE-2.0
