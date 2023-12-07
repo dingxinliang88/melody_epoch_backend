@@ -32,4 +32,11 @@ public interface UserConstant {
     Set<Integer> USER_ROLE_SET = CollectionUtil.newHashSet(ADMIN.getType(), MEMBER.getType(), FAN.getType());
 
     // endregion
+
+    // region gender
+    Integer MALE = 1;
+
+    Integer FEMALE = 0;
+
+    // endregion
 }

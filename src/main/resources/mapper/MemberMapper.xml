@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.dingxinliang88.mapper.MemberMapper">
+
+    <resultMap id="MemberMapper" type="io.github.dingxinliang88.pojo.po.Member">
+        <id column="member_id" property="memberId"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="age" property="age"/>
+        <result column="part" property="part"/>
+        <result column="join_time" property="joinTime"/>
+        <result column="leave_time" property="leaveTime"/>
+        <result column="band_id" property="bandId"/>
+        <result column="band_name" property="bandName"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+
+
+</mapper>

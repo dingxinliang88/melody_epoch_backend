@@ -23,6 +23,7 @@ public enum StatusCode {
     METHOD_NOT_ALLOWED(40500, "不允许使用该方法请求"),
     CONFLICT(40900, "请求冲突"),
     TOO_MANY_REQUEST(42900, "请求频繁"),
+    ACCOUNT_ALREADY_EXISTS(43003, "账号已存在"),
     PASSWORD_NOT_MATCH(43000, "两次密码不匹配"),
     CODE_NOT_MATCH(43001, "验证码不匹配"),
     ROLE_NOT_FOUND(43002, "角色不存在"),

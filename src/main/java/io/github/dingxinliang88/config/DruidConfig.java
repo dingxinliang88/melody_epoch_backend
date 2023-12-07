@@ -43,7 +43,7 @@ public class DruidConfig {
         // 后台允许谁可以访问
         // value - localhost：表示只有本机可以访问
         // 为空或者为null时，表示允许所有访问
-        initParams.put("allow", "localhost");
+        initParams.put("allow", "");
         // deny：Druid 后台拒绝谁访问
         // initParams.put("deny", "192.168.1.20");表示禁止此ip访问
 

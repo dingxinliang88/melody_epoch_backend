@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.dingxinliang88.mapper.BandMapper">
+
+    <resultMap id="BandMapper" type="io.github.dingxinliang88.pojo.po.Band">
+        <id column="band_id" property="bandId"/>
+        <result column="name" property="name"/>
+        <result column="found_time" property="foundTime"/>
+        <result column="leader_id" property="leaderId"/>
+        <result column="profile" property="profile"/>
+        <result column="member_num" property="memberNum"/>
+        <result column="is_delete" property="isDelete"/>
+    </resultMap>
+
+
+</mapper>
