@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.dingxinliang88.aspect.auth.LoginFunc;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.EmailConstant;
 import io.github.dingxinliang88.exception.BizException;
@@ -20,9 +21,7 @@ import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -136,6 +135,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public UserLoginVO getCurrUser(HttpServletRequest request) {
         Object userObj = request.getSession().getAttribute(LOGIN_STATE_KEY);
         return (UserLoginVO) userObj;
+    }
+
+    @Override
+    @LoginFunc
+    public Boolean userLogout(HttpServletRequest request) {
+        request.getSession().removeAttribute(LOGIN_STATE_KEY);
+        return Boolean.TRUE;
     }
 
     @Override

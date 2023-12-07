@@ -13,6 +13,19 @@
         <result column="member_num" property="memberNum"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
+    <update id="updateMemberNum">
+        UPDATE band SET member_num = member_num + #{incr} WHERE band_id = #{bandId};
+    </update>
+    <select id="queryByBandId" resultType="io.github.dingxinliang88.pojo.po.Band">
+        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
+        FROM band
+        WHERE is_delete = 0 AND band_id = #{bandId};
+    </select>
+    <select id="queryByLeaderId" resultType="io.github.dingxinliang88.pojo.po.Band">
+        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
+        FROM band
+        WHERE is_delete = 0 AND (leader_id = #{leaderId});
+    </select>
 
 
 </mapper>

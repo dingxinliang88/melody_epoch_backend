@@ -2,8 +2,9 @@ package io.github.dingxinliang88.utils;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
-import io.github.dingxinliang88.constants.UserConstant;
+import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 
 import static io.github.dingxinliang88.constants.UserConstant.*;
@@ -33,5 +34,9 @@ public class SysUtil {
 
     public static String encryptedPwd(String salt, String originPwd) {
         return DigestUtil.md5Hex(salt + originPwd, StandardCharsets.UTF_8);
+    }
+
+    public static UserLoginVO getCurrUser(HttpServletRequest request) {
+        return (UserLoginVO) request.getSession().getAttribute(LOGIN_STATE_KEY);
     }
 }

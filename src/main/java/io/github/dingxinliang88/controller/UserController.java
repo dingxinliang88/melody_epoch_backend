@@ -46,5 +46,9 @@ public class UserController {
         return RespUtil.success(userService.getCurrUser(request));
     }
 
+    @PostMapping("/logout")
+    public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
+        return RespUtil.success(userService.userLogout(request));
+    }
 
 }

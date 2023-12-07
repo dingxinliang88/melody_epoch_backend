@@ -10,4 +10,28 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface BandMapper extends BaseMapper<Band> {
 
+    /**
+     * 根据乐队ID查找乐队
+     *
+     * @param bandId 乐队ID
+     * @return band info
+     */
+    Band queryByBandId(Integer bandId);
+
+    /**
+     * 根据队长ID查找乐队
+     *
+     * @param leaderId 队长ID
+     * @return band info
+     */
+    Band queryByLeaderId(Integer leaderId);
+
+
+    /**
+     * 修改乐队人数
+     *
+     * @param incr 新增人数
+     * @return true - 修改成功
+     */
+    Boolean updateMemberNum(Integer bandId, int incr);
 }

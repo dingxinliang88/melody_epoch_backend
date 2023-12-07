@@ -55,4 +55,11 @@ public class Band {
      */
     @TableLogic
     private Integer isDelete;
+
+    public Band(String name, Integer leaderId, String profile, LocalDateTime foundTime) {
+        this.name = name;
+        this.foundTime = foundTime;
+        this.leaderId = leaderId;
+        this.profile = profile;
+    }
 }

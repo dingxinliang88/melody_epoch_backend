@@ -44,8 +44,17 @@ public interface UserService extends IService<User> {
 
     /**
      * 获取当前登录对象
+     *
      * @param request http request
      * @return current login user info
      */
     UserLoginVO getCurrUser(HttpServletRequest request);
+
+    /**
+     * 用户登出
+     *
+     * @param request http request
+     * @return true - 登出成功
+     */
+    Boolean userLogout(HttpServletRequest request);
 }
