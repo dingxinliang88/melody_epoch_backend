@@ -75,4 +75,5 @@ public class Member {
         this.memberId = memberId;
         this.name = name;
     }
+
 }
