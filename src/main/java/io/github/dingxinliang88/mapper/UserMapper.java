@@ -10,4 +10,21 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
+    /**
+     * 根据邮箱查询用户信息
+     *
+     * @param email 邮箱信息
+     * @return 用户信息
+     */
+    User queryByEmail(String email);
+
+
+    /**
+     * 根据账号查询用户信息
+     *
+     * @param account 账号
+     * @return 用户信息
+     */
+    User queryByAccount(String account);
+
 }

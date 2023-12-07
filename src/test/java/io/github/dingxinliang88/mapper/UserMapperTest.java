@@ -46,4 +46,10 @@ public class UserMapperTest {
         userMapper.insert(user);
     }
 
+    @Test
+    public void queryByEmail() {
+        String email = "codejuzi@qq.com";
+        User user = userMapper.queryByEmail(email);
+        System.out.println(JSONUtil.toJsonStr(user));
+    }
 }

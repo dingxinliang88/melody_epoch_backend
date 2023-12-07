@@ -2,10 +2,11 @@ package io.github.dingxinliang88.utils;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import io.github.dingxinliang88.constants.UserConstant;
 
 import java.nio.charset.StandardCharsets;
 
-import static io.github.dingxinliang88.constants.UserConstant.SALT_LEN;
+import static io.github.dingxinliang88.constants.UserConstant.*;
 
 /**
  * 系统工具类
@@ -14,6 +15,10 @@ import static io.github.dingxinliang88.constants.UserConstant.SALT_LEN;
  */
 public class SysUtil {
 
+
+    public static String genUserNickName() {
+        return DEFAULT_NICK_NAME_PREFIX + RandomUtil.randomString(NICK_NAME_LEN);
+    }
 
     public static String genUserPwdSalt() {
         return genSalt(SALT_LEN);

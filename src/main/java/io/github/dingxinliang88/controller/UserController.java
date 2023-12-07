@@ -1,15 +1,15 @@
 package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
+import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
+import io.github.dingxinliang88.pojo.po.User;
+import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +32,18 @@ public class UserController {
     }
 
     @PostMapping("/email_login")
-    public BaseResponse<Integer> userEmailLogin(@RequestBody @Validated EmailLoginReq req, HttpServletRequest request) {
-        return RespUtil.success(userService.emailRegisterLogin(req, request));
+    public BaseResponse<UserLoginVO> userEmailLogin(@RequestBody @Validated EmailLoginReq req, HttpServletRequest request) {
+        return RespUtil.success(userService.userEmailLogin(req, request));
+    }
+
+    @PostMapping("/acc_login")
+    public BaseResponse<UserLoginVO> userAccLogin(@RequestBody @Validated AccLoginReq req, HttpServletRequest request) {
+        return RespUtil.success(userService.userAccLogin(req, request));
+    }
+
+    @GetMapping("/curr")
+    public BaseResponse<UserLoginVO> getCurrUser(HttpServletRequest request) {
+        return RespUtil.success(userService.getCurrUser(request));
     }
 
 

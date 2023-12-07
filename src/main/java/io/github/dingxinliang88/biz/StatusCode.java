@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 public enum StatusCode {
-    SUCCESS(0, "success"),
+    SUCCESS(0, "Success"),
     CREATED(20100, "已创建"),
     ACCEPTED(20200, "请求已接受，正在处理"),
     DUPLICATE_DATA(41000, "重复数据"),
@@ -20,12 +20,12 @@ public enum StatusCode {
     NO_AUTH_ERROR(40100, "无权访问"),
     BAD_REQUEST(40000, "无效的请求"),
     UNAUTHORIZED(40100, "无权访问"),
-    NOT_FOUND(40400, "请求数据不存在"),
     METHOD_NOT_ALLOWED(40500, "不允许使用该方法请求"),
     CONFLICT(40900, "请求冲突"),
     TOO_MANY_REQUEST(42900, "请求频繁"),
     PASSWORD_NOT_MATCH(43000, "两次密码不匹配"),
     CODE_NOT_MATCH(43001, "验证码不匹配"),
+    ROLE_NOT_FOUND(43002, "角色不存在"),
     SYSTEM_ERROR(50000, "系统内部错误"),
     OPERATION_ERROR(50100, "操作错误"),
     INTERNAL_SERVER_ERROR(50000, "服务器内部错误"),

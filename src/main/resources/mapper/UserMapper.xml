@@ -15,5 +15,15 @@
         <result column="email" property="email"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
+    <select id="queryByEmail" resultType="io.github.dingxinliang88.pojo.po.User">
+        SELECT user_id, type, nickname, account, password, salt, phone, email, is_delete
+        FROM user
+        WHERE is_delete = 0 AND email = #{email};
+    </select>
+    <select id="queryByAccount" resultType="io.github.dingxinliang88.pojo.po.User">
+        SELECT user_id, type, nickname, account, password, salt, phone, email, is_delete
+        FROM user
+        WHERE is_delete = 0 AND account = #{account};
+    </select>
 
 </mapper>
