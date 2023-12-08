@@ -7,6 +7,7 @@ import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 
+import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_LEN;
 import static io.github.dingxinliang88.constants.UserConstant.*;
 
 /**
@@ -29,6 +30,14 @@ public class SysUtil {
         if (len <= 0) {
             throw new IllegalArgumentException("len 必须大于0");
         }
+        return RandomUtil.randomString(len);
+    }
+
+    public static String genEmailCaptcha() {
+        return genCaptcha(CAPTCHA_LEN);
+    }
+
+    public static String genCaptcha(int len) {
         return RandomUtil.randomString(len);
     }
 

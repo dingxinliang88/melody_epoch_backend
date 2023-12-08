@@ -22,4 +22,6 @@ public interface EmailConstant {
     String PLATFORM_URL = "https://www.codejuzi.icu";
 
     String CAPTCHA_KEY = "email:captcha:";
+
+    int CAPTCHA_LEN = 6;
 }

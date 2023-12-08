@@ -71,8 +71,7 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
                 band.setMemberNum(1);
                 bandMapper.insert(band);
                 // 修改对应的member信息，band_id、band_name
-                memberMapper.updateBandIdAndBandName(leader, band.getBandId(), band.getName());
-
+                memberMapper.updateBandIdAndBandName(leader, band.getBandId(), band.getName(), LocalDateTime.now(), null);
                 return band.getBandId();
             } catch (Exception e) {
                 status.setRollbackOnly();

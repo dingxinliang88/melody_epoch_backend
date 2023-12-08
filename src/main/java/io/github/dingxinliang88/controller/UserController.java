@@ -4,7 +4,6 @@ import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
-import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RespUtil;

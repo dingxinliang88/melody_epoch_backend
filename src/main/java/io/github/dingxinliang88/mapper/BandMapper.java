@@ -34,4 +34,21 @@ public interface BandMapper extends BaseMapper<Band> {
      * @return true - 修改成功
      */
     Boolean updateMemberNum(Integer bandId, int incr);
+
+    /**
+     * 变更队长ID
+     *
+     * @param bandId   乐队ID
+     * @param leaderId 队长ID
+     * @return true - 修改成功
+     */
+    Boolean updateLeaderId(Integer bandId, Integer leaderId);
+
+    /**
+     * 解散队伍
+     *
+     * @param bandId 乐队ID
+     * @return true - 解散成功
+     */
+    Boolean disband(Integer bandId);
 }

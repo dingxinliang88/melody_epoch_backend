@@ -6,6 +6,7 @@ import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
+import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Member;
@@ -18,6 +19,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 /**
  * Band Service Implementation
@@ -58,7 +60,8 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         return transactionTemplate.execute(status -> {
             try {
                 // 修改当前member所在乐队信息
-                memberMapper.updateBandIdAndBandName(currUser.getUserId(), bandId, band.getName());
+                memberMapper.updateBandIdAndBandName(currUser.getUserId(), bandId, band.getName(),
+                        LocalDateTime.now(), null);
                 // 乐队人数 + 1
                 return bandMapper.updateMemberNum(bandId, 1);
             } catch (Exception e) {
@@ -67,6 +70,70 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
             }
         });
 
+    }
+
+    @Override
+    public Boolean leaveBand(LeaveBandReq req, HttpServletRequest request) {
+        final Integer bandId = req.getBandId();
+
+        // 查询Band是否存在
+        Band band = bandMapper.queryByBandId(bandId);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在！");
+
+        // 当前用户是否加入了该乐队
+        UserLoginVO currUser = SysUtil.getCurrUser(request);
+        ThrowUtil.throwIf(!UserRoleType.MEMBER.getType().equals(currUser.getType()),
+                StatusCode.NO_AUTH_ERROR, "无权离开乐队！");
+        Member member = memberMapper.queryByMemberIdAndBandId(currUser.getUserId(), bandId);
+        ThrowUtil.throwIf(member == null, StatusCode.NOT_FOUND_ERROR, "未查找到加入乐队的信息！");
+
+        // 特判：当前用户是队长
+        if (band.getLeaderId().equals(member.getMemberId())) {
+            return handleBandLeaderLeave(member, bandId);
+        }
+
+        // 不是队长，更新乐队信息和member信息
+        return handleRegularLeave(member, bandId);
+    }
+
+
+    private Boolean handleBandLeaderLeave(final Member member, final Integer bandId) {
+        return transactionTemplate.execute(status -> {
+            try {
+                // 加入乐队第二早的乐队成员
+                Member secondaryMember = memberMapper.querySecondaryMember(bandId);
+                // 修改当前member所在乐队信息（离开时间为当前时间，乐队ID、乐队名称置空）
+                memberMapper.updateBandIdAndBandName(member.getMemberId(), null, null,
+                        member.getJoinTime(), LocalDateTime.now());
+                if (secondaryMember == null) {
+                    // 解散队伍
+                    return bandMapper.disband(bandId);
+                } else {
+                    // 队长位置顺位给加入乐队第二早的成员
+                    bandMapper.updateLeaderId(bandId, secondaryMember.getMemberId());
+                    // 乐队人数 - 1
+                    return bandMapper.updateMemberNum(bandId, -1);
+                }
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+    }
+
+    private Boolean handleRegularLeave(final Member member, final Integer bandId) {
+        return transactionTemplate.execute(status -> {
+            try {
+                // 修改当前member所在乐队信息（离开时间为当前时间，乐队ID、乐队名称置空）
+                memberMapper.updateBandIdAndBandName(member.getMemberId(), null, null,
+                        member.getJoinTime(), LocalDateTime.now());
+                // 乐队人数 - 1
+                return bandMapper.updateMemberNum(bandId, -1);
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
     }
 
 }

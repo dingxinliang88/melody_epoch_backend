@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.po.Member;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
+
 /**
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
@@ -19,12 +21,33 @@ public interface MemberMapper extends BaseMapper<Member> {
     Member queryByMemberId(Integer memberId);
 
     /**
-     * 修改成员所在乐队信息
+     * 根据成员ID和乐队ID查询成员信息
      *
      * @param memberId 成员ID
-     * @param bandId   队伍ID
-     * @param bandName 队伍名称
+     * @param bandId   乐队ID
+     * @return 成员信息
+     */
+    Member queryByMemberIdAndBandId(Integer memberId, Integer bandId);
+
+    /**
+     * 查找第二早加入的乐队成员
+     *
+     * @param bandId 乐队ID
+     * @return 成员信息
+     */
+    Member querySecondaryMember(Integer bandId);
+
+    /**
+     * 修改成员所在乐队信息
+     *
+     * @param memberId  成员ID
+     * @param bandId    队伍ID
+     * @param bandName  队伍名称
+     * @param joinTime  加入队伍时间
+     * @param leaveTime 离开队伍时间
      * @return true - 修改成功
      */
-    Boolean updateBandIdAndBandName(Integer memberId, Integer bandId, String bandName);
+    Boolean updateBandIdAndBandName(Integer memberId, Integer bandId, String bandName, LocalDateTime joinTime, LocalDateTime leaveTime);
+
+
 }

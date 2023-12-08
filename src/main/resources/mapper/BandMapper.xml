@@ -16,6 +16,12 @@
     <update id="updateMemberNum">
         UPDATE band SET member_num = member_num + #{incr} WHERE band_id = #{bandId};
     </update>
+    <update id="updateLeaderId">
+        UPDATE band SET leader_id = #{leaderId} WHERE band_id = #{bandId};
+    </update>
+    <update id="disband">
+        UPDATE band SET member_num = 0, leader_id = NULL,  is_delete = 1 WHERE band_id = #{bandId};
+    </update>
     <select id="queryByBandId" resultType="io.github.dingxinliang88.pojo.po.Band">
         SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
         FROM band
@@ -26,6 +32,5 @@
         FROM band
         WHERE is_delete = 0 AND (leader_id = #{leaderId});
     </select>
-
 
 </mapper>
