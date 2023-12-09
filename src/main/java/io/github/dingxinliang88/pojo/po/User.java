@@ -73,8 +73,9 @@ public class User {
         this.salt = salt;
     }
 
-    public User(String email, Integer type) {
+    public User(Integer type, String password, String salt) {
         this.type = type;
-        this.email = email;
+        this.password = password;
+        this.salt = salt;
     }
 }

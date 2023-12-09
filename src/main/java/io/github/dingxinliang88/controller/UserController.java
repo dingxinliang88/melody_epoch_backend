@@ -4,6 +4,7 @@ import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
+import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
 import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RespUtil;
@@ -30,13 +31,18 @@ public class UserController {
         return RespUtil.success(userService.userAccRegister(req, request));
     }
 
+    @PostMapping("/email_reg")
+    public BaseResponse<Integer> userEmailLogin(@RequestBody @Validated EmailRegisterReq req, HttpServletRequest request) {
+        return RespUtil.success(userService.userEmailRegister(req, request));
+    }
+
     @PostMapping("/email_login")
-    public BaseResponse<UserLoginVO> userEmailLogin(@RequestBody @Validated EmailLoginReq req, HttpServletRequest request) {
+    public BaseResponse<String> userEmailLogin(@RequestBody @Validated EmailLoginReq req, HttpServletRequest request) {
         return RespUtil.success(userService.userEmailLogin(req, request));
     }
 
     @PostMapping("/acc_login")
-    public BaseResponse<UserLoginVO> userAccLogin(@RequestBody @Validated AccLoginReq req, HttpServletRequest request) {
+    public BaseResponse<String> userAccLogin(@RequestBody @Validated AccLoginReq req, HttpServletRequest request) {
         return RespUtil.success(userService.userAccLogin(req, request));
     }
 

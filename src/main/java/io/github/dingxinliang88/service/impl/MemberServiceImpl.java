@@ -51,7 +51,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在！");
 
         // 当前用户是否已经加入了乐队
-        UserLoginVO currUser = SysUtil.getCurrUser(request);
+        UserLoginVO currUser = SysUtil.getCurrUser();
         ThrowUtil.throwIf(!UserRoleType.MEMBER.getType().equals(currUser.getType()),
                 StatusCode.NO_AUTH_ERROR, "无权加入乐队！");
 
@@ -82,7 +82,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在！");
 
         // 当前用户是否加入了该乐队
-        UserLoginVO currUser = SysUtil.getCurrUser(request);
+        UserLoginVO currUser = SysUtil.getCurrUser();
         ThrowUtil.throwIf(!UserRoleType.MEMBER.getType().equals(currUser.getType()),
                 StatusCode.NO_AUTH_ERROR, "无权离开乐队！");
         Member member = memberMapper.queryByMemberIdAndBandId(currUser.getUserId(), bandId);
@@ -104,7 +104,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         Integer memberId = req.getMemberId();
 
         // 检查是否是本人
-        UserLoginVO currUser = SysUtil.getCurrUser(request);
+        UserLoginVO currUser = SysUtil.getCurrUser();
         ThrowUtil.throwIf(!currUser.getUserId().equals(memberId), StatusCode.NO_AUTH_ERROR,
                 "无权修改其他成员信息！");
 

@@ -4,7 +4,6 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 
 import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_LEN;
@@ -16,7 +15,6 @@ import static io.github.dingxinliang88.constants.UserConstant.*;
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 public class SysUtil {
-
 
     public static String genUserNickName() {
         return DEFAULT_NICK_NAME_PREFIX + RandomUtil.randomString(NICK_NAME_LEN);
@@ -45,7 +43,7 @@ public class SysUtil {
         return DigestUtil.md5Hex(salt + originPwd, StandardCharsets.UTF_8);
     }
 
-    public static UserLoginVO getCurrUser(HttpServletRequest request) {
-        return (UserLoginVO) request.getSession().getAttribute(LOGIN_STATE_KEY);
+    public static UserLoginVO getCurrUser() {
+        return UserHolder.getUser();
     }
 }

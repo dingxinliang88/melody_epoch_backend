@@ -5,12 +5,15 @@ import io.github.dingxinliang88.aspect.auth.LoginFunc;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.EmailConstant;
 import io.github.dingxinliang88.exception.BizException;
+import io.github.dingxinliang88.manager.JwtTokenManager;
 import io.github.dingxinliang88.mapper.FanMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.mapper.UserMapper;
+import io.github.dingxinliang88.pojo.dto.JwtToken;
 import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
+import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Fan;
 import io.github.dingxinliang88.pojo.po.Member;
@@ -19,6 +22,7 @@ import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
+import io.github.dingxinliang88.utils.UserHolder;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +31,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import static io.github.dingxinliang88.constants.UserConstant.LOGIN_STATE_KEY;
-import static io.github.dingxinliang88.constants.UserConstant.USER_ROLE_SET;
+import static io.github.dingxinliang88.constants.UserConstant.*;
 
 /**
  * Default User Service Implementation
@@ -54,6 +57,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private TransactionTemplate transactionTemplate;
 
+    @Resource
+    private JwtTokenManager jwtTokenManager;
+
     @Override
     @Transactional(rollbackFor = BizException.class)
     public Integer userAccRegister(AccRegisterReq req, HttpServletRequest request) {
@@ -72,7 +78,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 // 加锁 + 判断当前账号是否已经被注册
                 User user;
                 synchronized (account.intern()) {
-                    // Rest of your code here
                     User u = userMapper.queryByAccount(account);
                     ThrowUtil.throwIf(u != null, StatusCode.ACCOUNT_ALREADY_EXISTS);
 
@@ -103,13 +108,67 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserLoginVO userAccLogin(AccLoginReq req, HttpServletRequest request) {
+    public Integer userEmailRegister(EmailRegisterReq req, HttpServletRequest request) {
+        String email = req.getEmail();
+        String code = req.getCode();
+        String password = req.getPassword();
+        String checkedPassword = req.getCheckedPassword();
+        Integer type = req.getType();
+
+        ThrowUtil.throwIf(!password.equals(checkedPassword), StatusCode.PASSWORD_NOT_MATCH);
+
+        // 判断当前账号是否已经被注册
+        User userFromDb = userMapper.queryByEmail(email);
+        ThrowUtil.throwIf(userFromDb != null, StatusCode.ACCOUNT_ALREADY_EXISTS);
+
+        return transactionTemplate.execute(status -> {
+            try {
+                // 加锁 + 判断当前账号是否已经被注册
+                User user;
+                synchronized (email.intern()) {
+                    User u = userMapper.queryByEmail(email);
+                    ThrowUtil.throwIf(u != null, StatusCode.ACCOUNT_ALREADY_EXISTS);
+
+                    // 获取服务器中的 code
+                    String serverCode = (String) redisTemplate.opsForValue().get(EmailConstant.CAPTCHA_KEY + email);
+                    assert serverCode != null;
+                    ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
+
+                    // 加密
+                    String salt = SysUtil.genUserPwdSalt();
+                    String encryptPwd = SysUtil.encryptedPwd(salt, password);
+
+                    // 保存数据
+                    user = new User(type, encryptPwd, salt);
+                    user.setEmail(email);
+                    user.setNickname(SysUtil.genUserNickName());
+                    userMapper.insert(user);
+
+                    // 根据用户类别去插入到不同的表中（fan、member）
+                    if (UserRoleType.FAN.getType().equals(type)) {
+                        insert2Fan(user.getUserId(), user.getNickname());
+                    } else if (UserRoleType.MEMBER.getType().equals(type)) {
+                        insert2Member(user.getUserId(), user.getNickname());
+                    }
+                    return user.getUserId();
+                }
+            } catch (Exception e) {
+                // Mark the transaction as rollback-only in case of an exception
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+    }
+
+    @Override
+    public String userAccLogin(AccLoginReq req, HttpServletRequest request) {
         String account = req.getAccount();
         String password = req.getPassword();
         Integer type = req.getType();
 
         // 使用账号字符串作为锁对象，确保同一账号的操作是原子的
         synchronized (account.intern()) {
+            ThrowUtil.throwIf(UserHolder.getUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
             User user = userMapper.queryByAccount(account);
 
             ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "账号不存在！");
@@ -124,81 +183,107 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     .nickname(user.getNickname())
                     .type(user.getType())
                     .build();
-            // 保存用户登陆态
-            request.getSession().setAttribute(LOGIN_STATE_KEY, userLoginVO);
 
-            return userLoginVO;
+            UserHolder.setUser(userLoginVO);
+
+            // 保存用户登陆态
+            String token = jwtTokenManager.genAccessToken(userLoginVO);
+            String refreshToken = jwtTokenManager.genRefreshToken(userLoginVO);
+            JwtToken jwtToken = new JwtToken(token, refreshToken);
+            jwtTokenManager.save2Redis(jwtToken, userLoginVO);
+
+            return token;
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = BizException.class)
+    public String userEmailLogin(EmailLoginReq req, HttpServletRequest request) {
+        String email = req.getEmail();
+        Integer loginType = req.getLoginType();
+
+        synchronized (email.intern()) {
+            ThrowUtil.throwIf(UserHolder.getUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
+            UserLoginVO userLoginVO;
+            if (CODE_LOGIN.equals(loginType)) {
+                userLoginVO = handleEmailCodeLogin(req);
+            } else {
+                userLoginVO = handleEmailPwdLogin(req);
+            }
+
+            UserHolder.setUser(userLoginVO);
+
+            // 保存用户登陆态
+            String token = jwtTokenManager.genAccessToken(userLoginVO);
+            String refreshToken = jwtTokenManager.genRefreshToken(userLoginVO);
+            JwtToken jwtToken = new JwtToken(token, refreshToken);
+            jwtTokenManager.save2Redis(jwtToken, userLoginVO);
+
+            // 删除code
+            redisTemplate.delete(EmailConstant.CAPTCHA_KEY + email);
+
+            return token;
         }
     }
 
     @Override
     public UserLoginVO getCurrUser(HttpServletRequest request) {
-        Object userObj = request.getSession().getAttribute(LOGIN_STATE_KEY);
-        return (UserLoginVO) userObj;
+        return UserHolder.getUser();
     }
 
     @Override
     @LoginFunc
     public Boolean userLogout(HttpServletRequest request) {
-        request.getSession().removeAttribute(LOGIN_STATE_KEY);
+        jwtTokenManager.revokeToken(UserHolder.getUser());
+        UserHolder.removeUser();
         return Boolean.TRUE;
     }
 
-    @Override
-    @Transactional(rollbackFor = BizException.class)
-    public UserLoginVO userEmailLogin(EmailLoginReq req, HttpServletRequest request) {
+
+    private UserLoginVO handleEmailPwdLogin(EmailLoginReq req) {
+        String email = req.getEmail();
+        String password = req.getPassword();
+
+        User userInfo;
+        synchronized (email.intern()) {
+            userInfo = userMapper.queryByEmail(email);
+            String salt = userInfo.getSalt();
+            String encryptedPwd = SysUtil.encryptedPwd(salt, password);
+            ThrowUtil.throwIf(!userInfo.getPassword().equals(encryptedPwd), StatusCode.PASSWORD_NOT_MATCH);
+        }
+
+        return UserLoginVO.builder()
+                .userId(userInfo.getUserId())
+                .nickname(userInfo.getNickname())
+                .type(userInfo.getType())
+                .build();
+    }
+
+    private UserLoginVO handleEmailCodeLogin(EmailLoginReq req) {
         String email = req.getEmail();
         String code = req.getCode();
-        Integer type = req.getType();
 
+        ThrowUtil.throwIf(code == null, StatusCode.PARAMS_ERROR, "验证码不能为空");
 
-        // 获取服务器中的 code
-        String serverCode = (String) redisTemplate.opsForValue().get(EmailConstant.CAPTCHA_KEY + email);
-
-        assert serverCode != null;
-        ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
         User userInfo;
         // 加锁
         synchronized (email.intern()) {
             // 根据用户的邮箱号查询用户是否存在，不存在即注册，存在即更新
             userInfo = userMapper.queryByEmail(email);
-            if (userInfo == null) {
-                // 第一次登录，先注册
-                userInfo = regByEmail(email, code, type);
-                // 根据用户类别去插入到不同的表中（fan、member）
-                if (UserRoleType.FAN.getType().equals(type)) {
-                    insert2Fan(userInfo.getUserId(), userInfo.getNickname());
-                } else if (UserRoleType.MEMBER.getType().equals(type)) {
-                    insert2Member(userInfo.getUserId(), userInfo.getNickname());
-                }
-            }
+            ThrowUtil.throwIf(userInfo == null, StatusCode.NOT_FOUND_ERROR, "用户不存在，请先注册");
+            // 获取服务器中的 code
+            String serverCode = (String) redisTemplate.opsForValue().get(EmailConstant.CAPTCHA_KEY + email);
+            assert serverCode != null;
+            ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
         }
 
-        UserLoginVO userLoginVO = UserLoginVO.builder()
+        return UserLoginVO.builder()
                 .userId(userInfo.getUserId())
                 .nickname(userInfo.getNickname())
                 .type(userInfo.getType())
                 .build();
-
-        // 保存用户Session
-        request.getSession().setAttribute(LOGIN_STATE_KEY, userLoginVO);
-        // 删除code
-        redisTemplate.delete(EmailConstant.CAPTCHA_KEY + email);
-
-        return userLoginVO;
     }
 
-
-    private User regByEmail(String email, String code, Integer type) {
-        // 将code作为盐值和密码存入即可
-        User user = new User(email, type);
-        user.setSalt(code);
-        user.setPassword(SysUtil.encryptedPwd(code, code));
-        user.setNickname(SysUtil.genUserNickName());
-        userMapper.insert(user);
-
-        return user;
-    }
 
     private void insert2Member(Integer memberId, String name) {
         Member member = new Member(memberId, name);
@@ -209,6 +294,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         Fan fan = new Fan(fanId, name);
         fanMapper.insert(fan);
     }
-
 
 }

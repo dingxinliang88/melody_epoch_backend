@@ -19,4 +19,10 @@ public class MainTest {
         System.out.println("salt = " + salt);
         System.out.println("encryptedPassword = " + encryptedPassword);
     }
+
+    @Test
+    public void genSecretKey() {
+        String secretKey = RandomUtil.randomString(32);
+        System.out.println("secretKey = " + secretKey);
+    }
 }

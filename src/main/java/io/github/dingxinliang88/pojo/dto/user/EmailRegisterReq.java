@@ -1,24 +1,24 @@
 package io.github.dingxinliang88.pojo.dto.user;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-import io.github.dingxinliang88.constants.UserConstant;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+import static io.github.dingxinliang88.constants.UserConstant.PWD_MAX_LEN;
+import static io.github.dingxinliang88.constants.UserConstant.PWD_MIN_LEN;
+
 /**
- * 邮箱登录请求体
+ * 邮箱注册
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Data
-public class EmailLoginReq implements Serializable {
+public class EmailRegisterReq implements Serializable {
 
 
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
@@ -39,7 +39,16 @@ public class EmailLoginReq implements Serializable {
     /**
      * 密码
      */
+    @NotNull(message = "密码不能为空！")
+    @Length(min = PWD_MIN_LEN, max = PWD_MAX_LEN, message = "密码长度必须在8-16之间！")
     private String password;
+
+    /**
+     * 校验密码
+     */
+    @NotNull(message = "密码不能为空！")
+    @Length(min = PWD_MIN_LEN, max = PWD_MAX_LEN, message = "校验密码长度必须在8-16之间， 且和密码相等！")
+    private String checkedPassword;
 
     /**
      * 0 - guest, 1 - admin , 2 - member, 3 - fan
@@ -48,10 +57,4 @@ public class EmailLoginReq implements Serializable {
      */
     private Integer type = UserRoleType.FAN.getType();
 
-    /**
-     * 登录类别：验证码（0） || 密码（1）
-     */
-    @Max(value = 1)
-    @Min(value = 0)
-    private Integer loginType = UserConstant.PASSWORD_LOGIN;
 }

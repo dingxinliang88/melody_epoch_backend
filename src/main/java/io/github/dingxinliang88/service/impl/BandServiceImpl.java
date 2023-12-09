@@ -47,7 +47,7 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         String profile = req.getProfile();
 
         // 获取当前登录用户
-        UserLoginVO currUser = SysUtil.getCurrUser(request);
+        UserLoginVO currUser = SysUtil.getCurrUser();
 
         if (UserRoleType.MEMBER.getType().equals(currUser.getType())) {
             // 成员创建乐队

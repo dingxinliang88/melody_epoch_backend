@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
+import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
 import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 
@@ -24,6 +25,16 @@ public interface UserService extends IService<User> {
      */
     Integer userAccRegister(AccRegisterReq req, HttpServletRequest request);
 
+
+    /**
+     * 邮箱密码验证码注册
+     *
+     * @param req     注册信息封装体
+     * @param request http request
+     * @return user id
+     */
+    Integer userEmailRegister(EmailRegisterReq req, HttpServletRequest request);
+
     /**
      * 邮箱验证码登录
      *
@@ -31,7 +42,7 @@ public interface UserService extends IService<User> {
      * @param request http request
      * @return user info
      */
-    UserLoginVO userEmailLogin(EmailLoginReq req, HttpServletRequest request);
+    String userEmailLogin(EmailLoginReq req, HttpServletRequest request);
 
     /**
      * 账号密码登录
@@ -40,7 +51,7 @@ public interface UserService extends IService<User> {
      * @param request http request
      * @return user info
      */
-    UserLoginVO userAccLogin(AccLoginReq req, HttpServletRequest request);
+    String userAccLogin(AccLoginReq req, HttpServletRequest request);
 
     /**
      * 获取当前登录对象
@@ -57,4 +68,5 @@ public interface UserService extends IService<User> {
      * @return true - 登出成功
      */
     Boolean userLogout(HttpServletRequest request);
+
 }

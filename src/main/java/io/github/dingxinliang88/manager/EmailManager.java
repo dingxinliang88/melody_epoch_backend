@@ -13,7 +13,6 @@ import javax.mail.MessagingException;
 import java.util.concurrent.TimeUnit;
 
 import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_KEY;
-import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_LEN;
 
 /**
  * 邮件管理
@@ -27,7 +26,7 @@ public class EmailManager {
 
     public Boolean genCaptcha(EmailCaptchaReq req) {
         String email = req.getEmail();
-        String captcha = SysUtil.genCaptcha(CAPTCHA_LEN);
+        String captcha = SysUtil.genEmailCaptcha();
 
         try {
             EmailUtil.sendEmail(email, captcha);

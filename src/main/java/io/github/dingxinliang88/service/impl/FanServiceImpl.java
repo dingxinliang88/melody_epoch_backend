@@ -34,7 +34,7 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         Integer fanId = req.getFanId();
 
         // 检查是否是本人
-        UserLoginVO currUser = SysUtil.getCurrUser(request);
+        UserLoginVO currUser = SysUtil.getCurrUser();
         ThrowUtil.throwIf(!currUser.getUserId().equals(fanId), StatusCode.NO_AUTH_ERROR,
                 "无权修改其他乐迷信息！");
 
