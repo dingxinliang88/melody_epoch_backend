@@ -17,14 +17,18 @@ import lombok.NoArgsConstructor;
 public class ConcertJoin {
 
     /**
+     * 自增ID
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
+    /**
      * 演唱会ID
      */
-    @TableId(type = IdType.INPUT)
     private Integer concertId;
 
     /**
      * 歌迷ID
      */
-    @TableId(type = IdType.INPUT)
     private Integer userId;
 }

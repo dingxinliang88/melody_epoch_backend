@@ -5,8 +5,9 @@
 <mapper namespace="io.github.dingxinliang88.mapper.SongLikeMapper">
 
     <resultMap id="SongLikeMapper" type="io.github.dingxinliang88.pojo.po.SongLike">
-        <id column="song_id" property="songId"/>
-        <id column="user_id" property="userId"/>
+        <id column="id" property="id"/>
+        <result column="song_id" property="songId"/>
+        <result column="user_id" property="userId"/>
     </resultMap>
 
 

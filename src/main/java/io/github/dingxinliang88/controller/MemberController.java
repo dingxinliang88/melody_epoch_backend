@@ -1,14 +1,12 @@
 package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
+import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.service.MemberService;
 import io.github.dingxinliang88.utils.RespUtil;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -30,9 +28,13 @@ public class MemberController {
         return RespUtil.success(memberService.joinBand(req, request));
     }
 
-
     @PostMapping("/leave")
     public BaseResponse<Boolean> leaveBand(@RequestBody LeaveBandReq req, HttpServletRequest request) {
         return RespUtil.success(memberService.leaveBand(req, request));
+    }
+
+    @PutMapping("/edit")
+    public BaseResponse<Boolean> editInfo(@RequestBody EditInfoReq req, HttpServletRequest request) {
+        return RespUtil.success(memberService.editInfo(req, request));
     }
 }

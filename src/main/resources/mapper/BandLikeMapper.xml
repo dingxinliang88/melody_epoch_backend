@@ -5,8 +5,9 @@
 <mapper namespace="io.github.dingxinliang88.mapper.BandLikeMapper">
 
     <resultMap id="BandLikeMapper" type="io.github.dingxinliang88.pojo.po.BandLike">
-        <id column="band_id" property="bandId"/>
-        <id column="user_id" property="userId"/>
+        <id column="id" property="id"/>
+        <result column="band_id" property="bandId"/>
+        <result column="user_id" property="userId"/>
     </resultMap>
 
 

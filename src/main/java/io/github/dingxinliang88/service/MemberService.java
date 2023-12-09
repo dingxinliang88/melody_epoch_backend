@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.po.Member;
@@ -31,4 +32,13 @@ public interface MemberService extends IService<Member> {
      * @return true - 离开成功
      */
     Boolean leaveBand(LeaveBandReq req, HttpServletRequest request);
+
+    /**
+     * 成员修改自己的信息
+     *
+     * @param req     修改信息请求
+     * @param request http request
+     * @return true - 修改成功
+     */
+    Boolean editInfo(EditInfoReq req, HttpServletRequest request);
 }

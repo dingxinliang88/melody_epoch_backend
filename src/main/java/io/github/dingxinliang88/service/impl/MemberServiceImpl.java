@@ -5,6 +5,7 @@ import io.github.dingxinliang88.aspect.auth.LoginFunc;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
+import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
@@ -94,6 +95,26 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
 
         // 不是队长，更新乐队信息和member信息
         return handleRegularLeave(member, bandId);
+    }
+
+    @Override
+    @LoginFunc
+    public Boolean editInfo(EditInfoReq req, HttpServletRequest request) {
+
+        Integer memberId = req.getMemberId();
+
+        // 检查是否是本人
+        UserLoginVO currUser = SysUtil.getCurrUser(request);
+        ThrowUtil.throwIf(!currUser.getUserId().equals(memberId), StatusCode.NO_AUTH_ERROR,
+                "无权修改其他成员信息！");
+
+        // 查找相关的成员是否存在
+        Member member = memberMapper.queryByMemberId(memberId);
+        ThrowUtil.throwIf(member == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关成员信息！");
+
+
+        // 更新相关的信息
+        return memberMapper.updateInfo(req);
     }
 
 

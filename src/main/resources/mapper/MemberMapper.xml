@@ -21,6 +21,21 @@
         SET band_id = #{bandId}, band_name = #{bandName}, join_time = #{joinTime}, leave_time = #{leaveTime}
         WHERE member_id = #{memberId};
     </update>
+    <update id="updateInfo" parameterType="io.github.dingxinliang88.pojo.dto.member.EditInfoReq">
+        <trim prefix="UPDATE member SET " suffix="WHERE member_id = #{memberId} AND is_delete = 0;" suffixOverrides=",">
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="gender != null">
+
+                gender = #{gender},
+            </if>
+            <if test="age != null">
+                age = #{age}
+            </if>
+        </trim>
+    </update>
+
     <select id="queryByMemberId" resultType="io.github.dingxinliang88.pojo.po.Member">
         SELECT member_id, name, gender, age, part, join_time, leave_time, band_id, band_name, is_delete
         FROM member

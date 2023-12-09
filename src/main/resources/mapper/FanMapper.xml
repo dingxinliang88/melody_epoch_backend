@@ -13,6 +13,30 @@
         <result column="education" property="education"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
+    <update id="updateInfo" parameterType="io.github.dingxinliang88.pojo.dto.fan.EditInfoReq">
+        <trim prefix="UPDATE fan SET " suffix="WHERE fan_id = #{fanId} AND is_delete = 0;" suffixOverrides=",">
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="career != null">
+                career = #{career},
+            </if>
+            <if test="education != null">
+                education = #{education}
+            </if>
+        </trim>
+    </update>
+    <select id="queryByFanId" resultType="io.github.dingxinliang88.pojo.po.Fan">
+        SELECT fan_id, name, gender, age, career, education, is_delete
+        FROM fan
+        WHERE is_delete = 0 AND fan_id = #{fanId};
+    </select>
 
 
 </mapper>

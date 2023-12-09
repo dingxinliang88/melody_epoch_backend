@@ -5,8 +5,9 @@
 <mapper namespace="io.github.dingxinliang88.mapper.ConcertSongMapper">
 
     <resultMap id="ConcertSongMapper" type="io.github.dingxinliang88.pojo.po.ConcertSong">
-        <id column="concert_id" property="concertId"/>
-        <id column="band_id" property="bandId"/>
+        <id column="id" property="id"/>
+        <result column="concert_id" property="concertId"/>
+        <result column="band_id" property="bandId"/>
         <result column="song_id_list" property="songIdList"/>
     </resultMap>
 

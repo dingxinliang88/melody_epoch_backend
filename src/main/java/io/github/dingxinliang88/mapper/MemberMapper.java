@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
 import io.github.dingxinliang88.pojo.po.Member;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -50,4 +51,11 @@ public interface MemberMapper extends BaseMapper<Member> {
     Boolean updateBandIdAndBandName(Integer memberId, Integer bandId, String bandName, LocalDateTime joinTime, LocalDateTime leaveTime);
 
 
+    /**
+     * 修改个人信息
+     *
+     * @param req 个人信息
+     * @return true - 修改成功
+     */
+    Boolean updateInfo(EditInfoReq req);
 }

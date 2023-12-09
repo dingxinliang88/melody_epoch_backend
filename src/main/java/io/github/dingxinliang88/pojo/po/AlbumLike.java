@@ -17,15 +17,19 @@ import lombok.NoArgsConstructor;
 public class AlbumLike {
 
     /**
+     * 自增ID
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
+
+    /**
      * 歌迷ID
      */
-    @TableId(type = IdType.INPUT)
     private Integer userId;
 
     /**
      * 专辑ID
      */
-    @TableId(type = IdType.INPUT)
     private Integer albumId;
 
     /**
