@@ -8,54 +8,44 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 歌迷信息
+ * 歌曲信息
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Data
-@TableName(value = "fan")
+@TableName(value = "song")
 @NoArgsConstructor
-public class Fan {
+public class Song {
 
     /**
-     * 歌迷ID
+     * 歌曲ID
      */
-    @TableId(type = IdType.INPUT)
-    private Integer fanId;
+    @TableId(type = IdType.AUTO)
+    private Integer songId;
 
     /**
-     * 歌迷姓名
+     * 歌曲名称
      */
     private String name;
 
     /**
-     * 性别
+     * 歌曲作者
      */
-    private Integer gender;
+    private String author;
 
     /**
-     * 年龄
+     * 所属专辑ID
      */
-    private Integer age;
+    private Integer albumId;
 
     /**
-     * 职业
+     * 所属专辑名称
      */
-    private String career;
-
-    /**
-     * 学历
-     */
-    private String education;
+    private String albumName;
 
     /**
      * 逻辑删除标志 0 - 未删除， 1 - 删除
      */
     @TableLogic
     private Integer isDelete;
-
-    public Fan(Integer fanId, String name) {
-        this.fanId = fanId;
-        this.name = name;
-    }
 }

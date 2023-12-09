@@ -10,70 +10,54 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 乐队成员信息
+ * 专辑信息
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Data
-@TableName(value = "member")
+@TableName(value = "album")
 @NoArgsConstructor
-public class Member {
-
+public class Album {
     /**
-     * 乐队成员ID
+     * 专辑ID
      */
-    @TableId(type = IdType.INPUT)
-    private Integer memberId;
+    @TableId(type = IdType.AUTO)
+    private Integer albumId;
 
     /**
-     * 乐队成员姓名
+     * 专辑名称
      */
     private String name;
 
     /**
-     * 性别
+     * 发行公司
      */
-    private Integer gender;
+    private String company;
 
     /**
-     * 年龄
+     * 发行时间
      */
-    private Integer age;
+    private LocalDateTime releaseTime;
 
     /**
-     * 乐队成员分工
-     */
-    private String part;
-
-    /**
-     * 加入乐队时间
-     */
-    private LocalDateTime joinTime;
-
-    /**
-     * 离开乐队时间
-     */
-    private LocalDateTime leaveTime;
-
-    /**
-     * 所在乐队ID
-     */
-    private Integer bandId;
-
-    /**
-     * 所在乐队名称
+     * 所属乐队名称
      */
     private String bandName;
+
+    /**
+     * 专辑简介
+     */
+    private String profile;
+
+    /**
+     * 专辑均分
+     */
+    private Float avgScore;
 
     /**
      * 逻辑删除标志 0 - 未删除， 1 - 删除
      */
     @TableLogic
     private Integer isDelete;
-
-    public Member(Integer memberId, String name) {
-        this.memberId = memberId;
-        this.name = name;
-    }
 
 }

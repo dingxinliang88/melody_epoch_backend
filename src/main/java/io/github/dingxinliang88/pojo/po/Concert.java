@@ -10,60 +10,50 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 乐队成员信息
+ * 演唱会信息
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Data
-@TableName(value = "member")
+@TableName(value = "concert")
 @NoArgsConstructor
-public class Member {
+public class Concert {
 
     /**
-     * 乐队成员ID
+     * 演唱会ID
      */
-    @TableId(type = IdType.INPUT)
-    private Integer memberId;
+    @TableId(type = IdType.AUTO)
+    private Integer concertId;
 
     /**
-     * 乐队成员姓名
+     * 演唱会名称
      */
     private String name;
 
     /**
-     * 性别
+     * 开始时间
      */
-    private Integer gender;
+    private LocalDateTime startTime;
 
     /**
-     * 年龄
+     * 结束时间
      */
-    private Integer age;
+    private LocalDateTime endTime;
 
     /**
-     * 乐队成员分工
+     * 演唱会地点
      */
-    private String part;
+    private String place;
 
     /**
-     * 加入乐队时间
-     */
-    private LocalDateTime joinTime;
-
-    /**
-     * 离开乐队时间
-     */
-    private LocalDateTime leaveTime;
-
-    /**
-     * 所在乐队ID
-     */
-    private Integer bandId;
-
-    /**
-     * 所在乐队名称
+     * 举办乐队名称
      */
     private String bandName;
+
+    /**
+     * 演唱会上限人数
+     */
+    private Integer maxNum;
 
     /**
      * 逻辑删除标志 0 - 未删除， 1 - 删除
@@ -71,9 +61,5 @@ public class Member {
     @TableLogic
     private Integer isDelete;
 
-    public Member(Integer memberId, String name) {
-        this.memberId = memberId;
-        this.name = name;
-    }
 
 }

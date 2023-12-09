@@ -7,55 +7,57 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
- * 歌迷信息
+ * 评论信息
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Data
-@TableName(value = "fan")
+@TableName(value = "comment")
 @NoArgsConstructor
-public class Fan {
+public class Comment {
 
     /**
-     * 歌迷ID
+     * 评论ID
      */
-    @TableId(type = IdType.INPUT)
-    private Integer fanId;
+    @TableId(type = IdType.AUTO)
+    private Integer commentId;
 
     /**
-     * 歌迷姓名
+     * 专辑ID
      */
-    private String name;
+    private Integer albumId;
 
     /**
-     * 性别
+     * 父级评论ID
      */
-    private Integer gender;
+    private Integer parentId;
 
     /**
-     * 年龄
+     * 评论信息
      */
-    private Integer age;
+    private String content;
 
     /**
-     * 职业
+     * 评论人ID
      */
-    private String career;
+    private Integer userId;
 
     /**
-     * 学历
+     * 创建时间
      */
-    private String education;
+    private LocalDateTime createTime;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 
     /**
      * 逻辑删除标志 0 - 未删除， 1 - 删除
      */
     @TableLogic
     private Integer isDelete;
-
-    public Fan(Integer fanId, String name) {
-        this.fanId = fanId;
-        this.name = name;
-    }
 }
