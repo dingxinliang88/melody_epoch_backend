@@ -11,6 +11,7 @@
         <result column="leader_id" property="leaderId"/>
         <result column="profile" property="profile"/>
         <result column="member_num" property="memberNum"/>
+        <result column="is_release" property="isRelease"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
     <update id="updateMemberNum">
@@ -20,14 +21,14 @@
         UPDATE band SET leader_id = #{leaderId} WHERE band_id = #{bandId};
     </update>
     <update id="disband">
-        UPDATE band SET member_num = 0, leader_id = NULL,  is_delete = 1 WHERE band_id = #{bandId};
+        UPDATE band SET member_num = 0, leader_id = NULL, is_delete = 1 WHERE band_id = #{bandId};
     </update>
-    <select id="queryByBandId" resultType="io.github.dingxinliang88.pojo.po.Band">
+    <select id="queryByBandIdInner" resultType="io.github.dingxinliang88.pojo.po.Band">
         SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
         FROM band
         WHERE is_delete = 0 AND band_id = #{bandId};
     </select>
-    <select id="queryByLeaderId" resultType="io.github.dingxinliang88.pojo.po.Band">
+    <select id="queryByLeaderIdInner" resultType="io.github.dingxinliang88.pojo.po.Band">
         SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
         FROM band
         WHERE is_delete = 0 AND (leader_id = #{leaderId});

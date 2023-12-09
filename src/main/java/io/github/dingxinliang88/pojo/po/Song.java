@@ -44,6 +44,11 @@ public class Song {
     private String albumName;
 
     /**
+     * 是否已经发布， 0 - 未发布， 1 - 发布
+     */
+    private Integer isRelease;
+
+    /**
      * 逻辑删除标志 0 - 未删除， 1 - 删除
      */
     @TableLogic

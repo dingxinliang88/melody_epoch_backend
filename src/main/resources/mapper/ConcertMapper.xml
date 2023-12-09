@@ -12,6 +12,7 @@
         <result column="band_name" property="bandName"/>
         <result column="place" property="place"/>
         <result column="max_num" property="maxNum"/>
+        <result column="is_release" property="isRelease"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
 

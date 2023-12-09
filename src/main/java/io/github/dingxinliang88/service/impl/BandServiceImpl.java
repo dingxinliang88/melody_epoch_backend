@@ -61,7 +61,7 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         }
 
         // 判断当前leaderId是否已经加入了队伍
-        Band bandFromDB = bandMapper.queryByLeaderId(leaderId);
+        Band bandFromDB = bandMapper.queryByLeaderIdInner(leaderId);
         ThrowUtil.throwIf(bandFromDB != null, StatusCode.DUPLICATE_DATA, "该队长已经加入乐队了！");
 
         final Integer leader = leaderId;

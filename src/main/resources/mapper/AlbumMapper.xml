@@ -12,6 +12,7 @@
         <result column="band_name" property="bandName"/>
         <result column="profile" property="profile"/>
         <result column="avg_score" property="avgScore"/>
+        <result column="is_release" property="isRelease"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
 

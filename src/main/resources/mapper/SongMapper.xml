@@ -10,6 +10,7 @@
         <result column="author" property="author" />
         <result column="album_id" property="albumId" />
         <result column="album_name" property="albumName" />
+        <result column="is_release" property="isRelease"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
 

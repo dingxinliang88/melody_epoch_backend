@@ -46,7 +46,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         final Integer bandId = req.getBandId();
 
         // 查找Band是否存在
-        Band band = bandMapper.queryByBandId(bandId);
+        Band band = bandMapper.queryByBandIdInner(bandId);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在！");
 
         // 当前用户是否已经加入了乐队
@@ -77,7 +77,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         final Integer bandId = req.getBandId();
 
         // 查询Band是否存在
-        Band band = bandMapper.queryByBandId(bandId);
+        Band band = bandMapper.queryByBandIdInner(bandId);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在！");
 
         // 当前用户是否加入了该乐队
