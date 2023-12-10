@@ -7,6 +7,7 @@ import io.github.dingxinliang88.exception.BizException;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
+import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Member;
@@ -14,6 +15,7 @@ import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.BandService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
+import io.github.dingxinliang88.utils.UserHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -78,6 +80,20 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
                 throw e;
             }
         });
+    }
+
+    @Override
+    @LoginFunc
+    public Boolean editInfo(EditBandReq req, HttpServletRequest request) {
+
+        // 获取当前登录用户，判断是否是队长
+        UserLoginVO user = UserHolder.getUser();
+
+        Integer bandId = req.getBandId();
+        Band band = bandMapper.queryByBandIdInner(bandId);
+        ThrowUtil.throwIf(!band.getLeaderId().equals(user.getUserId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改乐队信息！");
+
+        return bandMapper.editInfo(req);
     }
 
 

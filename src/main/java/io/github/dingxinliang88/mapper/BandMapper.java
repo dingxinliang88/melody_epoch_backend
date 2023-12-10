@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.po.Band;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -51,4 +52,12 @@ public interface BandMapper extends BaseMapper<Band> {
      * @return true - 解散成功
      */
     Boolean disband(Integer bandId);
+
+    /**
+     * 修改乐队信息
+     *
+     * @param req 修改乐队信息请求
+     * @return true - 修改成功
+     */
+    Boolean editInfo(EditBandReq req);
 }
