@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.dingxinliang88.pojo.dto.fan.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.po.Fan;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,5 +20,5 @@ public interface FanService extends IService<Fan> {
      * @param request http request
      * @return true - 修改成功
      */
-    Boolean editInfo(EditInfoReq req, HttpServletRequest request);
+    Boolean editInfo(EditFanReq req, HttpServletRequest request);
 }

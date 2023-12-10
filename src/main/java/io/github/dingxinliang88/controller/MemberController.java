@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
-import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
@@ -36,7 +36,7 @@ public class MemberController {
     }
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditInfoReq req, HttpServletRequest request) {
+    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditMemberReq req, HttpServletRequest request) {
         return RespUtil.success(memberService.editInfo(req, request));
     }
 

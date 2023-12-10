@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.mapper;
 
 import cn.hutool.json.JSONUtil;
-import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.po.Member;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +37,7 @@ public class MemberMapperTest {
 
     @Test
     public void updateInfo() {
-        EditInfoReq req = new EditInfoReq();
+        EditMemberReq req = new EditMemberReq();
         req.setMemberId(8);
         req.setName("李四");
         req.setGender(MALE);

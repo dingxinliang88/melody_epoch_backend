@@ -29,6 +29,11 @@ public class Song {
     private String name;
 
     /**
+     * 乐队ID
+     */
+    private Integer bandId;
+
+    /**
      * 歌曲作者
      */
     private String author;
@@ -53,4 +58,10 @@ public class Song {
      */
     @TableLogic
     private Integer isDelete;
+
+    public Song(String name, Integer bandId, String author) {
+        this.name = name;
+        this.bandId = bandId;
+        this.author = author;
+    }
 }

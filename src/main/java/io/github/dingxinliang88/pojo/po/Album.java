@@ -35,7 +35,7 @@ public class Album {
     private String company;
 
     /**
-     * 发行时间
+     * 发表时间，跟随发布标志一起
      */
     private LocalDateTime releaseTime;
 
@@ -65,4 +65,10 @@ public class Album {
     @TableLogic
     private Integer isDelete;
 
+    public Album(String name, String company, String bandName, String profile) {
+        this.name = name;
+        this.company = company;
+        this.bandName = bandName;
+        this.profile = profile;
+    }
 }

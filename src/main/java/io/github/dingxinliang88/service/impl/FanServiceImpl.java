@@ -1,10 +1,9 @@
 package io.github.dingxinliang88.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.dingxinliang88.aspect.auth.LoginFunc;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.FanMapper;
-import io.github.dingxinliang88.pojo.dto.fan.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.po.Fan;
 import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.FanService;
@@ -28,8 +27,7 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
     private FanMapper fanMapper;
 
     @Override
-    @LoginFunc
-    public Boolean editInfo(EditInfoReq req, HttpServletRequest request) {
+    public Boolean editInfo(EditFanReq req, HttpServletRequest request) {
 
         Integer fanId = req.getFanId();
 

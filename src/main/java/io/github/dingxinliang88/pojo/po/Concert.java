@@ -23,7 +23,7 @@ public class Concert {
      * 演唱会ID
      */
     @TableId(type = IdType.AUTO)
-    private Integer concertId;
+    private Long concertId;
 
     /**
      * 演唱会名称
@@ -46,9 +46,19 @@ public class Concert {
     private String place;
 
     /**
+     * 乐队ID
+     */
+    private Integer bandId;
+
+    /**
      * 举办乐队名称
      */
     private String bandName;
+
+    /**
+     * 歌曲ID List，逗号分隔
+     */
+    private String songIdsStr;
 
     /**
      * 演唱会上限人数
@@ -66,5 +76,14 @@ public class Concert {
     @TableLogic
     private Integer isDelete;
 
-
+    public Concert(String name, LocalDateTime startTime, LocalDateTime endTime, String place, Integer bandId, String bandName, String songIdsStr, Integer maxNum) {
+        this.name = name;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.place = place;
+        this.bandId = bandId;
+        this.bandName = bandName;
+        this.songIdsStr = songIdsStr;
+        this.maxNum = maxNum;
+    }
 }

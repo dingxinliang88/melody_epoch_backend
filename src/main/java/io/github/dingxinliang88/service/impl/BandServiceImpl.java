@@ -1,7 +1,6 @@
 package io.github.dingxinliang88.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.dingxinliang88.aspect.auth.LoginFunc;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.exception.BizException;
 import io.github.dingxinliang88.mapper.BandMapper;
@@ -41,7 +40,6 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
     private TransactionTemplate transactionTemplate;
 
     @Override
-    @LoginFunc
     public Integer addBand(AddBandReq req, HttpServletRequest request) {
         String bandName = req.getBandName();
         Integer leaderId = req.getLeaderId();
@@ -82,7 +80,6 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
     }
 
     @Override
-    @LoginFunc
     public Boolean editInfo(EditBandReq req, HttpServletRequest request) {
 
         // 获取当前登录用户，判断是否是队长

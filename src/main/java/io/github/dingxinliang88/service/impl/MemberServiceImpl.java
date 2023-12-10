@@ -1,11 +1,10 @@
 package io.github.dingxinliang88.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.dingxinliang88.aspect.auth.LoginFunc;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
-import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
@@ -43,7 +42,6 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
 
 
     @Override
-    @LoginFunc
     public Boolean joinBand(JoinBandReq req, HttpServletRequest request) {
         final Integer bandId = req.getBandId();
 
@@ -99,8 +97,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
     }
 
     @Override
-    @LoginFunc
-    public Boolean editInfo(EditInfoReq req, HttpServletRequest request) {
+    public Boolean editInfo(EditMemberReq req, HttpServletRequest request) {
 
         Integer memberId = req.getMemberId();
 
@@ -119,7 +116,6 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
     }
 
     @Override
-    @LoginFunc
     public Boolean editMemberPart(EditPartReq req, HttpServletRequest request) {
         // 判断当前登录用户是否是队长
         Integer memberId = req.getMemberId();

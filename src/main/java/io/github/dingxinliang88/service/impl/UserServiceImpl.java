@@ -1,7 +1,6 @@
 package io.github.dingxinliang88.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.github.dingxinliang88.aspect.auth.LoginFunc;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.EmailConstant;
 import io.github.dingxinliang88.exception.BizException;
@@ -233,7 +232,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    @LoginFunc
     public Boolean userLogout(HttpServletRequest request) {
         jwtTokenManager.revokeToken(SysUtil.getCurrUser());
         UserHolder.removeUser();

@@ -13,7 +13,7 @@
         <result column="education" property="education"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
-    <update id="updateInfo" parameterType="io.github.dingxinliang88.pojo.dto.fan.EditInfoReq">
+    <update id="updateInfo" parameterType="io.github.dingxinliang88.pojo.dto.fan.EditFanReq">
         <trim prefix="UPDATE fan SET " suffix="WHERE fan_id = #{fanId} AND is_delete = 0;" suffixOverrides=",">
             <if test="name != null">
                 name = #{name},

@@ -9,12 +9,38 @@
         <result column="name" property="name"/>
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
+        <result column="band_id" property="bandId"/>
         <result column="band_name" property="bandName"/>
         <result column="place" property="place"/>
         <result column="max_num" property="maxNum"/>
+        <result column="song_ids" property="songIdsStr"/>
         <result column="is_release" property="isRelease"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
+    <update id="editInfo">
+        <trim prefix="UPDATE concert SET "
+              suffix="WHERE concert_id = #{concertId} AND band_id = #{bandId} AND is_delete = 0;"
+              suffixOverrides=",">
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime}
+            </if>
+            <if test="place != null">
+                place = #{place}
+            </if>
+            <if test="songIdsStr != null">
+                song_ids = #{songIdsStr}
+            </if>
+            <if test="maxNum != null">
+                max_num = #{maxNum}
+            </if>
+        </trim>
+    </update>
 
 
 </mapper>

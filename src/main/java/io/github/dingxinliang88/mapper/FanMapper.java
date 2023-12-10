@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.github.dingxinliang88.pojo.dto.fan.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.po.Fan;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -25,5 +25,5 @@ public interface FanMapper extends BaseMapper<Fan> {
      * @param req 个人信息
      * @return true - 修改成功
      */
-    Boolean updateInfo(EditInfoReq req);
+    Boolean updateInfo(EditFanReq req);
 }

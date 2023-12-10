@@ -17,7 +17,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class EditInfoReq implements Serializable {
+public class EditMemberReq implements Serializable {
 
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
 

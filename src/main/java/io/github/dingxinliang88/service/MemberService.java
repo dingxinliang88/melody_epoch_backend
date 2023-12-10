@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
@@ -41,7 +41,7 @@ public interface MemberService extends IService<Member> {
      * @param request http request
      * @return true - 修改成功
      */
-    Boolean editInfo(EditInfoReq req, HttpServletRequest request);
+    Boolean editInfo(EditMemberReq req, HttpServletRequest request);
 
     /**
      * 修改乐队成员分工（仅队长）

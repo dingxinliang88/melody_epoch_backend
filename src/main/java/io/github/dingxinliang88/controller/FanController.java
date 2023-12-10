@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
-import io.github.dingxinliang88.pojo.dto.fan.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.service.FanService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +26,7 @@ public class FanController {
 
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody EditInfoReq req, HttpServletRequest request) {
+    public BaseResponse<Boolean> editInfo(@RequestBody EditFanReq req, HttpServletRequest request) {
         return RespUtil.success(fanService.editInfo(req, request));
     }
 }

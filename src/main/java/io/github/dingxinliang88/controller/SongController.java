@@ -1,10 +1,15 @@
 package io.github.dingxinliang88.controller;
 
+import io.github.dingxinliang88.biz.BaseResponse;
+import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
+import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.service.SongService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.github.dingxinliang88.utils.RespUtil;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 歌曲模块
@@ -17,4 +22,14 @@ public class SongController {
 
     @Resource
     private SongService songService;
+
+    @PostMapping("/add")
+    public BaseResponse<Integer> addSong(@RequestBody @Validated AddSongReq req, HttpServletRequest request) {
+        return RespUtil.success(songService.addSong(req, request));
+    }
+
+    @PutMapping("/edit")
+    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditSongReq req, HttpServletRequest request) {
+        return RespUtil.success(songService.editInfo(req, request));
+    }
 }
