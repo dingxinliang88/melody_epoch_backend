@@ -29,8 +29,6 @@ public interface UserConstant {
     Integer CODE_LOGIN = 0;
     Integer PASSWORD_LOGIN = 1;
 
-    String LOGIN_STATE_KEY = "user:login:state";
-
     String ACCESS_TOKEN_PREFIX = "user:access_token:";
     String REFRESH_TOKEN_PREFIX = "user:refresh_token:";
 

@@ -2,7 +2,6 @@ package io.github.dingxinliang88.pojo.dto.user;
 
 import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.constants.UserConstant;
-import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -40,13 +39,6 @@ public class EmailLoginReq implements Serializable {
      * 密码
      */
     private String password;
-
-    /**
-     * 0 - guest, 1 - admin , 2 - member, 3 - fan
-     *
-     * @see io.github.dingxinliang88.pojo.enums.UserRoleType
-     */
-    private Integer type = UserRoleType.FAN.getType();
 
     /**
      * 登录类别：验证码（0） || 密码（1）

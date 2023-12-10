@@ -28,7 +28,7 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry
                 // 覆盖所有请求
-                .addMapping("/*")
+                .addMapping("/**")
                 // 允许发送cookie
                 .allowCredentials(true)
                 // TODO 根据项目实际情况修改放行域名

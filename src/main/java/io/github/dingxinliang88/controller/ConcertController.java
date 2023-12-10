@@ -28,7 +28,7 @@ public class ConcertController {
         return RespUtil.success(concertService.addConcert(req, request));
     }
 
-    @PutMapping("/add")
+    @PutMapping("/edit")
     public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditConcertReq req, HttpServletRequest request) {
         return RespUtil.success(concertService.editInfo(req, request));
     }

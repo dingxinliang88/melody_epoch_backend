@@ -31,7 +31,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import static io.github.dingxinliang88.constants.UserConstant.CODE_LOGIN;
-import static io.github.dingxinliang88.constants.UserConstant.USER_ROLE_SET;
 
 /**
  * Default User Service Implementation
@@ -164,7 +163,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public String userAccLogin(AccLoginReq req, HttpServletRequest request) {
         String account = req.getAccount();
         String password = req.getPassword();
-        Integer type = req.getType();
 
         // 使用账号字符串作为锁对象，确保同一账号的操作是原子的
         synchronized (account.intern()) {
@@ -172,7 +170,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             User user = userMapper.queryByAccount(account);
 
             ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "账号不存在！");
-            ThrowUtil.throwIf(!USER_ROLE_SET.contains(type), StatusCode.ROLE_NOT_FOUND);
             // 校验密码
             String encryptPwd = SysUtil.encryptedPwd(user.getSalt(), password);
             String encryptPwdFromDb = user.getPassword();

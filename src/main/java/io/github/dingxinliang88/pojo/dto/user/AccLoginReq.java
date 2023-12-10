@@ -1,16 +1,13 @@
 package io.github.dingxinliang88.pojo.dto.user;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 import static io.github.dingxinliang88.constants.UserConstant.*;
-import static io.github.dingxinliang88.constants.UserConstant.PWD_MAX_LEN;
 
 /**
  * 账号登录请求体
@@ -35,11 +32,4 @@ public class AccLoginReq implements Serializable {
     @NotNull(message = "密码不能为空！")
     @Length(min = PWD_MIN_LEN, max = PWD_MAX_LEN, message = "密码长度必须在8-16之间！")
     private String password;
-
-    /**
-     * 0 - guest, 1 - admin , 2 - member, 3 - fan
-     *
-     * @see io.github.dingxinliang88.pojo.enums.UserRoleType
-     */
-    private Integer type = UserRoleType.FAN.getType();
 }
