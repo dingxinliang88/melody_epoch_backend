@@ -2,6 +2,7 @@ package io.github.dingxinliang88;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import io.github.dingxinliang88.utils.SysUtil;
 import org.junit.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -24,5 +25,10 @@ public class MainTest {
     public void genSecretKey() {
         String secretKey = RandomUtil.randomString(32);
         System.out.println("secretKey = " + secretKey);
+    }
+
+    @Test
+    public void testGenCaptcha() {
+        System.out.println(SysUtil.genEmailCaptcha());
     }
 }

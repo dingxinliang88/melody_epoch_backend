@@ -36,7 +36,7 @@ public class SysUtil {
     }
 
     public static String genCaptcha(int len) {
-        return RandomUtil.randomString(len);
+        return RandomUtil.randomNumbers(len);
     }
 
     public static String encryptedPwd(String salt, String originPwd) {

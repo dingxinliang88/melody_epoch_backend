@@ -37,7 +37,6 @@ public class EmailUtil {
         EmailUtil.mailSender = mailSender;
     }
 
-
     @Autowired
     public void setEmailConfigProperties(EmailConfigProperties emailConfigProperties) {
         EmailUtil.emailConfigProperties = emailConfigProperties;
@@ -47,18 +46,18 @@ public class EmailUtil {
     /**
      * 发送邮件
      *
-     * @param emailAccount 邮箱
-     * @param captcha      验证码
+     * @param emailTo 邮箱
+     * @param captcha 验证码
      */
-    public static void sendEmail(String emailAccount, String captcha) throws MessagingException {
+    public static void sendEmail(String emailTo, String captcha) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
 
         // 组装邮件内容
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
         messageHelper.setSubject(EMAIL_SUBJECT);
         messageHelper.setText(buildEmailContent(EMAIL_HTML_CONTENT_PATH, captcha), true);
-        messageHelper.setTo(emailAccount);
-        messageHelper.setFrom(EMAIL_CN_TITLE + "<" + emailConfigProperties.getFrom() + ">");
+        messageHelper.setTo(emailTo);
+        messageHelper.setFrom(PROCESS_CN_TITLE + "<" + emailConfigProperties.getFrom() + ">");
         mailSender.send(message);
     }
 
@@ -78,6 +77,6 @@ public class EmailUtil {
             logger.error("读取邮件模板失败" + e.getMessage());
         }
         return MessageFormat.format(buffer.toString(), captcha,
-                EMAIL_CN_TITLE, EMAIL_EN_TITLE, PLATFORM_RESPONSIBLE_PERSON, PLATFORM_ADDR);
+                EMAIL_TITLE, PROCESS_CN_TITLE, PLATFORM_RESPONSIBLE_PERSON);
     }
 }

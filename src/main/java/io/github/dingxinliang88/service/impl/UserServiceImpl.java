@@ -20,10 +20,10 @@ import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.UserService;
+import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import io.github.dingxinliang88.utils.UserHolder;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -31,7 +31,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import static io.github.dingxinliang88.constants.UserConstant.*;
+import static io.github.dingxinliang88.constants.UserConstant.CODE_LOGIN;
+import static io.github.dingxinliang88.constants.UserConstant.USER_ROLE_SET;
 
 /**
  * Default User Service Implementation
@@ -52,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private FanMapper fanMapper;
 
     @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisUtil redisUtil;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -130,7 +131,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     ThrowUtil.throwIf(u != null, StatusCode.ACCOUNT_ALREADY_EXISTS);
 
                     // 获取服务器中的 code
-                    String serverCode = (String) redisTemplate.opsForValue().get(EmailConstant.CAPTCHA_KEY + email);
+                    String serverCode = (String) redisUtil.get(EmailConstant.CAPTCHA_KEY + email);
                     assert serverCode != null;
                     ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
 
@@ -220,7 +221,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             jwtTokenManager.save2Redis(jwtToken, userLoginVO);
 
             // 删除code
-            redisTemplate.delete(EmailConstant.CAPTCHA_KEY + email);
+            redisUtil.delete(EmailConstant.CAPTCHA_KEY + email);
 
             return token;
         }
@@ -272,7 +273,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             userInfo = userMapper.queryByEmail(email);
             ThrowUtil.throwIf(userInfo == null, StatusCode.NOT_FOUND_ERROR, "用户不存在，请先注册");
             // 获取服务器中的 code
-            String serverCode = (String) redisTemplate.opsForValue().get(EmailConstant.CAPTCHA_KEY + email);
+            String serverCode = (String) redisUtil.get(EmailConstant.CAPTCHA_KEY + email);
             assert serverCode != null;
             ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
         }
