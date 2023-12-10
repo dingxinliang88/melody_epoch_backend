@@ -15,7 +15,6 @@ import io.github.dingxinliang88.pojo.vo.UserLoginVO;
 import io.github.dingxinliang88.service.BandService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
-import io.github.dingxinliang88.utils.UserHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -87,10 +86,11 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
     public Boolean editInfo(EditBandReq req, HttpServletRequest request) {
 
         // 获取当前登录用户，判断是否是队长
-        UserLoginVO user = UserHolder.getUser();
+        UserLoginVO user = SysUtil.getCurrUser();
 
         Integer bandId = req.getBandId();
         Band band = bandMapper.queryByBandIdInner(bandId);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关乐队信息！");
         ThrowUtil.throwIf(!band.getLeaderId().equals(user.getUserId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改乐队信息！");
 
         return bandMapper.editInfo(req);

@@ -168,7 +168,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 使用账号字符串作为锁对象，确保同一账号的操作是原子的
         synchronized (account.intern()) {
-            ThrowUtil.throwIf(UserHolder.getUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
+            ThrowUtil.throwIf(SysUtil.getCurrUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
             User user = userMapper.queryByAccount(account);
 
             ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "账号不存在！");
@@ -203,7 +203,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         Integer loginType = req.getLoginType();
 
         synchronized (email.intern()) {
-            ThrowUtil.throwIf(UserHolder.getUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
+            ThrowUtil.throwIf(SysUtil.getCurrUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
             UserLoginVO userLoginVO;
             if (CODE_LOGIN.equals(loginType)) {
                 userLoginVO = handleEmailCodeLogin(req);
@@ -228,13 +228,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public UserLoginVO getCurrUser(HttpServletRequest request) {
-        return UserHolder.getUser();
+        return SysUtil.getCurrUser();
     }
 
     @Override
     @LoginFunc
     public Boolean userLogout(HttpServletRequest request) {
-        jwtTokenManager.revokeToken(UserHolder.getUser());
+        jwtTokenManager.revokeToken(SysUtil.getCurrUser());
         UserHolder.removeUser();
         return Boolean.TRUE;
     }

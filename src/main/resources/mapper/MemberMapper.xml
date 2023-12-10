@@ -35,6 +35,9 @@
             </if>
         </trim>
     </update>
+    <update id="editMemberPart" parameterType="io.github.dingxinliang88.pojo.dto.member.EditPartReq">
+        UPDATE member SET part = #{part} WHERE member_id = #{memberId} AND is_delete = 0;
+    </update>
 
     <select id="queryByMemberId" resultType="io.github.dingxinliang88.pojo.po.Member">
         SELECT member_id, name, gender, age, part, join_time, leave_time, band_id, band_name, is_delete

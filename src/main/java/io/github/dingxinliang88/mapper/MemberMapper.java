@@ -58,4 +58,13 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @return true - 修改成功
      */
     Boolean updateInfo(EditInfoReq req);
+
+    /**
+     * 修改乐队成员分工
+     *
+     * @param memberId 成员ID
+     * @param part     成员分工
+     * @return true - 修改成功
+     */
+    Boolean editMemberPart(Integer memberId, String part);
 }

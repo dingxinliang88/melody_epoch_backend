@@ -24,11 +24,7 @@
         UPDATE band SET member_num = 0, leader_id = NULL, is_delete = 1 WHERE band_id = #{bandId};
     </update>
     <update id="editInfo" parameterType="io.github.dingxinliang88.pojo.dto.band.EditBandReq">
-        <trim prefix="UPDATE band SET " suffix="WHERE band_id = #{bandId} AND is_delete = 0;" suffixOverrides=",">
-            <if test="profile != null">
-                profile = #{profile},
-            </if>
-        </trim>
+        UPDATE band SET profile = #{profile} WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
     <select id="queryByBandIdInner" resultType="io.github.dingxinliang88.pojo.po.Band">
         SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete

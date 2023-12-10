@@ -6,6 +6,7 @@ import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.pojo.dto.member.EditInfoReq;
+import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
@@ -115,6 +116,24 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
 
         // 更新相关的信息
         return memberMapper.updateInfo(req);
+    }
+
+    @Override
+    @LoginFunc
+    public Boolean editMemberPart(EditPartReq req, HttpServletRequest request) {
+        // 判断当前登录用户是否是队长
+        Integer memberId = req.getMemberId();
+        String part = req.getPart();
+        Integer bandId = req.getBandId();
+
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByBandIdInner(bandId);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关乐队信息！");
+        ThrowUtil.throwIf(!band.getLeaderId().equals(currUser.getUserId()), StatusCode.NO_AUTH_ERROR,
+                "您不是乐队队长，无法修改乐队成员分工！");
+
+        return memberMapper.editMemberPart(memberId, part);
     }
 
 
