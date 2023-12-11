@@ -5,7 +5,7 @@ import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;

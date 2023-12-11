@@ -2,7 +2,7 @@ package io.github.dingxinliang88.utils;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 
 import java.nio.charset.StandardCharsets;
 

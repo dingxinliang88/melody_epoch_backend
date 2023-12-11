@@ -36,5 +36,21 @@
         FROM band
         WHERE is_delete = 0 AND (leader_id = #{leaderId});
     </select>
+    <select id="listBandInfo" resultType="io.github.dingxinliang88.pojo.po.Band">
+        SELECT band_id, name, found_time, leader_id, member_num
+        FROM band
+        WHERE is_release = 1 AND is_delete = 0;
+    </select>
+    <select id="queryBandInfoVOByBandId" resultType="io.github.dingxinliang88.pojo.vo.band.BandInfoVO">
+        SELECT band.band_id AS `band_id`, band.name AS name, found_time, member.`name` AS leader_name, member_num
+        FROM band, member
+        WHERE
+        band.band_id = #{bandId}
+        AND band.leader_id = member.member_id
+        AND is_release = 1
+        AND band.is_delete = 0
+        AND member.is_delete = 0;
+    </select>
+
 
 </mapper>

@@ -3,7 +3,10 @@ package io.github.dingxinliang88.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.po.Band;
+import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
@@ -26,6 +29,14 @@ public interface BandMapper extends BaseMapper<Band> {
      * @return band info
      */
     Band queryByLeaderIdInner(Integer leaderId);
+
+    /**
+     * 根据乐队ID查找乐队详细信息
+     *
+     * @param bandId 乐队ID
+     * @return band info
+     */
+    BandInfoVO queryBandInfoVOByBandId(Integer bandId);
 
 
     /**
@@ -60,4 +71,11 @@ public interface BandMapper extends BaseMapper<Band> {
      * @return true - 修改成功
      */
     Boolean editInfo(EditBandReq req);
+
+    /**
+     * 获取已发布所有乐队信息
+     *
+     * @return band info
+     */
+    List<Band> listBandInfo();
 }

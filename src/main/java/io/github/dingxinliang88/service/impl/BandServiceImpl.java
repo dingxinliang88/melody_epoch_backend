@@ -3,14 +3,16 @@ package io.github.dingxinliang88.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.exception.BizException;
-import io.github.dingxinliang88.mapper.BandMapper;
-import io.github.dingxinliang88.mapper.MemberMapper;
+import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Member;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.po.Song;
+import io.github.dingxinliang88.pojo.vo.band.BandBriefInfoVO;
+import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.BandService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
@@ -20,6 +22,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Band Service Implementation
@@ -35,6 +39,15 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
 
     @Resource
     private MemberMapper memberMapper;
+
+    @Resource
+    private SongMapper songMapper;
+
+    @Resource
+    private AlbumMapper albumMapper;
+
+    @Resource
+    private ConcertMapper concertMapper;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -91,6 +104,42 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         ThrowUtil.throwIf(!band.getLeaderId().equals(user.getUserId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改乐队信息！");
 
         return bandMapper.editInfo(req);
+    }
+
+    @Override
+    public List<BandBriefInfoVO> listBandBriefInfo(HttpServletRequest request) {
+        // 获取乐队信息
+        List<Band> bandInfoList = bandMapper.listBandInfo();
+
+        // 获取队长姓名
+        return bandInfoList.stream().map(band -> {
+            String leaderName = memberMapper.queryNameByMemberId(band.getLeaderId());
+            return BandBriefInfoVO
+                    .builder()
+                    .bandId(band.getBandId())
+                    .leaderName(leaderName)
+                    .name(band.getName())
+                    .foundTime(band.getFoundTime())
+                    .memberNum(band.getMemberNum())
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public BandInfoVO listBandInfoVO(Integer bandId, HttpServletRequest request) {
+        // 获取乐队信息
+        BandInfoVO bandInfoVO = bandMapper.queryBandInfoVOByBandId(bandId);
+        // 获取乐队成员信息
+        List<Member> members = memberMapper.queryMembersByBandId(bandId);
+        bandInfoVO.setMembers(members);
+        // 获取专辑信息
+
+        // 获取歌曲信息
+        List<Song> songs = songMapper.querySongsByBandId(bandId);
+        bandInfoVO.setSongs(songs);
+        // 获取演唱会信息
+
+        return bandInfoVO;
     }
 
 

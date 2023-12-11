@@ -5,7 +5,7 @@ import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.FanMapper;
 import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.po.Fan;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.FanService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;

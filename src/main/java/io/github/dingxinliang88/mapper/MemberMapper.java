@@ -6,6 +6,7 @@ import io.github.dingxinliang88.pojo.po.Member;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
@@ -20,6 +21,14 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @return 成员信息
      */
     Member queryByMemberId(Integer memberId);
+
+    /**
+     * 根据成员ID查询成员姓名
+     *
+     * @param memberId 成员ID
+     * @return 成员姓名
+     */
+    String queryNameByMemberId(Integer memberId);
 
     /**
      * 根据成员ID和乐队ID查询成员信息
@@ -67,4 +76,13 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @return true - 修改成功
      */
     Boolean editMemberPart(Integer memberId, String part);
+
+
+    /**
+     * 根据乐队ID获取乐队成员信息
+     *
+     * @param bandId 乐队ID
+     * @return members
+     */
+    List<Member> queryMembersByBandId(Integer bandId);
 }

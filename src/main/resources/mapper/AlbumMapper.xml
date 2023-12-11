@@ -9,6 +9,7 @@
         <result column="name" property="name"/>
         <result column="company" property="company"/>
         <result column="release_time" property="releaseTime"/>
+        <result column="song_ids" property="songIdsStr"/>
         <result column="band_name" property="bandName"/>
         <result column="profile" property="profile"/>
         <result column="avg_score" property="avgScore"/>

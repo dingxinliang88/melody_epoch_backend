@@ -5,6 +5,8 @@ import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.po.Song;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
@@ -26,4 +28,11 @@ public interface SongMapper extends BaseMapper<Song> {
      * @return 歌曲信息
      */
     Song queryBySongIdAndBandIdInner(Integer songId, Integer bandId);
+
+    /**
+     * 根据乐队ID获取乐队相关的歌曲信息
+     * @param bandId 乐队ID
+     * @return songs
+     */
+    List<Song> querySongsByBandId(Integer bandId);
 }

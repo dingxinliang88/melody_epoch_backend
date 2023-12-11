@@ -8,7 +8,7 @@ import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.po.Band;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.AlbumService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;

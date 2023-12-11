@@ -56,6 +56,17 @@
         ORDER BY join_time ASC
         LIMIT 1 OFFSET 1;
     </select>
+    <select id="queryNameByMemberId" resultType="java.lang.String">
+        SELECT name
+        FROM member
+        WHERE member_id = #{memberId} AND is_delete = 0;
+    </select>
+    <select id="queryMembersByBandId" resultType="io.github.dingxinliang88.pojo.po.Member">
+        SELECT member_id, name, gender, age, part, join_time, leave_time, band_id, band_name
+        FROM member
+        WHERE is_delete = 0 AND band_id = #{bandId}
+        ORDER BY join_time ASC;
+    </select>
 
 
 </mapper>

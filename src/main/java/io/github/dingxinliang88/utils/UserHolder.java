@@ -1,6 +1,6 @@
 package io.github.dingxinliang88.utils;
 
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 
 /**
  * 用户信息管理

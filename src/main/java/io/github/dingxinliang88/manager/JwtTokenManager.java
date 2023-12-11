@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.manager;
 
 import io.github.dingxinliang88.pojo.dto.JwtToken;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

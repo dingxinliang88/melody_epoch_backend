@@ -3,7 +3,7 @@ package io.github.dingxinliang88.aspect.auth;
 import cn.hutool.core.util.StrUtil;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.manager.JwtTokenManager;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import io.github.dingxinliang88.utils.UserHolder;

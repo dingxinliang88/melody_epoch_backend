@@ -45,6 +45,11 @@ public class Album {
     private String bandName;
 
     /**
+     * 歌曲ID List，逗号分隔
+     */
+    private String songIdsStr;
+
+    /**
      * 专辑简介
      */
     private String profile;

@@ -23,6 +23,11 @@
         FROM song
         WHERE song_id = #{songId} AND band_id = #{bandId} AND is_delete = 0;
     </select>
+    <select id="querySongsByBandId" resultType="io.github.dingxinliang88.pojo.po.Song">
+        SELECT song_id, name, band_id, author, album_id, album_name
+        FROM song
+        WHERE band_id = #{bandId} AND is_delete = 0 AND is_release = 1;
+    </select>
 
 
 </mapper>

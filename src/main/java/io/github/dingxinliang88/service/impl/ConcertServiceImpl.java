@@ -9,7 +9,7 @@ import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Concert;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.ConcertService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;

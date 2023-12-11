@@ -17,7 +17,7 @@ import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Fan;
 import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.po.User;
-import io.github.dingxinliang88.pojo.vo.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;

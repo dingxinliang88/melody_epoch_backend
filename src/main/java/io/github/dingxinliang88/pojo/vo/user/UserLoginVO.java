@@ -1,4 +1,4 @@
-package io.github.dingxinliang88.pojo.vo;
+package io.github.dingxinliang88.pojo.vo.user;
 
 import io.github.dingxinliang88.constants.CommonConstant;
 import lombok.Builder;
