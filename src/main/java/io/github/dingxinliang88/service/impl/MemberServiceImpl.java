@@ -46,7 +46,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         final Integer bandId = req.getBandId();
 
         // 查找Band是否存在
-        Band band = bandMapper.queryByBandIdInner(bandId);
+        Band band = bandMapper.queryByBandId(bandId, false);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在！");
 
         // 当前用户是否已经加入了乐队
@@ -77,7 +77,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         final Integer bandId = req.getBandId();
 
         // 查询Band是否存在
-        Band band = bandMapper.queryByBandIdInner(bandId);
+        Band band = bandMapper.queryByBandId(bandId, true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在！");
 
         // 当前用户是否加入了该乐队
@@ -124,7 +124,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
 
         UserLoginVO currUser = SysUtil.getCurrUser();
 
-        Band band = bandMapper.queryByBandIdInner(bandId);
+        Band band = bandMapper.queryByBandId(bandId, true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关乐队信息！");
         ThrowUtil.throwIf(!band.getLeaderId().equals(currUser.getUserId()), StatusCode.NO_AUTH_ERROR,
                 "您不是乐队队长，无法修改乐队成员分工！");

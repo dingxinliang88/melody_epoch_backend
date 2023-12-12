@@ -7,6 +7,7 @@ import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
 import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserTypeVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -69,4 +70,11 @@ public interface UserService extends IService<User> {
      */
     Boolean userLogout(HttpServletRequest request);
 
+    /**
+     * 获取当前登录用户的角色（队长、成员、乐迷、管理员
+     *
+     * @param request http request
+     * @return user type vo
+     */
+    UserTypeVO getCurrUserType(HttpServletRequest request);
 }

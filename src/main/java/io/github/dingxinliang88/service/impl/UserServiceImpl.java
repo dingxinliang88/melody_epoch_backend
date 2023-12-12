@@ -5,6 +5,7 @@ import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.EmailConstant;
 import io.github.dingxinliang88.exception.BizException;
 import io.github.dingxinliang88.manager.JwtTokenManager;
+import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.FanMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.mapper.UserMapper;
@@ -14,10 +15,12 @@ import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
+import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Fan;
 import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserTypeVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -43,6 +46,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private BandMapper bandMapper;
 
     @Resource
     private MemberMapper memberMapper;
@@ -166,7 +172,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         // 使用账号字符串作为锁对象，确保同一账号的操作是原子的
         synchronized (account.intern()) {
-            ThrowUtil.throwIf(SysUtil.getCurrUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
             User user = userMapper.queryByAccount(account);
 
             ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "账号不存在！");
@@ -233,6 +238,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         jwtTokenManager.revokeToken(SysUtil.getCurrUser());
         UserHolder.removeUser();
         return Boolean.TRUE;
+    }
+
+    @Override
+    public UserTypeVO getCurrUserType(HttpServletRequest request) {
+        // TODO 加Redis缓存
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+        UserTypeVO userTypeVO = new UserTypeVO();
+        if (UserRoleType.ADMIN.getType().equals(currUser.getType())) {
+            userTypeVO.setIsAdmin(Boolean.TRUE);
+        } else if (UserRoleType.MEMBER.getType().equals(currUser.getType())) {
+            userTypeVO.setIsMember(Boolean.TRUE);
+            Band band = bandMapper.queryByLeaderIdInner(userId);
+            userTypeVO.setIsLeader(band != null);
+        } else if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+            userTypeVO.setIsFan(Boolean.TRUE);
+        }
+        return userTypeVO;
     }
 
 

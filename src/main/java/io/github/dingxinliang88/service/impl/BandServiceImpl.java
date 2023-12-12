@@ -99,7 +99,7 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         UserLoginVO user = SysUtil.getCurrUser();
 
         Integer bandId = req.getBandId();
-        Band band = bandMapper.queryByBandIdInner(bandId);
+        Band band = bandMapper.queryByBandId(bandId, true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关乐队信息！");
         ThrowUtil.throwIf(!band.getLeaderId().equals(user.getUserId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改乐队信息！");
 

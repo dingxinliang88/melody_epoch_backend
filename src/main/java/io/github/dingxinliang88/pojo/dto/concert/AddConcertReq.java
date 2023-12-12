@@ -52,14 +52,13 @@ public class AddConcertReq implements Serializable {
     /**
      * 乐队ID
      */
-    @NotNull
     private Integer bandId;
 
     /**
      * 歌曲ID List
      */
     @NotNull(message = "演唱会歌曲不能为空")
-    private List<Integer> songIdList;
+    private List<String> songIdList;
 
     /**
      * 演唱会上限人数

@@ -6,6 +6,7 @@ import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
 import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.pojo.vo.user.UserTypeVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -49,6 +50,11 @@ public class UserController {
     @GetMapping("/curr")
     public BaseResponse<UserLoginVO> getCurrUser(HttpServletRequest request) {
         return RespUtil.success(userService.getCurrUser(request));
+    }
+
+    @GetMapping("/type")
+    public BaseResponse<UserTypeVO> getCurrUserType(HttpServletRequest request) {
+        return RespUtil.success(userService.getCurrUserType(request));
     }
 
     @PostMapping("/logout")

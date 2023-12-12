@@ -9,6 +9,7 @@ import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Song;
+import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.SongService;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Song Service Implementation
@@ -54,7 +56,7 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
         // 判断当前登录用户是否是乐队队长
         UserLoginVO currUser = SysUtil.getCurrUser();
 
-        Band band = bandMapper.queryByBandIdInner(req.getBandId());
+        Band band = bandMapper.queryByBandId(req.getBandId(), true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在");
         ThrowUtil.throwIf(!band.getLeaderId().equals(currUser.getUserId()), StatusCode.NO_AUTH_ERROR, "暂无权限");
 
@@ -63,5 +65,17 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
         ThrowUtil.throwIf(null == song, StatusCode.NOT_FOUND_ERROR, "歌曲信息不存在");
 
         return songMapper.editInfo(req);
+    }
+
+    @Override
+    public List<SongItemVO> listSongItems(HttpServletRequest request) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
+
+
+        return songMapper.listSongItemsByBandId(band.getBandId());
     }
 }

@@ -8,6 +8,7 @@ import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import io.github.dingxinliang88.utils.UserHolder;
 import lombok.NonNull;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,9 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
+        if (HttpMethod.OPTIONS.toString().equals(request.getMethod())) {
+            return true;
+        }
         // 从请求头中获取 JWT access_token
         String token = request.getHeader("Authorization");
         ThrowUtil.throwIf(StrUtil.isEmpty(token), StatusCode.NOT_LOGIN_ERROR, "Missing Token");

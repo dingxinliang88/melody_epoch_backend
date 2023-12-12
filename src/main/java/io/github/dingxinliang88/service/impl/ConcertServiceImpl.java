@@ -38,9 +38,8 @@ public class ConcertServiceImpl extends ServiceImpl<ConcertMapper, Concert>
     public Long addConcert(AddConcertReq req, HttpServletRequest request) {
         // 判断当前登录用户是否是队长
         UserLoginVO currUser = SysUtil.getCurrUser();
-        Band band = bandMapper.queryByBandIdInner(req.getBandId());
-        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "该乐队不存在");
-        ThrowUtil.throwIf(!band.getLeaderId().equals(currUser.getUserId()), StatusCode.NO_AUTH_ERROR, "您不是队长，无法添加演出");
+        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "您不是队长，无法添加演出");
 
         // 判断演出时间是否合理（晚于当前时间，至少持续两个小时）
         ThrowUtil.throwIf(LocalDateTime.now().isAfter(req.getStartTime()), StatusCode.PARAMS_ERROR, "演出开始时间不能早于当前时间");
@@ -60,7 +59,7 @@ public class ConcertServiceImpl extends ServiceImpl<ConcertMapper, Concert>
     public Boolean editInfo(EditConcertReq req, HttpServletRequest request) {
         // 判断当前登录用户是否是队长
         UserLoginVO currUser = SysUtil.getCurrUser();
-        Band band = bandMapper.queryByBandIdInner(req.getBandId());
+        Band band = bandMapper.queryByBandId(req.getBandId(), true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "该乐队不存在");
         ThrowUtil.throwIf(!band.getLeaderId().equals(currUser.getUserId()), StatusCode.NO_AUTH_ERROR, "您不是队长，无法添加演出");
 

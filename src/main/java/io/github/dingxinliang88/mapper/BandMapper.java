@@ -15,6 +15,15 @@ import java.util.List;
 public interface BandMapper extends BaseMapper<Band> {
 
     /**
+     * 根据乐队ID查找乐队
+     *
+     * @param bandId 乐队ID
+     * @param inner  是否是inner使用
+     * @return band info
+     */
+    Band queryByBandId(Integer bandId, boolean inner);
+
+    /**
      * 根据乐队ID查找乐队（内部使用）
      *
      * @param bandId 乐队ID

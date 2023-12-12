@@ -3,6 +3,7 @@ package io.github.dingxinliang88.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.po.Song;
+import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -31,8 +32,18 @@ public interface SongMapper extends BaseMapper<Song> {
 
     /**
      * 根据乐队ID获取乐队相关的歌曲信息
+     *
      * @param bandId 乐队ID
      * @return songs
      */
     List<Song> querySongsByBandId(Integer bandId);
+
+
+    /**
+     * 获取歌曲元素VO list
+     *
+     * @param bandId band id
+     * @return song items vo list
+     */
+    List<SongItemVO> listSongItemsByBandId(Integer bandId);
 }

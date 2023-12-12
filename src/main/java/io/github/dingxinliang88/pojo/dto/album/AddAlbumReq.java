@@ -41,6 +41,6 @@ public class AddAlbumReq implements Serializable {
     /**
      * 专辑简介
      */
-    @Length(max = 220, message = "专辑简介长度不能超过220")
+    @Length(max = 250, message = "专辑简介长度不能超过250")
     private String profile;
 }
