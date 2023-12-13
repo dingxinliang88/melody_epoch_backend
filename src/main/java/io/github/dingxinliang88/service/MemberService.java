@@ -6,8 +6,10 @@ import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.po.Member;
+import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Member Service
@@ -51,4 +53,20 @@ public interface MemberService extends IService<Member> {
      * @return true - 修改成功
      */
     Boolean editMemberPart(EditPartReq req, HttpServletRequest request);
+
+    /**
+     * 查询所有乐队成员信息（包括未加入乐队的）
+     *
+     * @param request http request
+     * @return member info vo list
+     */
+    List<MemberInfoVO> listMembers(HttpServletRequest request);
+
+    /**
+     * 获取当前登录用户（队长）所在的乐队的所有乐队成员信息
+     *
+     * @param request http request
+     * @return member info vo list
+     */
+    List<MemberInfoVO> listMemberInCurrBand(HttpServletRequest request);
 }

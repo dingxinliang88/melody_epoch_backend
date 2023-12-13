@@ -5,6 +5,7 @@ import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
+import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import io.github.dingxinliang88.service.MemberService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 乐队成员模块
@@ -43,5 +45,15 @@ public class MemberController {
     @PutMapping("/part")
     public BaseResponse<Boolean> editMemberPart(@RequestBody @Validated EditPartReq req, HttpServletRequest request) {
         return RespUtil.success(memberService.editMemberPart(req, request));
+    }
+
+    @GetMapping("/list")
+    public BaseResponse<List<MemberInfoVO>> listMembers(HttpServletRequest request) {
+        return RespUtil.success(memberService.listMembers(request));
+    }
+
+    @GetMapping("/curr_band")
+    public BaseResponse<List<MemberInfoVO>> listMemberInCurrBand(HttpServletRequest request) {
+        return RespUtil.success(memberService.listMemberInCurrBand(request));
     }
 }

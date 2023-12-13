@@ -108,7 +108,7 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
 
     @Override
     public List<BandBriefInfoVO> listBandBriefInfo(HttpServletRequest request) {
-        // 获取乐队信息
+        // 获取已发布的乐队信息
         List<Band> bandInfoList = bandMapper.listBandInfo();
 
         // 获取队长姓名
@@ -132,12 +132,12 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         // 获取乐队成员信息
         List<Member> members = memberMapper.queryMembersByBandId(bandId);
         bandInfoVO.setMembers(members);
-        // 获取专辑信息
+        // TODO 获取专辑信息
 
         // 获取歌曲信息
         List<Song> songs = songMapper.querySongsByBandId(bandId);
         bandInfoVO.setSongs(songs);
-        // 获取演唱会信息
+        // TODO 获取演唱会信息
 
         return bandInfoVO;
     }

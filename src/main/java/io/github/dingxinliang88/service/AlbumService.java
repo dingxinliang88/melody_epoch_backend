@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
+import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Album Service
@@ -31,4 +33,12 @@ public interface AlbumService extends IService<Album> {
      * @return true - 修改成功
      */
     Boolean editInfo(EditAlbumReq req, HttpServletRequest request);
+
+    /**
+     * 获取已经发布的专辑信息VO
+     *
+     * @param request http request
+     * @return album info vo
+     */
+    List<AlbumInfoVO> listAlbumInfoVO(HttpServletRequest request);
 }

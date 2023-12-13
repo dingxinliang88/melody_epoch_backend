@@ -11,6 +11,7 @@ import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Member;
+import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.MemberService;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -21,6 +22,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Band Service Implementation
@@ -120,16 +123,42 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         // 判断当前登录用户是否是队长
         Integer memberId = req.getMemberId();
         String part = req.getPart();
-        Integer bandId = req.getBandId();
 
         UserLoginVO currUser = SysUtil.getCurrUser();
-
-        Band band = bandMapper.queryByBandId(bandId, true);
-        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关乐队信息！");
-        ThrowUtil.throwIf(!band.getLeaderId().equals(currUser.getUserId()), StatusCode.NO_AUTH_ERROR,
-                "您不是乐队队长，无法修改乐队成员分工！");
+        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止修改");
 
         return memberMapper.editMemberPart(memberId, part);
+    }
+
+    @Override
+    public List<MemberInfoVO> listMembers(HttpServletRequest request) {
+        List<Member> members = memberMapper.listMembers();
+        return members.stream().map(member -> {
+            MemberInfoVO memberInfoVO = new MemberInfoVO(
+                    member.getMemberId(), member.getName(), member.getGender(), member.getAge(), member.getPart(), member.getJoinTime(),
+                    member.getLeaveTime(), member.getBandName()
+            );
+            // todo magic number
+            if (member.getIsRelease() == 0) {
+                memberInfoVO.setPart("-");
+                memberInfoVO.setBandName("-");
+                memberInfoVO.setJoinTime(null);
+                memberInfoVO.setLeaveTime(null);
+            }
+            return memberInfoVO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MemberInfoVO> listMemberInCurrBand(HttpServletRequest request) {
+
+        // 获取当前登录用户
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止的操作！");
+
+        return memberMapper.listMemberInfoVO(band.getBandId());
     }
 
 

@@ -41,6 +41,11 @@
             </if>
         </trim>
     </update>
+    <select id="listConcertInfoVO" resultType="io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO">
+        SELECT concert_id, name, start_time, end_time, place, band_name, max_num
+        FROM concert
+        WHERE is_release = 1 AND is_delete = 0;
+    </select>
 
 
 </mapper>

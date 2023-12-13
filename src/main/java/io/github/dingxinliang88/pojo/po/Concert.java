@@ -53,8 +53,6 @@ public class Concert {
     private String bandName;
 
     /**
-     * // bandName => band_name
-     * // song_ids_str
      * 歌曲ID List，逗号分隔
      */
     @TableField(value = "song_ids")

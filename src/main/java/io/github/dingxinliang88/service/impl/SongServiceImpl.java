@@ -9,6 +9,7 @@ import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Song;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.SongService;
@@ -77,5 +78,10 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
 
 
         return songMapper.listSongItemsByBandId(band.getBandId());
+    }
+
+    @Override
+    public List<SongInfoVO> listSongInfoVO(HttpServletRequest request) {
+        return songMapper.listSongInfoVO();
     }
 }

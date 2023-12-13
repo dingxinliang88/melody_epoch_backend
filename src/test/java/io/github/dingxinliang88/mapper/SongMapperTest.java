@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.mapper;
 
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,5 +25,11 @@ public class SongMapperTest {
         Integer bandId = 1;
         List<SongItemVO> songItemVOs = songMapper.listSongItemsByBandId(bandId);
         System.out.println(songItemVOs);
+    }
+
+    @Test
+    public void listSongInfoVO() {
+        List<SongInfoVO> songInfoVOS = songMapper.listSongInfoVO();
+        System.out.println(songInfoVOS);
     }
 }

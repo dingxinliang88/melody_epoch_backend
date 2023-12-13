@@ -3,6 +3,7 @@ package io.github.dingxinliang88.controller;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
 import io.github.dingxinliang88.service.SongService;
 import io.github.dingxinliang88.utils.RespUtil;
@@ -38,5 +39,10 @@ public class SongController {
     @GetMapping("/items")
     public BaseResponse<List<SongItemVO>> listSongItems(HttpServletRequest request) {
         return RespUtil.success(songService.listSongItems(request));
+    }
+
+    @GetMapping("/list")
+    public BaseResponse<List<SongInfoVO>> listSongInfoVO(HttpServletRequest request) {
+        return RespUtil.success(songService.listSongInfoVO(request));
     }
 }

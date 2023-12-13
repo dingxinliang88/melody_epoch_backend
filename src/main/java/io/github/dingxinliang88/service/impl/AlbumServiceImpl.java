@@ -8,6 +8,7 @@ import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.po.Band;
+import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.AlbumService;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Album Service Implementation
@@ -57,5 +59,11 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album>
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
 
         return albumMapper.editInfo(req);
+    }
+
+    @Override
+    public List<AlbumInfoVO> listAlbumInfoVO(HttpServletRequest request) {
+
+        return albumMapper.listAlbumInfoVO();
     }
 }

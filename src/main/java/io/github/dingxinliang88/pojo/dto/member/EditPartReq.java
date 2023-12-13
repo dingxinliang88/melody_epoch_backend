@@ -31,11 +31,4 @@ public class EditPartReq implements Serializable {
     @NotNull(message = "分工不能为空")
     @Length(min = 1, max = 30, message = "分工长度必须介于 1 和 30 之间")
     private String part;
-
-
-    /**
-     * 所在乐队ID
-     */
-    @NotNull
-    private Integer bandId;
 }

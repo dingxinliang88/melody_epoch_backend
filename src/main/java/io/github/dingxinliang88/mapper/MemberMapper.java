@@ -3,6 +3,7 @@ package io.github.dingxinliang88.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.po.Member;
+import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
@@ -85,4 +86,20 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @return members
      */
     List<Member> queryMembersByBandId(Integer bandId);
+
+    /**
+     * 根据乐队ID获取乐队成员信息VO
+     *
+     * @param bandId 乐队ID
+     * @return member info vo list
+     */
+    List<MemberInfoVO> listMemberInfoVO(Integer bandId);
+
+
+    /**
+     * 查询出所有的乐队成员信息
+     *
+     * @return member info list
+     */
+    List<Member> listMembers();
 }

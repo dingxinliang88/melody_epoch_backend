@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
 import io.github.dingxinliang88.pojo.po.Concert;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Concert Service
@@ -31,4 +33,12 @@ public interface ConcertService extends IService<Concert> {
      * @return true - 修改成功
      */
     Boolean editInfo(EditConcertReq req, HttpServletRequest request);
+
+    /**
+     * 获取演唱会信息
+     *
+     * @param request http request
+     * @return concert info vo
+     */
+    List<ConcertInfoVO> listConcertInfoVO(HttpServletRequest request);
 }

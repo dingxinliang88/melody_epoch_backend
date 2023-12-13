@@ -66,6 +66,11 @@ public class Member {
     private String bandName;
 
     /**
+     * 所在乐队是否已经发布，0 - 未发布， 1 - 发布，未发布时， 和乐队有关的信息查询结果为 NULL
+     */
+    private Integer isRelease;
+
+    /**
      * 逻辑删除标志 0 - 未删除， 1 - 删除
      */
     @TableLogic

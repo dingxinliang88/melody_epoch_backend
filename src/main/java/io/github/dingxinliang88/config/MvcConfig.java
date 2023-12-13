@@ -62,7 +62,7 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/**/favicon.ico",
                         "/**/swagger-resources/**",
                         "/**/webjars/**",
-                        "/**/band/list/**"
+                        "/**/list/**"
                 );
         WebMvcConfigurer.super.addInterceptors(registry);
     }

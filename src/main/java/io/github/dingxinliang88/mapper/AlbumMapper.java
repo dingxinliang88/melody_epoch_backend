@@ -3,7 +3,10 @@ package io.github.dingxinliang88.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
+import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
@@ -18,4 +21,11 @@ public interface AlbumMapper extends BaseMapper<Album> {
      * @return true - 修改成功
      */
     Boolean editInfo(EditAlbumReq req);
+
+    /**
+     * 获取所有的已经发布的专辑信息VO
+     *
+     * @return album info vo
+     */
+    List<AlbumInfoVO> listAlbumInfoVO();
 }

@@ -19,6 +19,11 @@
     <update id="editInfo" parameterType="io.github.dingxinliang88.pojo.dto.album.EditAlbumReq">
         UPDATE album SET profile = #{profile} WHERE album_id = #{albumId} AND is_delete = 0;
     </update>
+    <select id="listAlbumInfoVO" resultType="io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO">
+        SELECT album_id, name, company, band_name, avg_score
+        FROM album
+        WHERE is_release = 1 AND is_delete = 0;
+    </select>
 
 
 </mapper>

@@ -9,6 +9,7 @@ import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Concert;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.ConcertService;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Comment Service Implementation
@@ -72,5 +74,10 @@ public class ConcertServiceImpl extends ServiceImpl<ConcertMapper, Concert>
         return concertMapper.editInfo(req.getConcertId(), req.getName(), req.getStartTime(),
                 req.getEndTime(), req.getBandId(), req.getPlace(), songIdsStr, req.getMaxNum());
 
+    }
+
+    @Override
+    public List<ConcertInfoVO> listConcertInfoVO(HttpServletRequest request) {
+        return concertMapper.listConcertInfoVO();
     }
 }

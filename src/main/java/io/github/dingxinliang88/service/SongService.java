@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.po.Song;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,4 +42,12 @@ public interface SongService extends IService<Song> {
      * @return song items vo list
      */
     List<SongItemVO> listSongItems(HttpServletRequest request);
+
+    /**
+     * 获取已经发布的歌曲信息
+     *
+     * @param request http request
+     * @return song info vo list
+     */
+    List<SongInfoVO> listSongInfoVO(HttpServletRequest request);
 }
