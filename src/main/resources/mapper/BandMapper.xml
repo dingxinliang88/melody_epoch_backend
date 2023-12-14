@@ -47,7 +47,7 @@
         WHERE
         band.band_id = #{bandId}
         AND band.leader_id = member.member_id
-        AND is_release = 1
+        AND band.is_release = 1
         AND band.is_delete = 0
         AND member.is_delete = 0;
     </select>
