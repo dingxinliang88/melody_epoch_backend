@@ -52,4 +52,37 @@ public interface BandService extends IService<Band> {
      * @return band info vo
      */
     BandInfoVO listBandInfoVO(Integer bandId, HttpServletRequest request);
+
+    /**
+     * 发布乐队信息
+     *
+     * @param request http request
+     * @return true - 发布成功
+     */
+    Boolean releaseBand(HttpServletRequest request);
+
+    /**
+     * 撤销发布乐队信息
+     *
+     * @param request http request
+     * @return true - 撤销发布成功
+     */
+    Boolean unReleaseBand(HttpServletRequest request);
+
+
+    /**
+     * 获取当前登录用户（队长）的乐队详细信息
+     *
+     * @param request http request
+     * @return band info vo
+     */
+    BandInfoVO listCurrBandInfoVO(HttpServletRequest request);
+
+    /**
+     * 查询当前乐队是否已经发布
+     *
+     * @param request http request
+     * @return 1 - 已发布
+     */
+    Integer queryCurrBandReleaseStatus(HttpServletRequest request);
 }

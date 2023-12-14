@@ -23,21 +23,14 @@ public interface BandMapper extends BaseMapper<Band> {
      */
     Band queryByBandId(Integer bandId, boolean inner);
 
-    /**
-     * 根据乐队ID查找乐队（内部使用）
-     *
-     * @param bandId 乐队ID
-     * @return band info
-     */
-    Band queryByBandIdInner(Integer bandId);
 
     /**
-     * 根据队长ID查找乐队（内部使用）
+     * 根据队长ID查找乐队
      *
      * @param leaderId 队长ID
      * @return band info
      */
-    Band queryByLeaderIdInner(Integer leaderId);
+    Band queryByLeaderId(Integer leaderId, boolean inner);
 
     /**
      * 根据乐队ID查找乐队详细信息
@@ -87,4 +80,26 @@ public interface BandMapper extends BaseMapper<Band> {
      * @return band info
      */
     List<Band> listBandInfo();
+
+    /**
+     * 发布乐队信息
+     *
+     * @param bandId band id
+     */
+    Boolean releaseBandInfo(Integer bandId);
+
+    /**
+     * 撤销发布乐队信息
+     *
+     * @param bandId band id
+     */
+    Boolean unReleaseBandInfo(Integer bandId);
+
+    /**
+     * 查询当前乐队发布状态
+     *
+     * @param bandId band id
+     * @return 1 - 已发布
+     */
+    Integer queryCurrBandReleaseStatus(Integer bandId);
 }

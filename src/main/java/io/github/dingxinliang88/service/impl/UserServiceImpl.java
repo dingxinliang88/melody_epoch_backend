@@ -250,7 +250,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             userTypeVO.setIsAdmin(Boolean.TRUE);
         } else if (UserRoleType.MEMBER.getType().equals(currUser.getType())) {
             userTypeVO.setIsMember(Boolean.TRUE);
-            Band band = bandMapper.queryByLeaderIdInner(userId);
+            Band band = bandMapper.queryByLeaderId(userId, true);
             userTypeVO.setIsLeader(band != null);
         } else if (UserRoleType.FAN.getType().equals(currUser.getType())) {
             userTypeVO.setIsFan(Boolean.TRUE);

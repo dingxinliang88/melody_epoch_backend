@@ -3,6 +3,8 @@ package io.github.dingxinliang88.controller;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
+import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
+import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.service.AlbumService;
 import io.github.dingxinliang88.utils.RespUtil;
@@ -38,6 +40,16 @@ public class AlbumController {
     @GetMapping("/list")
     public BaseResponse<List<AlbumInfoVO>> listAlbumInfoVO(HttpServletRequest request) {
         return RespUtil.success(albumService.listAlbumInfoVO(request));
+    }
+
+    @GetMapping("/curr/all")
+    public BaseResponse<List<Album>> currBandAllAlbums(HttpServletRequest request) {
+        return RespUtil.success(albumService.currBandAllAlbums(request));
+    }
+
+    @PutMapping("/songs")
+    public BaseResponse<Boolean> addSongsToAlbum(@RequestBody @Validated SongToAlbumReq req, HttpServletRequest request) {
+        return RespUtil.success(albumService.addSongsToAlbum(req, request));
     }
 
 }

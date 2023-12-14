@@ -62,4 +62,29 @@ public interface SongMapper extends BaseMapper<Song> {
      */
     List<SongInfoVO> listSongInfoVO();
 
+    /**
+     * 发布歌曲信息
+     *
+     * @param bandId band id
+     */
+    Boolean releaseSongInfo(Integer bandId);
+
+    /**
+     * 查询乐队当前专辑的歌曲
+     *
+     * @param bandId  band id
+     * @param albumId album id
+     * @return song item vo list
+     */
+    List<SongItemVO> queryCurrAlbumSongs(Integer bandId, Integer albumId);
+
+    /**
+     * 批量修改歌曲专辑信息
+     *
+     * @param songIds   song id list
+     * @param albumId   album id
+     * @param albumName album name
+     * @return true - 修改成功
+     */
+    Boolean editBatchSongAlbumInfo(List<Integer> songIds, Integer albumId, String albumName);
 }

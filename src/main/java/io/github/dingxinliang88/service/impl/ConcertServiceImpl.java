@@ -40,7 +40,7 @@ public class ConcertServiceImpl extends ServiceImpl<ConcertMapper, Concert>
     public Long addConcert(AddConcertReq req, HttpServletRequest request) {
         // 判断当前登录用户是否是队长
         UserLoginVO currUser = SysUtil.getCurrUser();
-        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "您不是队长，无法添加演出");
 
         // 判断演出时间是否合理（晚于当前时间，至少持续两个小时）

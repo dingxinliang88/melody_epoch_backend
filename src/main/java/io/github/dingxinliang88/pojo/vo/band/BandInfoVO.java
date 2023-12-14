@@ -51,6 +51,11 @@ public class BandInfoVO implements Serializable {
     private Integer memberNum;
 
     /**
+     * 是否发布
+     */
+    private Integer isRelease;
+
+    /**
      * 成员信息
      */
     private List<Member> members;

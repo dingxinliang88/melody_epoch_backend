@@ -6,6 +6,7 @@ import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.po.Song;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
+import io.github.dingxinliang88.pojo.vo.song.SongToAlbumVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -50,4 +51,13 @@ public interface SongService extends IService<Song> {
      * @return song info vo list
      */
     List<SongInfoVO> listSongInfoVO(HttpServletRequest request);
+
+    /**
+     * 查询已经录入当前专辑的歌曲信息和未录入专辑的歌曲信息
+     *
+     * @param albumId album id
+     * @param request http request
+     * @return song to album vo
+     */
+    SongToAlbumVO listSongToAlbum(Integer albumId, HttpServletRequest request);
 }

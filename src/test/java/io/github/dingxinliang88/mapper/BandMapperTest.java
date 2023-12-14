@@ -42,4 +42,11 @@ public class BandMapperTest {
         Band band = bandMapper.queryByBandId(bandId, true);
         System.out.println(JSONUtil.toJsonStr(band));
     }
+
+    @Test
+    public void queryByLeaderId() {
+        Integer leaderId = 16;
+        Band band = bandMapper.queryByLeaderId(leaderId, true);
+        System.out.println(JSONUtil.toJsonStr(band));
+    }
 }

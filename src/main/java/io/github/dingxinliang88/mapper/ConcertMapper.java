@@ -27,4 +27,27 @@ public interface ConcertMapper extends BaseMapper<Concert> {
      * @return concert info vo list
      */
     List<ConcertInfoVO> listConcertInfoVO();
+
+
+    /**
+     * 根据乐队ID获取演唱会信息
+     *
+     * @param bandId 乐队ID
+     * @return concert list
+     */
+    List<Concert> queryConcertByBandId(Integer bandId);
+
+    /**
+     * 发布演唱会信息
+     *
+     * @param bandId band id
+     */
+    Boolean releaseConcertInfo(Integer bandId);
+
+    /**
+     * 撤销发布演唱会信息
+     *
+     * @param bandId band id
+     */
+    Boolean unReleaseConcertInfo(Integer bandId);
 }

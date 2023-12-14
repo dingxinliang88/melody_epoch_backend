@@ -64,7 +64,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
             try {
                 // 修改当前member所在乐队信息
                 memberMapper.updateBandIdAndBandName(currUser.getUserId(), bandId, band.getName(),
-                        LocalDateTime.now(), null);
+                        LocalDateTime.now(), null, band.getIsRelease());
                 // 乐队人数 + 1
                 return bandMapper.updateMemberNum(bandId, 1);
             } catch (Exception e) {
@@ -125,7 +125,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         String part = req.getPart();
 
         UserLoginVO currUser = SysUtil.getCurrUser();
-        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止修改");
 
         return memberMapper.editMemberPart(memberId, part);
@@ -152,10 +152,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
 
     @Override
     public List<MemberInfoVO> listMemberInCurrBand(HttpServletRequest request) {
-
-        // 获取当前登录用户
+        // 获取当前登录用户，队长的操作
         UserLoginVO currUser = SysUtil.getCurrUser();
-        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止的操作！");
 
         return memberMapper.listMemberInfoVO(band.getBandId());
@@ -169,7 +168,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
                 Member secondaryMember = memberMapper.querySecondaryMember(bandId);
                 // 修改当前member所在乐队信息（离开时间为当前时间，乐队ID、乐队名称置空）
                 memberMapper.updateBandIdAndBandName(member.getMemberId(), null, null,
-                        member.getJoinTime(), LocalDateTime.now());
+                        member.getJoinTime(), LocalDateTime.now(), secondaryMember.getIsRelease());
                 if (secondaryMember == null) {
                     // 解散队伍
                     return bandMapper.disband(bandId);
@@ -191,7 +190,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
             try {
                 // 修改当前member所在乐队信息（离开时间为当前时间，乐队ID、乐队名称置空）
                 memberMapper.updateBandIdAndBandName(member.getMemberId(), null, null,
-                        member.getJoinTime(), LocalDateTime.now());
+                        member.getJoinTime(), LocalDateTime.now(), member.getIsRelease());
                 // 乐队人数 - 1
                 return bandMapper.updateMemberNum(bandId, -1);
             } catch (Exception e) {

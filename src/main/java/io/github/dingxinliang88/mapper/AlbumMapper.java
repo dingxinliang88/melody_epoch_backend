@@ -28,4 +28,28 @@ public interface AlbumMapper extends BaseMapper<Album> {
      * @return album info vo
      */
     List<AlbumInfoVO> listAlbumInfoVO();
+
+    /**
+     * 发布专辑信息
+     *
+     * @param bandName band name
+     */
+    Boolean releaseAlbumInfo(String bandName);
+
+
+    /**
+     * 根据乐队名称查询对应的专辑信息
+     *
+     * @param bandName 乐队名称
+     * @return album list
+     */
+    List<Album> queryAlbumByBandName(String bandName);
+
+    /**
+     * 根据专辑ID查询对应的专辑信息
+     *
+     * @param albumId 专辑名称
+     * @return album info
+     */
+    Album queryAlbumByAlbumId(Integer albumId);
 }

@@ -28,23 +28,34 @@
                 start_time = #{startTime},
             </if>
             <if test="endTime != null">
-                end_time = #{endTime}
+                end_time = #{endTime},
             </if>
             <if test="place != null">
-                place = #{place}
+                place = #{place},
             </if>
             <if test="songIdsStr != null">
-                song_ids = #{songIdsStr}
+                song_ids = #{songIdsStr},
             </if>
             <if test="maxNum != null">
                 max_num = #{maxNum}
             </if>
         </trim>
     </update>
+    <update id="releaseConcertInfo">
+        UPDATE concert SET is_release = 1 WHERE band_id = #{bandId} AND concert_id = #{concertId} AND is_delete = 0;
+    </update>
+    <update id="unReleaseConcertInfo">
+        UPDATE concert SET is_release = 0 WHERE band_id = #{bandId} AND concert_id = #{concertId} AND is_delete = 0;
+    </update>
     <select id="listConcertInfoVO" resultType="io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO">
         SELECT concert_id, name, start_time, end_time, place, band_name, max_num
         FROM concert
         WHERE is_release = 1 AND is_delete = 0;
+    </select>
+    <select id="queryConcertByBandId" resultType="io.github.dingxinliang88.pojo.po.Concert">
+        SELECT concert_id, name, start_time, end_time, place, band_id, band_name, max_num
+        FROM concert
+        WHERE band_id = #{bandId} AND is_delete = 0;
     </select>
 
 

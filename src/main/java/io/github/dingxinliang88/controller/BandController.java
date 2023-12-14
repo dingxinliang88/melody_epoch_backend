@@ -48,4 +48,25 @@ public class BandController {
         return RespUtil.success(bandService.listBandInfoVO(bandId, request));
     }
 
+    @GetMapping("/all")
+    public BaseResponse<BandInfoVO> listCurrBandInfoVO(HttpServletRequest request) {
+        return RespUtil.success(bandService.listCurrBandInfoVO(request));
+    }
+
+    @GetMapping("/release/status")
+    public BaseResponse<Integer> queryCurrBandReleaseStatus(HttpServletRequest request) {
+        return RespUtil.success(bandService.queryCurrBandReleaseStatus(request));
+    }
+
+
+    @PostMapping("/release")
+    public BaseResponse<Boolean> releaseBand(HttpServletRequest request) {
+        return RespUtil.success(bandService.releaseBand(request));
+    }
+
+    @PostMapping("/unrelease")
+    public BaseResponse<Boolean> unReleaseBand(HttpServletRequest request) {
+        return RespUtil.success(bandService.unReleaseBand(request));
+    }
+
 }

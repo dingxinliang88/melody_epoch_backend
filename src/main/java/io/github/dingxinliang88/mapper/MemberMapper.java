@@ -56,9 +56,10 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @param bandName  队伍名称
      * @param joinTime  加入队伍时间
      * @param leaveTime 离开队伍时间
+     * @param isRelease 所在乐队信息是否已经发布
      * @return true - 修改成功
      */
-    Boolean updateBandIdAndBandName(Integer memberId, Integer bandId, String bandName, LocalDateTime joinTime, LocalDateTime leaveTime);
+    Boolean updateBandIdAndBandName(Integer memberId, Integer bandId, String bandName, LocalDateTime joinTime, LocalDateTime leaveTime, Integer isRelease);
 
 
     /**
@@ -102,4 +103,18 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @return member info list
      */
     List<Member> listMembers();
+
+    /**
+     * 发布成员信息
+     *
+     * @param bandId band id
+     */
+    Boolean releaseMemberInfo(Integer bandId);
+
+    /**
+     * 撤销发布成员信息
+     *
+     * @param bandId band id
+     */
+    Boolean unReleaseMemberInfo(Integer bandId);
 }

@@ -11,6 +11,7 @@ import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Song;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
+import io.github.dingxinliang88.pojo.vo.song.SongToAlbumVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.SongService;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -43,7 +44,7 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
         ThrowUtil.throwIf(!UserRoleType.MEMBER.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR, "暂无权限");
 
         // 判断是否是乐队队长
-        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
         ThrowUtil.throwIf(null == band, StatusCode.NO_AUTH_ERROR, "暂无权限");
 
         Song song = new Song(req.getName(), band.getBandId(), req.getAuthor());
@@ -73,7 +74,7 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
         // 判断当前登录用户是否是乐队队长
         UserLoginVO currUser = SysUtil.getCurrUser();
 
-        Band band = bandMapper.queryByLeaderIdInner(currUser.getUserId());
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
 
 
@@ -83,5 +84,19 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
     @Override
     public List<SongInfoVO> listSongInfoVO(HttpServletRequest request) {
         return songMapper.listSongInfoVO();
+    }
+
+    @Override
+    public SongToAlbumVO listSongToAlbum(Integer albumId, HttpServletRequest request) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
+
+        List<SongItemVO> albumSongs = songMapper.queryCurrAlbumSongs(band.getBandId(), albumId);
+        List<SongItemVO> noneAlbumSongs = songMapper.queryCurrAlbumSongs(band.getBandId(), null);
+
+        return new SongToAlbumVO(noneAlbumSongs, albumSongs);
     }
 }

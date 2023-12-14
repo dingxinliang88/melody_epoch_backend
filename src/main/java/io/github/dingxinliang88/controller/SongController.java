@@ -5,6 +5,7 @@ import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
+import io.github.dingxinliang88.pojo.vo.song.SongToAlbumVO;
 import io.github.dingxinliang88.service.SongService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -44,5 +45,10 @@ public class SongController {
     @GetMapping("/list")
     public BaseResponse<List<SongInfoVO>> listSongInfoVO(HttpServletRequest request) {
         return RespUtil.success(songService.listSongInfoVO(request));
+    }
+
+    @GetMapping("/album")
+    public BaseResponse<SongToAlbumVO> listSongToAlbum(@RequestParam("albumId") Integer albumId,  HttpServletRequest request) {
+        return RespUtil.success(songService.listSongToAlbum(albumId, request));
     }
 }

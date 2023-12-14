@@ -26,23 +26,20 @@
     <update id="editInfo" parameterType="io.github.dingxinliang88.pojo.dto.band.EditBandReq">
         UPDATE band SET profile = #{profile} WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
-    <select id="queryByBandIdInner" resultType="io.github.dingxinliang88.pojo.po.Band">
-        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
-        FROM band
-        WHERE is_delete = 0 AND band_id = #{bandId};
-    </select>
-    <select id="queryByLeaderIdInner" resultType="io.github.dingxinliang88.pojo.po.Band">
-        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
-        FROM band
-        WHERE is_delete = 0 AND (leader_id = #{leaderId});
-    </select>
+    <update id="releaseBandInfo">
+        UPDATE band SET is_release = 1 WHERE band_id = #{bandId} AND is_delete = 0;
+    </update>
+    <update id="unReleaseBandInfo">
+        UPDATE band SET is_release = 0 WHERE band_id = #{bandId} AND is_delete = 0;
+    </update>
     <select id="listBandInfo" resultType="io.github.dingxinliang88.pojo.po.Band">
         SELECT band_id, name, found_time, leader_id, member_num
         FROM band
         WHERE is_release = 1 AND is_delete = 0;
     </select>
     <select id="queryBandInfoVOByBandId" resultType="io.github.dingxinliang88.pojo.vo.band.BandInfoVO">
-        SELECT band.band_id AS `band_id`, band.name AS name, found_time, member.`name` AS leader_name, member_num
+        SELECT band.band_id AS `band_id`, band.name AS name, found_time, member.`name` AS leader_name, member_num,
+        band.is_release AS is_release
         FROM band, member
         WHERE
         band.band_id = #{bandId}
@@ -55,9 +52,20 @@
         SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
         FROM band
         WHERE is_delete = 0 AND band_id = #{bandId}
-        <if test="inner">
+        <if test="not inner">
             AND is_release = 1
         </if>;
+    </select>
+    <select id="queryByLeaderId" resultType="io.github.dingxinliang88.pojo.po.Band">
+        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
+        FROM band
+        WHERE is_delete = 0 AND (leader_id = #{leaderId})
+        <if test="not inner">
+            AND is_release = 1
+        </if>;
+    </select>
+    <select id="queryCurrBandReleaseStatus" resultType="java.lang.Integer">
+        SELECT is_release FROM band WHERE band_id = #{bandId} AND is_delete = 0;
     </select>
 
 

@@ -50,7 +50,8 @@ public class GlobalExceptionHandler {
         List<String> errMsg = fieldErrors.stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
-        return RespUtil.error(StatusCode.BAD_REQUEST.getCode(), String.join(",", errMsg));
+        logger.error("catch json request body param validate exception: {}", errMsg);
+        return RespUtil.error(StatusCode.BAD_REQUEST);
     }
 
     // <3> 处理单个参数校验失败抛出的异常
@@ -60,12 +61,13 @@ public class GlobalExceptionHandler {
         List<String> errMsg = constraintViolations.stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.toList());
-        return RespUtil.error(StatusCode.BAD_REQUEST.getCode(), String.join(",", errMsg));
+        logger.error("catch single param validate exception: {}", errMsg);
+        return RespUtil.error(StatusCode.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public BaseResponse<?> handleOtherException(Exception e) {
         logger.error("catch  other exception: ", e);
-        return RespUtil.error(StatusCode.SYSTEM_ERROR.getCode(), e.getMessage());
+        return RespUtil.error(StatusCode.SYSTEM_ERROR);
     }
 }
