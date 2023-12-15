@@ -27,4 +27,12 @@ public interface UserMapper extends BaseMapper<User> {
      */
     User queryByAccount(String account);
 
+    /**
+     * 根据用户id查询用户昵称
+     *
+     * @param userId 用户ID
+     * @return 用户昵称
+     */
+    String queryNickNameByUserId(Integer userId);
+
 }

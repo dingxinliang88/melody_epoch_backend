@@ -5,6 +5,7 @@ import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
+import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,4 +60,13 @@ public interface AlbumService extends IService<Album> {
      * @return true - 录入成功
      */
     Boolean addSongsToAlbum(SongToAlbumReq req, HttpServletRequest request);
+
+    /**
+     * 获取专辑详细信息
+     *
+     * @param albumId 专辑ID
+     * @param request http request
+     * @return 专辑详细信息
+     */
+    AlbumDetailsVO getAlbumDetailsInfo(Integer albumId, HttpServletRequest request);
 }

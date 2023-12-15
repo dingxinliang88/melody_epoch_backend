@@ -68,6 +68,11 @@
         </if>
         AND is_delete = 0;
     </select>
+    <select id="querySongInfoVOByAlbumId" resultType="io.github.dingxinliang88.pojo.vo.song.SongInfoVO">
+        SELECT song_id, song.name AS name, band.name AS band_name, author, album_name
+        FROM song, band
+        WHERE song.band_id = band.band_id AND album_id = #{albumId} AND song.is_release = 1 AND song.is_delete = 0;
+    </select>
 
 
 </mapper>

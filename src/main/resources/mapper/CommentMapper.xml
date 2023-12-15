@@ -14,6 +14,11 @@
         <result column="update_time" property="updateTime"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
+    <select id="queryByAlbumId" resultType="io.github.dingxinliang88.pojo.po.Comment">
+        SELECT comment_id, album_id, parent_id, content, user_id, create_time
+        FROM comment
+        WHERE album_id = #{albumId} AND is_delete = 0;
+    </select>
 
 
 </mapper>

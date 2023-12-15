@@ -5,6 +5,7 @@ import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
+import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.service.AlbumService;
 import io.github.dingxinliang88.utils.RespUtil;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -42,6 +44,12 @@ public class AlbumController {
         return RespUtil.success(albumService.listAlbumInfoVO(request));
     }
 
+    @GetMapping("/info")
+    public BaseResponse<AlbumDetailsVO> getAlbumDetailsInfo(@RequestParam(value = "albumId") @NotNull Integer albumId,
+                                                            HttpServletRequest request) {
+        return RespUtil.success(albumService.getAlbumDetailsInfo(albumId, request));
+    }
+
     @GetMapping("/curr/all")
     public BaseResponse<List<Album>> currBandAllAlbums(HttpServletRequest request) {
         return RespUtil.success(albumService.currBandAllAlbums(request));
@@ -52,4 +60,8 @@ public class AlbumController {
         return RespUtil.success(albumService.addSongsToAlbum(req, request));
     }
 
+    @PostMapping("/score")
+    public BaseResponse<Boolean> scoreAlbum(@RequestBody @Validated ScoreAlbumReq req, HttpServletRequest request) {
+
+    }
 }

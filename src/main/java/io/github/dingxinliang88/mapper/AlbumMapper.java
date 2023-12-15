@@ -49,7 +49,8 @@ public interface AlbumMapper extends BaseMapper<Album> {
      * 根据专辑ID查询对应的专辑信息
      *
      * @param albumId 专辑名称
+     * @param inner   是否是内部专用
      * @return album info
      */
-    Album queryAlbumByAlbumId(Integer albumId);
+    Album queryAlbumByAlbumId(Integer albumId, boolean inner);
 }

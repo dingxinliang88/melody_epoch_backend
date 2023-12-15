@@ -35,7 +35,11 @@
     <select id="queryAlbumByAlbumId" resultType="io.github.dingxinliang88.pojo.po.Album">
         SELECT album_id, name, company, band_name, release_time, profile, avg_score
         FROM album
-        WHERE album_id = #{albumId} AND is_delete = 0;
+        WHERE album_id = #{albumId}
+        <if test="not inner">
+            AND is_release = 1
+        </if>
+        AND is_delete = 0;
     </select>
 
 

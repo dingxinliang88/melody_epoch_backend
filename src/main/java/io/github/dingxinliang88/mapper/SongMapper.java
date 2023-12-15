@@ -87,4 +87,12 @@ public interface SongMapper extends BaseMapper<Song> {
      * @return true - 修改成功
      */
     Boolean editBatchSongAlbumInfo(List<Integer> songIds, Integer albumId, String albumName);
+
+    /**
+     * 批量查询歌曲信息
+     *
+     * @param albumId 专辑ID
+     * @return song info vo list
+     */
+    List<SongInfoVO> querySongInfoVOByAlbumId(Integer albumId);
 }

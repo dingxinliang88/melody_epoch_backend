@@ -60,4 +60,12 @@ public class Comment {
      */
     @TableLogic
     private Integer isDelete;
+
+    public Comment(Integer albumId, Integer parentId, String content, Integer userId,LocalDateTime createTime) {
+        this.albumId = albumId;
+        this.parentId = parentId;
+        this.content = content;
+        this.userId = userId;
+        this.createTime = createTime;
+    }
 }
