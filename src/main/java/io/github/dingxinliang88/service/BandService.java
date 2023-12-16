@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.po.Band;
-import io.github.dingxinliang88.pojo.vo.band.BandBriefInfoVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
+import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -42,7 +42,7 @@ public interface BandService extends IService<Band> {
      * @param request http request
      * @return band brief info
      */
-    List<BandBriefInfoVO> listBandBriefInfo(HttpServletRequest request);
+    List<BandInfoVO> listBandBriefInfo(HttpServletRequest request);
 
     /**
      * 获取乐队详细信息
@@ -51,7 +51,7 @@ public interface BandService extends IService<Band> {
      * @param request http request
      * @return band info vo
      */
-    BandInfoVO listBandInfoVO(Integer bandId, HttpServletRequest request);
+    BandDetailsVO listBandInfoVO(Integer bandId, HttpServletRequest request);
 
     /**
      * 发布乐队信息
@@ -76,7 +76,7 @@ public interface BandService extends IService<Band> {
      * @param request http request
      * @return band info vo
      */
-    BandInfoVO listCurrBandInfoVO(HttpServletRequest request);
+    BandDetailsVO listCurrBandInfoVO(HttpServletRequest request);
 
     /**
      * 查询当前乐队是否已经发布

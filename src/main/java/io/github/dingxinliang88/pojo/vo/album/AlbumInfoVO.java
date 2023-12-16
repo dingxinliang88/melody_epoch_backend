@@ -41,4 +41,9 @@ public class AlbumInfoVO implements Serializable {
      * 专辑均分
      */
     private Float avgScore;
+
+    /**
+     * 是否喜欢
+     */
+    private Boolean isLiked;
 }

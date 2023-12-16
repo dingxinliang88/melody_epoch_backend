@@ -37,7 +37,7 @@
         FROM band
         WHERE is_release = 1 AND is_delete = 0;
     </select>
-    <select id="queryBandInfoVOByBandId" resultType="io.github.dingxinliang88.pojo.vo.band.BandInfoVO">
+    <select id="queryBandInfoVOByBandId" resultType="io.github.dingxinliang88.pojo.vo.band.BandDetailsVO">
         SELECT band.band_id AS `band_id`, band.name AS name, found_time, member.`name` AS leader_name, member_num,
         band.is_release AS is_release
         FROM band, member

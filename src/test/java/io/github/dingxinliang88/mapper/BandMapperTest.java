@@ -3,7 +3,7 @@ package io.github.dingxinliang88.mapper;
 import cn.hutool.json.JSONUtil;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.po.Band;
-import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
+import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,8 +32,8 @@ public class BandMapperTest {
     @Test
     public void queryBandInfoVOByBandId() {
         Integer bandId = 1;
-        BandInfoVO bandInfoVO = bandMapper.queryBandInfoVOByBandId(bandId);
-        System.out.println(JSONUtil.toJsonStr(bandInfoVO));
+        BandDetailsVO bandDetailsVO = bandMapper.queryBandInfoVOByBandId(bandId);
+        System.out.println(JSONUtil.toJsonStr(bandDetailsVO));
     }
 
     @Test

@@ -56,4 +56,5 @@ public class MemberController {
     public BaseResponse<List<MemberInfoVO>> listMemberInCurrBand(HttpServletRequest request) {
         return RespUtil.success(memberService.listMemberInCurrBand(request));
     }
+
 }

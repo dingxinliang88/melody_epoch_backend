@@ -9,6 +9,24 @@
         <result column="band_id" property="bandId"/>
         <result column="user_id" property="userId"/>
     </resultMap>
+    <delete id="deleteByBandIdAndUserId">
+        DELETE
+        FROM band_like
+        WHERE band_id = #{bandId} AND user_id = #{userId};
+    </delete>
+    <select id="queryByBandIdAndUserId" resultType="io.github.dingxinliang88.pojo.po.BandLike">
+        SELECT id, band_id, user_id
+        FROM band_like
+        WHERE band_id = #{bandId} AND user_id = #{userId};
+    </select>
+    <select id="listMyLikedBand" resultType="io.github.dingxinliang88.pojo.po.Band">
+        SELECT band.band_id, name, found_time, leader_id, member_num
+        FROM band
+        WHERE band.band_id IN (
+            SELECT band_id FROM band_like
+            WHERE user_id = #{user_id}
+        ) AND band.is_release = 1 AND band.is_delete = 0;
+    </select>
 
 
 </mapper>

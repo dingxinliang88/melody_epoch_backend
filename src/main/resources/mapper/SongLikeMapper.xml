@@ -9,6 +9,22 @@
         <result column="song_id" property="songId"/>
         <result column="user_id" property="userId"/>
     </resultMap>
+    <delete id="deleteBySongIdAndUserId">
+        DELETE
+        FROM song_like
+        WHERE song_id = #{songId} AND user_id = #{userId};
+    </delete>
+    <select id="queryBySongIdAndUserId" resultType="io.github.dingxinliang88.pojo.po.SongLike">
+        SELECT id, song_id, user_id FROM song_like WHERE song_id = #{songId} AND user_id = #{userId};
+    </select>
+    <select id="listMyLikedSong" resultType="io.github.dingxinliang88.pojo.vo.song.SongInfoVO">
+        SELECT song_id, song.name AS name, band.name AS band_name, author, album_name
+        FROM song
+        LEFT JOIN band
+        ON song.band_id = band.band_id
+        WHERE song.song_id IN (SELECT song_id FROM song_like WHERE user_id = #{userId})
+        AND song.is_release = 1 AND song.is_delete = 0;
+    </select>
 
 
 </mapper>

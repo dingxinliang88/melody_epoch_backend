@@ -49,6 +49,9 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album>
     private CommentMapper commentMapper;
 
     @Resource
+    private AlbumLikeMapper albumLikeMapper;
+
+    @Resource
     private TransactionTemplate transactionTemplate;
 
     @Override
@@ -80,7 +83,11 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album>
 
     @Override
     public List<AlbumInfoVO> listAlbumInfoVO(HttpServletRequest request) {
-        return albumMapper.listAlbumInfoVO();
+        Integer userId = SysUtil.getCurrUser().getUserId();
+        List<AlbumInfoVO> albumInfoVOList = albumMapper.listAlbumInfoVO();
+        return albumInfoVOList.stream()
+                .peek(albumInfoVO -> albumInfoVO.setIsLiked(albumLikeMapper.queryByAlbumIdAndUserId(albumInfoVO.getAlbumId(), userId) != null))
+                .collect(Collectors.toList());
     }
 
     @Override

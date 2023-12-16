@@ -10,6 +10,28 @@
         <result column="user_id" property="userId"/>
         <result column="score" property="score"/>
     </resultMap>
+    <update id="updateScore">
+        UPDATE album_like
+        SET score = #{score}
+        WHERE album_id = #{albumId} AND user_id = #{userId};
+    </update>
+    <delete id="deleteByAlbumIdAndUserId">
+        DELETE
+        FROM album_like
+        WHERE album_id = #{albumId} AND user_id = #{userId};
+    </delete>
+    <select id="queryByAlbumIdAndUserId" resultType="io.github.dingxinliang88.pojo.po.AlbumLike">
+        SELECT id, album_id, user_id, score
+        FROM album_like
+        WHERE album_id = #{albumId} AND user_id = #{userId};
+    </select>
+    <select id="listMyLikedAlbum" resultType="io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO">
+        SELECT album.album_id, name, company, band_name, avg_score
+        FROM album
+        WHERE album_id IN
+        (SELECT album_id FROM album_like WHERE user_id = #{userId})
+        AND album.is_release = 1 AND album.is_delete = 0;
+    </select>
 
 
 </mapper>

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Data
-@TableName(value = "songLike")
+@TableName(value = "song_like")
 @NoArgsConstructor
 public class SongLike {
 

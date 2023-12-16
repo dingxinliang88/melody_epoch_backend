@@ -160,7 +160,6 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         return memberMapper.listMemberInfoVO(band.getBandId());
     }
 
-
     private Boolean handleBandLeaderLeave(final Member member, final Integer bandId) {
         return transactionTemplate.execute(status -> {
             try {
@@ -168,7 +167,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
                 Member secondaryMember = memberMapper.querySecondaryMember(bandId);
                 // 修改当前member所在乐队信息（离开时间为当前时间，乐队ID、乐队名称置空）
                 memberMapper.updateBandIdAndBandName(member.getMemberId(), null, null,
-                        member.getJoinTime(), LocalDateTime.now(), secondaryMember.getIsRelease());
+                        member.getJoinTime(), LocalDateTime.now(), member.getIsRelease());
                 if (secondaryMember == null) {
                     // 解散队伍
                     return bandMapper.disband(bandId);

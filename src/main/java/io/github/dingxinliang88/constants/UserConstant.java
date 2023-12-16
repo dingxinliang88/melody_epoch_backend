@@ -31,7 +31,6 @@ public interface UserConstant {
 
     String ACCESS_TOKEN_PREFIX = "user:access_token:";
     String REFRESH_TOKEN_PREFIX = "user:refresh_token:";
-
     long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24h => ms
     long REFRESH_TOKEN_EXPIRATION_TIME = 30L * 24 * 60 * 60 * 1000; // 24h => ms
     // endregion

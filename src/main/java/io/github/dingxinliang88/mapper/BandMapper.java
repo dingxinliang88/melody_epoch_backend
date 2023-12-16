@@ -3,7 +3,7 @@ package io.github.dingxinliang88.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.po.Band;
-import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
+import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public interface BandMapper extends BaseMapper<Band> {
      * @param bandId 乐队ID
      * @return band info
      */
-    BandInfoVO queryBandInfoVOByBandId(Integer bandId);
+    BandDetailsVO queryBandInfoVOByBandId(Integer bandId);
 
 
     /**

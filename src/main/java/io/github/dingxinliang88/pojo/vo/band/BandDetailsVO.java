@@ -1,22 +1,27 @@
 package io.github.dingxinliang88.pojo.vo.band;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-import lombok.Builder;
+import io.github.dingxinliang88.pojo.po.Album;
+import io.github.dingxinliang88.pojo.po.Concert;
+import io.github.dingxinliang88.pojo.po.Member;
+import io.github.dingxinliang88.pojo.po.Song;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * 乐队简略消息
+ * 乐队详细消息
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Getter
 @Setter
-@Builder
-public class BandInfoVO implements Serializable {
+@NoArgsConstructor
+public class BandDetailsVO implements Serializable {
 
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
 
@@ -46,8 +51,32 @@ public class BandInfoVO implements Serializable {
     private Integer memberNum;
 
     /**
+     * 是否发布
+     */
+    private Integer isRelease;
+
+    /**
      * 是否喜欢
      */
     private Boolean isLiked;
 
+    /**
+     * 成员信息
+     */
+    private List<Member> members;
+
+    /**
+     * 歌曲信息
+     */
+    private List<Song> songs;
+
+    /**
+     * 专辑信息
+     */
+    private List<Album> albums;
+
+    /**
+     * 演唱会信息
+     */
+    private List<Concert> concerts;
 }

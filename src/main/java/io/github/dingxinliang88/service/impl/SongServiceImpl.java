@@ -3,6 +3,7 @@ package io.github.dingxinliang88.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.BandMapper;
+import io.github.dingxinliang88.mapper.SongLikeMapper;
 import io.github.dingxinliang88.mapper.SongMapper;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Song Service Implementation
@@ -36,6 +38,9 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
 
     @Resource
     private BandMapper bandMapper;
+
+    @Resource
+    private SongLikeMapper songLikeMapper;
 
     @Override
     public Integer addSong(AddSongReq req, HttpServletRequest request) {
@@ -83,7 +88,11 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
 
     @Override
     public List<SongInfoVO> listSongInfoVO(HttpServletRequest request) {
-        return songMapper.listSongInfoVO();
+        List<SongInfoVO> songInfoVOList = songMapper.listSongInfoVO();
+        return songInfoVOList.stream()
+                .peek(songInfoVO ->
+                        songInfoVO.setIsLiked(songLikeMapper.queryBySongIdAndUserId(songInfoVO.getSongId(), SysUtil.getCurrUser().getUserId()) != null))
+                .collect(Collectors.toList());
     }
 
     @Override

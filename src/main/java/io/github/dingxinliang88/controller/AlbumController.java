@@ -59,9 +59,4 @@ public class AlbumController {
     public BaseResponse<Boolean> addSongsToAlbum(@RequestBody @Validated SongToAlbumReq req, HttpServletRequest request) {
         return RespUtil.success(albumService.addSongsToAlbum(req, request));
     }
-
-    @PostMapping("/score")
-    public BaseResponse<Boolean> scoreAlbum(@RequestBody @Validated ScoreAlbumReq req, HttpServletRequest request) {
-
-    }
 }

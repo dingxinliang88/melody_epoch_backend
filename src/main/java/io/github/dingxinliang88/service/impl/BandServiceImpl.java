@@ -8,8 +8,8 @@ import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.*;
-import io.github.dingxinliang88.pojo.vo.band.BandBriefInfoVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
+import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.BandService;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -46,6 +46,9 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
 
     @Resource
     private ConcertMapper concertMapper;
+
+    @Resource
+    private BandLikeMapper bandLikeMapper;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -108,18 +111,20 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
     }
 
     @Override
-    public List<BandBriefInfoVO> listBandBriefInfo(HttpServletRequest request) {
+    public List<BandInfoVO> listBandBriefInfo(HttpServletRequest request) {
         // 获取已发布的乐队信息
         List<Band> bandInfoList = bandMapper.listBandInfo();
 
         // 获取队长姓名
         return bandInfoList.stream().map(band -> {
             String leaderName = memberMapper.queryNameByMemberId(band.getLeaderId());
-            return BandBriefInfoVO
+            BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(band.getBandId(), SysUtil.getCurrUser().getUserId());
+            return BandInfoVO
                     .builder()
                     .bandId(band.getBandId())
                     .leaderName(leaderName)
                     .name(band.getName())
+                    .isLiked(bandLike != null)
                     .foundTime(band.getFoundTime())
                     .memberNum(band.getMemberNum())
                     .build();
@@ -127,23 +132,25 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
     }
 
     @Override
-    public BandInfoVO listBandInfoVO(Integer bandId, HttpServletRequest request) {
+    public BandDetailsVO listBandInfoVO(Integer bandId, HttpServletRequest request) {
         // 获取乐队信息
-        BandInfoVO bandInfoVO = bandMapper.queryBandInfoVOByBandId(bandId);
+        BandDetailsVO bandDetailsVO = bandMapper.queryBandInfoVOByBandId(bandId);
+        BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(bandId, SysUtil.getCurrUser().getUserId());
+        bandDetailsVO.setIsLiked(bandLike != null);
         // 获取乐队成员信息
         List<Member> members = memberMapper.queryMembersByBandId(bandId);
-        bandInfoVO.setMembers(members);
+        bandDetailsVO.setMembers(members);
         // 获取专辑信息
-        List<Album> albums = albumMapper.queryAlbumByBandName(bandInfoVO.getName());
-        bandInfoVO.setAlbums(albums);
+        List<Album> albums = albumMapper.queryAlbumByBandName(bandDetailsVO.getName());
+        bandDetailsVO.setAlbums(albums);
         // 获取歌曲信息
         List<Song> songs = songMapper.querySongsByBandId(bandId);
-        bandInfoVO.setSongs(songs);
+        bandDetailsVO.setSongs(songs);
         // 获取演唱会信息
         List<Concert> concerts = concertMapper.queryConcertByBandId(bandId);
-        bandInfoVO.setConcerts(concerts);
+        bandDetailsVO.setConcerts(concerts);
 
-        return bandInfoVO;
+        return bandDetailsVO;
     }
 
     @Override
@@ -191,7 +198,7 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
     }
 
     @Override
-    public BandInfoVO listCurrBandInfoVO(HttpServletRequest request) {
+    public BandDetailsVO listCurrBandInfoVO(HttpServletRequest request) {
         // 获取当前登录用户，判断是否是队长
         UserLoginVO user = SysUtil.getCurrUser();
 
