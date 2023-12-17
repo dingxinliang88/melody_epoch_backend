@@ -9,6 +9,17 @@
         <result column="concert_id" property="concertId"/>
         <result column="user_id" property="userId"/>
     </resultMap>
+    <select id="queryByConcertIdAndUserId" resultType="io.github.dingxinliang88.pojo.po.ConcertJoin">
+        SELECT id, concert_id, user_id
+        FROM concert_join
+        WHERE concert_id = #{concertId}
+        AND user_id = #{userId};
+    </select>
+    <select id="queryNumByConcertId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM concert_join
+        WHERE concert_id = #{concertId};
+    </select>
 
 
 </mapper>

@@ -73,6 +73,17 @@
         FROM song, band
         WHERE song.band_id = band.band_id AND album_id = #{albumId} AND song.is_release = 1 AND song.is_delete = 0;
     </select>
+    <select id="queryBatchSongInfoVO" resultType="io.github.dingxinliang88.pojo.vo.song.SongInfoVO">
+        SELECT song_id, song.name AS name, band.name AS band_name, author, album_name
+        FROM song
+        LEFT JOIN band
+        ON song.band_id = band.band_id
+        WHERE song.song_id IN
+        <foreach collection="songIds" item="songId" open="(" separator="," close=")">
+            #{songId}
+        </foreach>
+        AND song.is_release = 1 AND song.is_delete = 0;
+    </select>
 
 
 </mapper>

@@ -63,6 +63,14 @@ public interface SongMapper extends BaseMapper<Song> {
     List<SongInfoVO> listSongInfoVO();
 
     /**
+     * 获取所有已经发布的歌曲信息（带乐队名称）
+     *
+     * @param songIds 歌曲id list
+     * @return song vo list
+     */
+    List<SongInfoVO> queryBatchSongInfoVO(List<Integer> songIds);
+
+    /**
      * 发布歌曲信息
      *
      * @param bandId band id

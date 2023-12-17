@@ -22,6 +22,14 @@ public interface ConcertMapper extends BaseMapper<Concert> {
                      LocalDateTime endTime, Integer bandId, String place, String songIdsStr, Integer maxNum);
 
     /**
+     * 根据演唱会ID查询演唱会信息
+     *
+     * @param concertId concert id
+     * @return concert info
+     */
+    Concert queryByConcertId(Long concertId);
+
+    /**
      * 获取演唱会信息VO
      *
      * @return concert info vo list

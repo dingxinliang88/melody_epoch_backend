@@ -73,7 +73,7 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
             throw new BizException(StatusCode.NO_AUTH_ERROR, "没有权限创建乐队！");
         }
 
-        // todo 判断当前bandName是否已经被注册了
+        // TODO 判断当前bandName是否已经被注册了
 
         // 判断当前leaderId是否已经加入了队伍
         Band bandFromDB = bandMapper.queryByLeaderId(leaderId, true);
@@ -133,10 +133,26 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
 
     @Override
     public BandDetailsVO listBandInfoVO(Integer bandId, HttpServletRequest request) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
         // 获取乐队信息
         BandDetailsVO bandDetailsVO = bandMapper.queryBandInfoVOByBandId(bandId);
-        BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(bandId, SysUtil.getCurrUser().getUserId());
-        bandDetailsVO.setIsLiked(bandLike != null);
+
+        // TODO 拆分权限为一个新的类，每次前端不需要请求所有的信息，提高性能
+        // 如果当前乐队是FAN, 就可以喜欢乐队
+        if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+            bandDetailsVO.setCanLike(Boolean.TRUE);
+            BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(bandId, currUser.getUserId());
+            bandDetailsVO.setIsLiked(bandLike != null);
+        }
+
+        // 当前用户如果是Member，就可以加入乐队
+        if (UserRoleType.MEMBER.getType().equals(currUser.getType())) {
+            bandDetailsVO.setCanJoin(Boolean.TRUE);
+            Member member = memberMapper.queryByMemberId(currUser.getUserId());
+            bandDetailsVO.setIsJoined(member.getBandId() != null && bandId.equals(member.getBandId()));
+        }
+
         // 获取乐队成员信息
         List<Member> members = memberMapper.queryMembersByBandId(bandId);
         bandDetailsVO.setMembers(members);

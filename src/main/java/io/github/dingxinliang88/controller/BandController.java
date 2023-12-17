@@ -42,13 +42,13 @@ public class BandController {
         return RespUtil.success(bandService.listBandBriefInfo(request));
     }
 
-    @GetMapping("/list/all")
+    @GetMapping("/list/info")
     public BaseResponse<BandDetailsVO> listBandInfoVO(@RequestParam(value = "bandId") @NotNull(message = "乐队ID不能为空") Integer bandId,
                                                       HttpServletRequest request) {
         return RespUtil.success(bandService.listBandInfoVO(bandId, request));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/info")
     public BaseResponse<BandDetailsVO> listCurrBandInfoVO(HttpServletRequest request) {
         return RespUtil.success(bandService.listCurrBandInfoVO(request));
     }

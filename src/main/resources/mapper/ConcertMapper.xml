@@ -57,6 +57,11 @@
         FROM concert
         WHERE band_id = #{bandId} AND is_delete = 0;
     </select>
+    <select id="queryByConcertId" resultType="io.github.dingxinliang88.pojo.po.Concert">
+        SELECT concert_id, name, start_time, end_time, place, band_id, band_name, max_num, song_ids AS song_ids_str
+        FROM concert
+        WHERE concert_id = #{concertId} AND is_release = 1 AND is_delete = 0;
+    </select>
 
 
 </mapper>

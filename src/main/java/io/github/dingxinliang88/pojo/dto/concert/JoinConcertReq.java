@@ -1,4 +1,4 @@
-package io.github.dingxinliang88.pojo.dto.member;
+package io.github.dingxinliang88.pojo.dto.concert;
 
 import io.github.dingxinliang88.constants.CommonConstant;
 import lombok.Getter;
@@ -9,20 +9,20 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * 加入乐队请求
+ * 演唱会加入请求
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class LeaveBandReq implements Serializable {
+public class JoinConcertReq implements Serializable {
 
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
 
     /**
-     * 乐队ID
+     * 演唱会ID
      */
-    @NotNull(message = "乐队标识不能为空")
-    private Integer bandId;
+    @NotNull
+    private Long concertId;
 }

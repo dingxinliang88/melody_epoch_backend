@@ -49,7 +49,7 @@
         AND member.is_delete = 0;
     </select>
     <select id="queryByBandId" resultType="io.github.dingxinliang88.pojo.po.Band">
-        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
+        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete, is_release
         FROM band
         WHERE is_delete = 0 AND band_id = #{bandId}
         <if test="not inner">

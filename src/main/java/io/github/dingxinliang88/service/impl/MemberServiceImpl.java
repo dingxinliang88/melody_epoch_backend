@@ -7,7 +7,6 @@ import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
-import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Member;
@@ -76,7 +75,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
     }
 
     @Override
-    public Boolean leaveBand(LeaveBandReq req, HttpServletRequest request) {
+    public Boolean leaveBand(JoinBandReq req, HttpServletRequest request) {
         final Integer bandId = req.getBandId();
 
         // 查询Band是否存在

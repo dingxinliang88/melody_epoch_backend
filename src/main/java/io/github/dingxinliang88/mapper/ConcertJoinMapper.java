@@ -9,4 +9,22 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ConcertJoinMapper extends BaseMapper<ConcertJoin> {
+
+    /**
+     * 根据演唱会ID和用户ID查询参加演唱会情况
+     *
+     * @param concertId 演唱会ID
+     * @param userId    用户ID
+     * @return concert join
+     */
+    ConcertJoin queryByConcertIdAndUserId(Long concertId, Integer userId);
+
+    /**
+     * 查询演唱会加入人数
+     *
+     * @param concertId 演唱会ID
+     * @return 人数
+     */
+    Integer queryNumByConcertId(Long concertId);
+
 }

@@ -3,7 +3,9 @@ package io.github.dingxinliang88.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
+import io.github.dingxinliang88.pojo.dto.concert.JoinConcertReq;
 import io.github.dingxinliang88.pojo.po.Concert;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertDetailsVO;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,4 +43,31 @@ public interface ConcertService extends IService<Concert> {
      * @return concert info vo
      */
     List<ConcertInfoVO> listConcertInfoVO(HttpServletRequest request);
+
+    /**
+     * 获取当前演唱会详细信息
+     *
+     * @param concertId 演唱会ID
+     * @param request   http request
+     * @return concert details info vo
+     */
+    ConcertDetailsVO listCurrConcertInfoVO(Long concertId, HttpServletRequest request);
+
+    /**
+     * 加入演唱会
+     *
+     * @param req     加入演唱会信息
+     * @param request http request
+     * @return true - 加入成功
+     */
+    Boolean joinConcert(JoinConcertReq req, HttpServletRequest request);
+
+    /**
+     * 取消加入演唱会
+     *
+     * @param req     退出演唱会信息
+     * @param request http request
+     * @return true - 退出成功
+     */
+    Boolean leaveConcert(JoinConcertReq req, HttpServletRequest request);
 }
