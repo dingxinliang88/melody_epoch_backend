@@ -61,15 +61,6 @@ public interface MemberMapper extends BaseMapper<Member> {
      */
     Boolean updateBandIdAndBandName(Integer memberId, Integer bandId, String bandName, LocalDateTime joinTime, LocalDateTime leaveTime, Integer isRelease);
 
-
-    /**
-     * 修改个人信息
-     *
-     * @param req 个人信息
-     * @return true - 修改成功
-     */
-    Boolean updateInfo(EditMemberReq req);
-
     /**
      * 修改乐队成员分工
      *
@@ -117,4 +108,20 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @param bandId band id
      */
     Boolean unReleaseMemberInfo(Integer bandId);
+
+    /**
+     * 根据成员ID查询成员信息
+     *
+     * @param memberId 成员id
+     * @return member info vo
+     */
+    MemberInfoVO queryMemberInfoByMemberId(Integer memberId);
+
+    /**
+     * 修改成员信息
+     *
+     * @param editMemberReq 修改请求
+     * @return true - 修改成功
+     */
+    Boolean updateInfoByMemberId(EditMemberReq editMemberReq);
 }

@@ -64,7 +64,7 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         ThrowUtil.throwIf(fan == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关成员信息！");
 
         // 更新相关的信息
-        return fanMapper.updateInfo(req);
+        return fanMapper.updateInfoByFanId(req);
     }
 
     @Override
@@ -129,6 +129,7 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         if (!UserRoleType.FAN.getType().equals(currUser.getType())) return likeAlbumStatusVO;
 
         AlbumLike albumLike = albumLikeMapper.queryByAlbumIdAndUserId(albumId, currUser.getUserId());
+        likeAlbumStatusVO.setCanLike(Boolean.TRUE);
         likeAlbumStatusVO.setIsLiked(albumLike != null);
         if (albumLike != null)
             likeAlbumStatusVO.setIsScored(albumLike.getScore() != 0);

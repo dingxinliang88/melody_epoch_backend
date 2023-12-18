@@ -28,7 +28,7 @@
         WHERE is_release = 1 AND is_delete = 0;
     </select>
     <select id="queryAlbumByBandName" resultType="io.github.dingxinliang88.pojo.po.Album">
-        SELECT album_id, name, company, band_name, release_time, profile, avg_score
+        SELECT album_id, name, company, band_name, release_time, profile, avg_score, is_release
         FROM album
         WHERE band_name = #{bandName} AND is_delete = 0;
     </select>

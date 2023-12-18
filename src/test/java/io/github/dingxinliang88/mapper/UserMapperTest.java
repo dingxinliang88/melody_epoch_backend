@@ -40,7 +40,6 @@ public class UserMapperTest {
         user.setAccount("admin");
         user.setPassword(encryptedPassword);
         user.setSalt(salt);
-        user.setPhone("17474117411");
         user.setEmail("codejuzi@qq.com");
         logger.info("user info: {}", JSONUtil.toJsonStr(user));
         userMapper.insert(user);

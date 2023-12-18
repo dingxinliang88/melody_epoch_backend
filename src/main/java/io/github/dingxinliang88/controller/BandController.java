@@ -48,7 +48,7 @@ public class BandController {
         return RespUtil.success(bandService.listBandInfoVO(bandId, request));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/curr")
     public BaseResponse<BandDetailsVO> listCurrBandInfoVO(HttpServletRequest request) {
         return RespUtil.success(bandService.listCurrBandInfoVO(request));
     }

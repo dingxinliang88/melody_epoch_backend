@@ -11,22 +11,32 @@
         <result column="account" property="account"/>
         <result column="password" property="password"/>
         <result column="salt" property="salt"/>
-        <result column="phone" property="phone"/>
         <result column="email" property="email"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
+    <update id="updateNickNameByUserId">
+        UPDATE user SET nickname = #{nickname} WHERE user_id = #{userId} AND is_delete = 0;
+    </update>
+    <update id="updateEmailByUserId">
+        UPDATE user SET email = #{email} WHERE user_id = #{userId} AND is_delete = 0;
+    </update>
     <select id="queryByEmail" resultType="io.github.dingxinliang88.pojo.po.User">
-        SELECT user_id, type, nickname, account, password, salt, phone, email, is_delete
+        SELECT user_id, type, nickname, account, password, salt, email, is_delete
         FROM user
         WHERE is_delete = 0 AND email = #{email};
     </select>
     <select id="queryByAccount" resultType="io.github.dingxinliang88.pojo.po.User">
-        SELECT user_id, type, nickname, account, password, salt, phone, email, is_delete
+        SELECT user_id, type, nickname, account, password, salt, email, is_delete
         FROM user
         WHERE is_delete = 0 AND account = #{account};
     </select>
     <select id="queryNickNameByUserId" resultType="java.lang.String">
         SELECT nickname FROM user WHERE is_delete = 0 AND user_id = #{userId};
+    </select>
+    <select id="queryUserInfoByUserId" resultType="io.github.dingxinliang88.pojo.vo.user.UserInfoVO">
+        SELECT user_id, nickname, type, email
+        FROM user
+        WHERE user_id = #{userId} AND is_delete = 0;
     </select>
 
 </mapper>

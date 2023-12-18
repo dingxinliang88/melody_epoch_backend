@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.pojo.vo.member;
 
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.pojo.po.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,18 +57,24 @@ public class MemberInfoVO implements Serializable {
     private LocalDateTime leaveTime;
 
     /**
+     * 所在乐队ID
+     */
+    private Integer bandId;
+
+    /**
      * 所在乐队名称
      */
     private String bandName;
 
-    public MemberInfoVO(Integer memberId, String name, Integer gender, Integer age, String part, LocalDateTime joinTime, LocalDateTime leaveTime, String bandName) {
-        this.memberId = memberId;
-        this.name = name;
-        this.gender = gender;
-        this.age = age;
-        this.part = part;
-        this.joinTime = joinTime;
-        this.leaveTime = leaveTime;
-        this.bandName = bandName;
+    public MemberInfoVO(Member member) {
+        this.memberId = member.getMemberId();
+        this.name = member.getName();
+        this.gender = member.getGender();
+        this.age = member.getAge();
+        this.part = member.getPart();
+        this.joinTime = member.getJoinTime();
+        this.leaveTime = member.getLeaveTime();
+        this.bandId = member.getBandId();
+        this.bandName = member.getBandName();
     }
 }

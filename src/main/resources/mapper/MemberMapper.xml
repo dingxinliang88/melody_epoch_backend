@@ -23,7 +23,16 @@
         is_release = #{isRelease}, is_delete = #{isDelete}
         WHERE member_id = #{memberId};
     </update>
-    <update id="updateInfo" parameterType="io.github.dingxinliang88.pojo.dto.member.EditMemberReq">
+    <update id="editMemberPart" parameterType="io.github.dingxinliang88.pojo.dto.member.EditPartReq">
+        UPDATE member SET part = #{part} WHERE member_id = #{memberId} AND is_delete = 0;
+    </update>
+    <update id="releaseMemberInfo">
+        UPDATE member SET is_release = 1 WHERE band_id = #{bandId} AND is_delete = 0;
+    </update>
+    <update id="unReleaseMemberInfo">
+        UPDATE member SET is_release = 0 WHERE band_id = #{bandId} AND is_delete = 0;
+    </update>
+    <update id="updateInfoByMemberId" parameterType="io.github.dingxinliang88.pojo.dto.member.EditMemberReq">
         <trim prefix="UPDATE member SET " suffix="WHERE member_id = #{memberId} AND is_delete = 0;" suffixOverrides=",">
             <if test="name != null">
                 name = #{name},
@@ -35,15 +44,6 @@
                 age = #{age}
             </if>
         </trim>
-    </update>
-    <update id="editMemberPart" parameterType="io.github.dingxinliang88.pojo.dto.member.EditPartReq">
-        UPDATE member SET part = #{part} WHERE member_id = #{memberId} AND is_delete = 0;
-    </update>
-    <update id="releaseMemberInfo">
-        UPDATE member SET is_release = 1 WHERE band_id = #{bandId} AND is_delete = 0;
-    </update>
-    <update id="unReleaseMemberInfo">
-        UPDATE member SET is_release = 0 WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
 
     <select id="queryByMemberId" resultType="io.github.dingxinliang88.pojo.po.Member">
@@ -80,9 +80,14 @@
         WHERE is_delete = 0;
     </select>
     <select id="listMemberInfoVO" resultType="io.github.dingxinliang88.pojo.vo.member.MemberInfoVO">
-        SELECT member_id, name, part, gender, age, join_time, leave_time, band_name
+        SELECT member_id, name, part, gender, age, join_time, leave_time, band_id, band_name
         FROM member
         WHERE band_id = #{bandId} AND is_delete = 0;
+    </select>
+    <select id="queryMemberInfoByMemberId" resultType="io.github.dingxinliang88.pojo.vo.member.MemberInfoVO">
+        SELECT member_id, name, age, gender, part, join_time, leave_time, band_id, band_name
+        FROM member
+        WHERE member_id = #{memberId} AND is_delete = 0;
     </select>
 
 

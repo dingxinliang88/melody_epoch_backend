@@ -31,6 +31,6 @@ public class FanMapperTest {
         req.setCareer("IT");
         req.setEducation("本科");
 
-        fanMapper.updateInfo(req);
+        fanMapper.updateInfoByFanId(req);
     }
 }

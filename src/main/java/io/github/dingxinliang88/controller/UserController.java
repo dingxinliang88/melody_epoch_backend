@@ -1,12 +1,9 @@
 package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
-import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
-import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
-import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
-import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
-import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
-import io.github.dingxinliang88.pojo.vo.user.UserTypeVO;
+import io.github.dingxinliang88.pojo.dto.user.*;
+import io.github.dingxinliang88.pojo.vo.user.UserInfoVO;
+import io.github.dingxinliang88.pojo.vo.user.UserAuthType;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -47,19 +44,31 @@ public class UserController {
         return RespUtil.success(userService.userAccLogin(req, request));
     }
 
-    @GetMapping("/curr")
-    public BaseResponse<UserLoginVO> getCurrUser(HttpServletRequest request) {
-        return RespUtil.success(userService.getCurrUser(request));
-    }
-
-    @GetMapping("/type")
-    public BaseResponse<UserTypeVO> getCurrUserType(HttpServletRequest request) {
-        return RespUtil.success(userService.getCurrUserType(request));
+    @GetMapping("/auth")
+    public BaseResponse<UserAuthType> getUserAuthType(HttpServletRequest request) {
+        return RespUtil.success(userService.getUserAuthType(request));
     }
 
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
         return RespUtil.success(userService.userLogout(request));
+    }
+
+    @GetMapping("/curr")
+    public BaseResponse<UserInfoVO> getCurrUser(HttpServletRequest request) {
+        return RespUtil.success(userService.getCurrUser(request));
+    }
+
+    @PutMapping("/edit")
+    public BaseResponse<Boolean> editUserInfo(@RequestBody @Validated EditUserReq req, HttpServletRequest request) {
+        return RespUtil.success(userService.editUserInfo(req, request));
+    }
+
+    // TODO 绑定邮箱
+
+    @PostMapping("/bind/email")
+    public BaseResponse<Boolean> bindEmail(@RequestBody @Validated BindEmailReq req, HttpServletRequest request) {
+        return RespUtil.success(userService.bindEmail(req, request));
     }
 
 }

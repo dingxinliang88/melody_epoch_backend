@@ -3,6 +3,7 @@ package io.github.dingxinliang88.controller;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
+import io.github.dingxinliang88.pojo.po.Song;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
 import io.github.dingxinliang88.pojo.vo.song.SongToAlbumVO;
@@ -48,7 +49,12 @@ public class SongController {
     }
 
     @GetMapping("/album")
-    public BaseResponse<SongToAlbumVO> listSongToAlbum(@RequestParam("albumId") Integer albumId,  HttpServletRequest request) {
+    public BaseResponse<SongToAlbumVO> listSongToAlbum(@RequestParam("albumId") Integer albumId, HttpServletRequest request) {
         return RespUtil.success(songService.listSongToAlbum(albumId, request));
+    }
+
+    @GetMapping("/curr")
+    public BaseResponse<List<Song>> currBandSongs(HttpServletRequest request) {
+        return RespUtil.success(songService.currBandSongs(request));
     }
 }

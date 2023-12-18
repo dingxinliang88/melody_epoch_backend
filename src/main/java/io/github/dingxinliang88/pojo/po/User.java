@@ -51,11 +51,6 @@ public class User {
     private String salt;
 
     /**
-     * 电话
-     */
-    private String phone;
-
-    /**
      * 邮箱
      */
     private String email;

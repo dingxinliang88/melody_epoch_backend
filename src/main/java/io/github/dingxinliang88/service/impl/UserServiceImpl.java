@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.EmailConstant;
@@ -10,17 +11,19 @@ import io.github.dingxinliang88.mapper.FanMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.mapper.UserMapper;
 import io.github.dingxinliang88.pojo.dto.JwtToken;
-import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
-import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
-import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
-import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
+import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
+import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
+import io.github.dingxinliang88.pojo.dto.user.*;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Fan;
 import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.po.User;
+import io.github.dingxinliang88.pojo.vo.fan.FanInfoVO;
+import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
+import io.github.dingxinliang88.pojo.vo.user.UserAuthType;
+import io.github.dingxinliang88.pojo.vo.user.UserInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
-import io.github.dingxinliang88.pojo.vo.user.UserTypeVO;
 import io.github.dingxinliang88.service.UserService;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -34,6 +37,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import static io.github.dingxinliang88.constants.UserConstant.CODE_LOGIN;
+import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PREFIX;
 
 /**
  * Default User Service Implementation
@@ -229,8 +233,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserLoginVO getCurrUser(HttpServletRequest request) {
-        return SysUtil.getCurrUser();
+    public UserInfoVO getCurrUser(HttpServletRequest request) {
+        UserLoginVO loginVO = SysUtil.getCurrUser();
+        UserInfoVO userInfoVO = userMapper.queryUserInfoByUserId(loginVO.getUserId());
+
+        Integer type = userInfoVO.getType();
+        // 乐队成员信息
+        if (UserRoleType.MEMBER.getType().equals(type)) {
+            MemberInfoVO memberInfoVO = memberMapper.queryMemberInfoByMemberId(loginVO.getUserId());
+            userInfoVO.setMemberInfoVO(memberInfoVO);
+        } else if (UserRoleType.FAN.getType().equals(type)) {
+            FanInfoVO fanInfoVO = fanMapper.queryFanInfoByFanId(loginVO.getUserId());
+            userInfoVO.setFanInfoVO(fanInfoVO);
+        }
+        return userInfoVO;
     }
 
     @Override
@@ -241,21 +257,64 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserTypeVO getCurrUserType(HttpServletRequest request) {
-        // TODO 加Redis缓存
+    public UserAuthType getUserAuthType(HttpServletRequest request) {
         UserLoginVO currUser = SysUtil.getCurrUser();
         Integer userId = currUser.getUserId();
-        UserTypeVO userTypeVO = new UserTypeVO();
-        if (UserRoleType.ADMIN.getType().equals(currUser.getType())) {
-            userTypeVO.setIsAdmin(Boolean.TRUE);
-        } else if (UserRoleType.MEMBER.getType().equals(currUser.getType())) {
-            userTypeVO.setIsMember(Boolean.TRUE);
-            Band band = bandMapper.queryByLeaderId(userId, true);
-            userTypeVO.setIsLeader(band != null);
-        } else if (UserRoleType.FAN.getType().equals(currUser.getType())) {
-            userTypeVO.setIsFan(Boolean.TRUE);
+        // 查询缓存信息
+        String authKey = USER_AUTH_TYPE_PREFIX + userId;
+        Object authJsonObj = redisUtil.get(authKey);
+        if (authJsonObj != null) {
+            return JSONUtil.toBean(authJsonObj.toString(), UserAuthType.class);
         }
-        return userTypeVO;
+        UserAuthType userAuthType = new UserAuthType();
+        if (UserRoleType.ADMIN.getType().equals(currUser.getType())) {
+            userAuthType.setIsAdmin(Boolean.TRUE);
+        } else if (UserRoleType.MEMBER.getType().equals(currUser.getType())) {
+            Band band = bandMapper.queryByLeaderId(userId, true);
+            userAuthType.setIsLeader(band != null);
+        } else if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+            userAuthType.setIsFan(Boolean.TRUE);
+        }
+        // 添加权限缓存
+        redisUtil.setExpiredDays(authKey, JSONUtil.toJsonStr(userAuthType), 15);
+        return userAuthType;
+    }
+
+    @Override
+    public Boolean editUserInfo(EditUserReq req, HttpServletRequest request) {
+        Integer userId = req.getUserId();
+        String nickname = req.getNickname();
+        return transactionTemplate.execute(status -> {
+            try {
+                Boolean updateRes = userMapper.updateNickNameByUserId(userId, nickname);
+                if (UserRoleType.MEMBER.getType().equals(req.getType())) {
+                    EditMemberReq editMemberReq = req.getEditMemberReq();
+                    updateRes = memberMapper.updateInfoByMemberId(editMemberReq);
+                } else if (UserRoleType.FAN.getType().equals(req.getType())) {
+                    EditFanReq editFanReq = req.getEditFanReq();
+                    updateRes = fanMapper.updateInfoByFanId(editFanReq);
+                }
+                return updateRes;
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+    }
+
+    @Override
+    public Boolean bindEmail(BindEmailReq req, HttpServletRequest request) {
+        String email = req.getEmail();
+        String code = req.getCode();
+
+        synchronized (email.intern()) {
+            // 获取服务器中的 code
+            String serverCode = (String) redisUtil.get(EmailConstant.CAPTCHA_KEY + email);
+            assert serverCode != null;
+            ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
+            return userMapper.updateEmailByUserId(SysUtil.getCurrUser().getUserId(), email);
+        }
+
     }
 
 

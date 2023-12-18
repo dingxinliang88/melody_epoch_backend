@@ -2,6 +2,7 @@ package io.github.dingxinliang88.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.po.User;
+import io.github.dingxinliang88.pojo.vo.user.UserInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -35,4 +36,29 @@ public interface UserMapper extends BaseMapper<User> {
      */
     String queryNickNameByUserId(Integer userId);
 
+    /**
+     * 根据用户id查询用户信息
+     *
+     * @param userId user id
+     * @return user info vo
+     */
+    UserInfoVO queryUserInfoByUserId(Integer userId);
+
+    /**
+     * 根据用户ID修改用户昵称
+     *
+     * @param userId   user id
+     * @param nickname nick name
+     * @return true - 修改成功
+     */
+    Boolean updateNickNameByUserId(Integer userId, String nickname);
+
+    /**
+     * 修改用户邮箱信息
+     *
+     * @param userId user id
+     * @param email  email
+     * @return true - 修改成功
+     */
+    Boolean updateEmailByUserId(Integer userId, String email);
 }

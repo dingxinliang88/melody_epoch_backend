@@ -60,4 +60,11 @@ public interface SongService extends IService<Song> {
      * @return song to album vo
      */
     SongToAlbumVO listSongToAlbum(Integer albumId, HttpServletRequest request);
+
+    /**
+     * 查询当前乐队的歌曲信息
+     * @param request http request
+     * @return song info
+     */
+    List<Song> currBandSongs(HttpServletRequest request);
 }

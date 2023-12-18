@@ -6,6 +6,7 @@ import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
+import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Comment;
@@ -83,10 +84,16 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album>
 
     @Override
     public List<AlbumInfoVO> listAlbumInfoVO(HttpServletRequest request) {
-        Integer userId = SysUtil.getCurrUser().getUserId();
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
         List<AlbumInfoVO> albumInfoVOList = albumMapper.listAlbumInfoVO();
         return albumInfoVOList.stream()
-                .peek(albumInfoVO -> albumInfoVO.setIsLiked(albumLikeMapper.queryByAlbumIdAndUserId(albumInfoVO.getAlbumId(), userId) != null))
+                .peek(albumInfoVO -> {
+                    if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+                        albumInfoVO.setCanLike(Boolean.TRUE);
+                        albumInfoVO.setIsLiked(albumLikeMapper.queryByAlbumIdAndUserId(albumInfoVO.getAlbumId(), userId) != null);
+                    }
+                })
                 .collect(Collectors.toList());
     }
 

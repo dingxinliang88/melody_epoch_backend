@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
-import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
@@ -100,25 +99,6 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
     }
 
     @Override
-    public Boolean editInfo(EditMemberReq req, HttpServletRequest request) {
-
-        Integer memberId = req.getMemberId();
-
-        // 检查是否是本人
-        UserLoginVO currUser = SysUtil.getCurrUser();
-        ThrowUtil.throwIf(!currUser.getUserId().equals(memberId), StatusCode.NO_AUTH_ERROR,
-                "无权修改其他成员信息！");
-
-        // 查找相关的成员是否存在
-        Member member = memberMapper.queryByMemberId(memberId);
-        ThrowUtil.throwIf(member == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关成员信息！");
-
-
-        // 更新相关的信息
-        return memberMapper.updateInfo(req);
-    }
-
-    @Override
     public Boolean editMemberPart(EditPartReq req, HttpServletRequest request) {
         // 判断当前登录用户是否是队长
         Integer memberId = req.getMemberId();
@@ -135,10 +115,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
     public List<MemberInfoVO> listMembers(HttpServletRequest request) {
         List<Member> members = memberMapper.listMembers();
         return members.stream().map(member -> {
-            MemberInfoVO memberInfoVO = new MemberInfoVO(
-                    member.getMemberId(), member.getName(), member.getGender(), member.getAge(), member.getPart(), member.getJoinTime(),
-                    member.getLeaveTime(), member.getBandName()
-            );
+            MemberInfoVO memberInfoVO = new MemberInfoVO(member);
             // todo magic number
             if (member.getIsRelease() == 0) {
                 memberInfoVO.setPart("-");

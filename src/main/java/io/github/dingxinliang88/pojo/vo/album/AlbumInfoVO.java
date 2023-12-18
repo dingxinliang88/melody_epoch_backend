@@ -43,6 +43,11 @@ public class AlbumInfoVO implements Serializable {
     private Float avgScore;
 
     /**
+     * 可以喜欢标志
+     */
+    private Boolean canLike = Boolean.FALSE;
+
+    /**
      * 是否喜欢
      */
     private Boolean isLiked;

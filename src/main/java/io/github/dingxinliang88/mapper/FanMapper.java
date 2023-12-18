@@ -3,6 +3,7 @@ package io.github.dingxinliang88.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.po.Fan;
+import io.github.dingxinliang88.pojo.vo.fan.FanInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -12,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface FanMapper extends BaseMapper<Fan> {
 
     /**
-     * 根据乐迷ID查询成员信息
+     * 根据乐迷ID查询乐迷信息
      *
      * @param fanId 乐迷ID
      * @return 乐迷信息
@@ -25,5 +26,13 @@ public interface FanMapper extends BaseMapper<Fan> {
      * @param req 个人信息
      * @return true - 修改成功
      */
-    Boolean updateInfo(EditFanReq req);
+    Boolean updateInfoByFanId(EditFanReq req);
+
+    /**
+     * 根据乐迷ID查询乐迷信息
+     *
+     * @param fanId 乐迷id
+     * @return fan info vo
+     */
+    FanInfoVO queryFanInfoByFanId(Integer fanId);
 }

@@ -95,4 +95,11 @@ public interface SongMapper extends BaseMapper<Song> {
      * @return song info vo list
      */
     List<SongInfoVO> querySongInfoVOByAlbumId(Integer albumId);
+
+    /**
+     * 根据乐队ID查询歌曲信息
+     * @param bandId band id
+     * @return song list
+     */
+    List<Song> queryByBandId(Integer bandId);
 }

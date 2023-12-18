@@ -1,13 +1,10 @@
 package io.github.dingxinliang88.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.github.dingxinliang88.pojo.dto.user.AccLoginReq;
-import io.github.dingxinliang88.pojo.dto.user.AccRegisterReq;
-import io.github.dingxinliang88.pojo.dto.user.EmailLoginReq;
-import io.github.dingxinliang88.pojo.dto.user.EmailRegisterReq;
+import io.github.dingxinliang88.pojo.dto.user.*;
 import io.github.dingxinliang88.pojo.po.User;
-import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
-import io.github.dingxinliang88.pojo.vo.user.UserTypeVO;
+import io.github.dingxinliang88.pojo.vo.user.UserInfoVO;
+import io.github.dingxinliang88.pojo.vo.user.UserAuthType;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -60,7 +57,7 @@ public interface UserService extends IService<User> {
      * @param request http request
      * @return current login user info
      */
-    UserLoginVO getCurrUser(HttpServletRequest request);
+    UserInfoVO getCurrUser(HttpServletRequest request);
 
     /**
      * 用户登出
@@ -76,5 +73,23 @@ public interface UserService extends IService<User> {
      * @param request http request
      * @return user type vo
      */
-    UserTypeVO getCurrUserType(HttpServletRequest request);
+    UserAuthType getUserAuthType(HttpServletRequest request);
+
+    /**
+     * 修改用户信息
+     *
+     * @param req     修改用户请求
+     * @param request http request
+     * @return true - 修改成功
+     */
+    Boolean editUserInfo(EditUserReq req, HttpServletRequest request);
+
+    /**
+     * 用户绑定验证码
+     *
+     * @param req     绑定邮箱请求
+     * @param request http request
+     * @return true - 绑定成功
+     */
+    Boolean bindEmail(BindEmailReq req, HttpServletRequest request);
 }

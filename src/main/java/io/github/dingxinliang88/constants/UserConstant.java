@@ -38,6 +38,8 @@ public interface UserConstant {
     // user role type
     Set<Integer> USER_ROLE_SET = CollectionUtil.newHashSet(ADMIN.getType(), MEMBER.getType(), FAN.getType());
 
+    String USER_AUTH_TYPE_PREFIX = "user:auth:";
+
     // endregion
 
     // region gender

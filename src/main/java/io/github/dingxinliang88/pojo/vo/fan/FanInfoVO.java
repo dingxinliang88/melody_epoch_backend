@@ -2,6 +2,7 @@ package io.github.dingxinliang88.pojo.vo.fan;
 
 import io.github.dingxinliang88.constants.CommonConstant;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -11,23 +12,38 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class LikeAlbumStatusVO implements Serializable {
+@NoArgsConstructor
+public class FanInfoVO implements Serializable {
 
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
 
     /**
-     * 是否喜欢
+     * id
      */
-    private Boolean canLike = Boolean.FALSE;
+    private Integer fanId;
 
     /**
-     * 是否喜欢
+     * 姓名
      */
-    private Boolean isLiked = Boolean.FALSE;
+    private String name;
 
     /**
-     * 是否已经打分
+     * 性别
      */
-    private Boolean isScored = Boolean.FALSE;
+    private Integer gender;
 
+    /**
+     * 年龄
+     */
+    private Integer age;
+
+    /**
+     * 职业
+     */
+    private String career;
+
+    /**
+     * 学历
+     */
+    private String education;
 }

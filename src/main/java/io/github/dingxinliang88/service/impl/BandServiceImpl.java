@@ -8,10 +8,11 @@ import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.*;
-import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
 import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
+import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.BandService;
+import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PREFIX;
 
 /**
  * Band Service Implementation
@@ -49,6 +52,9 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
 
     @Resource
     private BandLikeMapper bandLikeMapper;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -88,6 +94,8 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
                 // 修改对应的member信息，band_id、band_name
                 memberMapper.updateBandIdAndBandName(leader, band.getBandId(), band.getName(),
                         LocalDateTime.now(), null, band.getIsRelease());
+                // 删除leader的权限缓存
+                redisUtil.delete(USER_AUTH_TYPE_PREFIX + leader);
                 return band.getBandId();
             } catch (Exception e) {
                 status.setRollbackOnly();

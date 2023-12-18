@@ -50,7 +50,7 @@ public class AlbumController {
         return RespUtil.success(albumService.getAlbumDetailsInfo(albumId, request));
     }
 
-    @GetMapping("/curr/all")
+    @GetMapping("/curr")
     public BaseResponse<List<Album>> currBandAllAlbums(HttpServletRequest request) {
         return RespUtil.success(albumService.currBandAllAlbums(request));
     }
@@ -59,4 +59,6 @@ public class AlbumController {
     public BaseResponse<Boolean> addSongsToAlbum(@RequestBody @Validated SongToAlbumReq req, HttpServletRequest request) {
         return RespUtil.success(albumService.addSongsToAlbum(req, request));
     }
+
+    // TODO 发布专辑和歌曲
 }

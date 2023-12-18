@@ -45,6 +45,11 @@ public class SongInfoVO implements Serializable {
     private String albumName;
 
     /**
+     * 是否可以喜欢
+     */
+    private Boolean canLike = Boolean.FALSE;
+
+    /**
      * 是否喜欢
      */
     private Boolean isLiked;

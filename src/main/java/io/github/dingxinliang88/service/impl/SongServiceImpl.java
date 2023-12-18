@@ -88,10 +88,15 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
 
     @Override
     public List<SongInfoVO> listSongInfoVO(HttpServletRequest request) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
         List<SongInfoVO> songInfoVOList = songMapper.listSongInfoVO();
         return songInfoVOList.stream()
-                .peek(songInfoVO ->
-                        songInfoVO.setIsLiked(songLikeMapper.queryBySongIdAndUserId(songInfoVO.getSongId(), SysUtil.getCurrUser().getUserId()) != null))
+                .peek(songInfoVO -> {
+                    if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+                        songInfoVO.setCanLike(Boolean.TRUE);
+                        songInfoVO.setIsLiked(songLikeMapper.queryBySongIdAndUserId(songInfoVO.getSongId(), currUser.getUserId()) != null);
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
@@ -107,5 +112,16 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
         List<SongItemVO> noneAlbumSongs = songMapper.queryCurrAlbumSongs(band.getBandId(), null);
 
         return new SongToAlbumVO(noneAlbumSongs, albumSongs);
+    }
+
+    @Override
+    public List<Song> currBandSongs(HttpServletRequest request) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
+
+        return songMapper.queryByBandId(band.getBandId());
     }
 }
