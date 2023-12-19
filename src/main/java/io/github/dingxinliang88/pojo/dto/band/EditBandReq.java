@@ -25,11 +25,6 @@ public class EditBandReq implements Serializable {
     @NotNull
     private Integer bandId;
 
-    // /**
-    //  * 乐队名称
-    //  */
-    // private String name;
-
     /**
      * 乐队简介
      */

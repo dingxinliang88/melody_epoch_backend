@@ -1,10 +1,13 @@
 package io.github.dingxinliang88.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
+import io.github.dingxinliang88.pojo.dto.album.ReleaseAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Album;
@@ -98,7 +101,7 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album>
     }
 
     @Override
-    public List<Album> currBandAllAlbums(HttpServletRequest request) {
+    public List<AlbumInfoVO> currBandAllAlbums(HttpServletRequest request) {
         // 判断当前登录用户是否是乐队队长
         UserLoginVO currUser = SysUtil.getCurrUser();
         Integer userId = currUser.getUserId();
@@ -158,6 +161,40 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album>
 
         return albumDetailsVO;
     }
+
+    @Override
+    public Boolean releaseAlbum(ReleaseAlbumReq req, HttpServletRequest request) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        Integer albumId = req.getAlbumId();
+        Album album = albumMapper.queryAlbumByAlbumId(albumId, true);
+        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "专辑不存在！");
+        ThrowUtil.throwIf(!album.getBandName().equals(band.getName()), StatusCode.NO_AUTH_ERROR, "您不是该乐队的队长，无法修改专辑信息!");
+
+        return transactionTemplate.execute(status -> {
+            try {
+                String songIdsStr = album.getSongIdsStr();
+                if (StrUtil.isNotEmpty(songIdsStr)) {
+                    List<Integer> songIds = Arrays.stream(songIdsStr.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+                    songMapper.updateBatchReleaseStatus(songIds, CommonConstant.RELEASE);
+                }
+                // TODO 起一个异步线程去更新专辑发行时间
+                return albumMapper.updateAlbumReleaseStatusByAlbumId(albumId, CommonConstant.RELEASE);
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    // -------------------------------------
+    // util functions
+    // -------------------------------------
 
     private List<CommentVO> parseComments(List<Comment> comments) {
         if (comments.isEmpty()) return null;

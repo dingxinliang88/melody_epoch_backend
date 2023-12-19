@@ -3,8 +3,8 @@ package io.github.dingxinliang88.controller;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
+import io.github.dingxinliang88.pojo.dto.album.ReleaseAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
-import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.service.AlbumService;
@@ -51,7 +51,7 @@ public class AlbumController {
     }
 
     @GetMapping("/curr")
-    public BaseResponse<List<Album>> currBandAllAlbums(HttpServletRequest request) {
+    public BaseResponse<List<AlbumInfoVO>> currBandAllAlbums(HttpServletRequest request) {
         return RespUtil.success(albumService.currBandAllAlbums(request));
     }
 
@@ -60,5 +60,8 @@ public class AlbumController {
         return RespUtil.success(albumService.addSongsToAlbum(req, request));
     }
 
-    // TODO 发布专辑和歌曲
+    @PostMapping("/release")
+    public BaseResponse<Boolean> releaseAlbum(@RequestBody @Validated ReleaseAlbumReq req, HttpServletRequest request) {
+        return RespUtil.success(albumService.releaseAlbum(req, request));
+    }
 }

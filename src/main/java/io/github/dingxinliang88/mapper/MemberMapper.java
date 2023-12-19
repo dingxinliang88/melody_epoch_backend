@@ -77,7 +77,7 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @param bandId 乐队ID
      * @return members
      */
-    List<Member> queryMembersByBandId(Integer bandId);
+    List<MemberInfoVO> queryMembersByBandId(Integer bandId);
 
     /**
      * 根据乐队ID获取乐队成员信息VO
@@ -96,11 +96,13 @@ public interface MemberMapper extends BaseMapper<Member> {
     List<Member> listMembers();
 
     /**
-     * 发布成员信息
+     * 修改成员发布状态
      *
-     * @param bandId band id
+     * @param bandId  band id
+     * @param release release status
+     * @return true - 修改成功
      */
-    Boolean releaseMemberInfo(Integer bandId);
+    Boolean updateReleaseStatusByBandId(Integer bandId, Integer release);
 
     /**
      * 撤销发布成员信息

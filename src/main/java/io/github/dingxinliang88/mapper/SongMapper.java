@@ -1,7 +1,6 @@
 package io.github.dingxinliang88.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
 import io.github.dingxinliang88.pojo.po.Song;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
@@ -14,13 +13,6 @@ import java.util.List;
  */
 @Mapper
 public interface SongMapper extends BaseMapper<Song> {
-    /**
-     * 修改歌曲信息（专辑信息）
-     *
-     * @param req 修改歌曲请求
-     * @return true - 修改成功
-     */
-    Boolean editInfo(EditSongReq req);
 
     /**
      * 根据歌曲ID和乐队ID查找歌曲是否存在
@@ -37,7 +29,7 @@ public interface SongMapper extends BaseMapper<Song> {
      * @param bandId 乐队ID
      * @return songs
      */
-    List<Song> querySongsByBandId(Integer bandId);
+    List<SongInfoVO> querySongsByBandId(Integer bandId);
 
 
     /**
@@ -62,12 +54,6 @@ public interface SongMapper extends BaseMapper<Song> {
      */
     List<SongInfoVO> listSongInfoVO();
 
-    /**
-     * 发布歌曲信息
-     *
-     * @param bandId band id
-     */
-    Boolean releaseSongInfo(Integer bandId);
 
     /**
      * 查询乐队当前专辑的歌曲
@@ -98,8 +84,54 @@ public interface SongMapper extends BaseMapper<Song> {
 
     /**
      * 根据乐队ID查询歌曲信息
+     *
      * @param bandId band id
      * @return song list
      */
     List<Song> queryByBandId(Integer bandId);
+
+    /**
+     * 批量发布歌曲信息
+     *
+     * @param songIds song id list
+     * @param release release status
+     * @return true - 发布成功
+     */
+    Boolean updateBatchReleaseStatus(List<Integer> songIds, Integer release);
+
+    /**
+     * 查询歌曲信息
+     *
+     * @param songId song id
+     * @param inner  是否是内部接口
+     * @return song info
+     */
+    Song queryBySongId(Integer songId, boolean inner);
+
+    /**
+     * 修改单个歌曲发布状态
+     *
+     * @param songId  song id
+     * @param release release status
+     * @return true - 修改成功
+     */
+    Boolean updateReleaseStatusBySongId(Integer songId, Integer release);
+
+    /**
+     * 修改歌曲发布状态
+     *
+     * @param bandId  band id
+     * @param release release status
+     * @return true - 修改成功
+     */
+    Boolean updateReleaseStatusByBandId(Integer bandId, Integer release);
+
+    /**
+     * 批量查询
+     *
+     * @param songIds song ids
+     * @return song info vo list
+     */
+    List<SongInfoVO> queryBatchBySongId(List<Integer> songIds);
+
 }

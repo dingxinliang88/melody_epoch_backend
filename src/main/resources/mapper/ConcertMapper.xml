@@ -41,22 +41,30 @@
             </if>
         </trim>
     </update>
-    <update id="releaseConcertInfo">
-        UPDATE concert SET is_release = 1 WHERE band_id = #{bandId} AND concert_id = #{concertId} AND is_delete = 0;
+    <update id="updateReleaseStatusByBandId">
+        UPDATE concert SET is_release = #{release} WHERE band_id = #{bandId} AND concert_id = #{concertId} AND is_delete
+        = 0;
     </update>
-    <update id="unReleaseConcertInfo">
-        UPDATE concert SET is_release = 0 WHERE band_id = #{bandId} AND concert_id = #{concertId} AND is_delete = 0;
+    <update id="updateReleaseStatusByConcertId">
+        UPDATE concert SET is_release = #{release} WHERE concert_id = #{concertId} AND is_delete = 0;
     </update>
     <select id="listConcertInfoVO" resultType="io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO">
         SELECT concert_id, name, start_time, end_time, place, band_name, max_num
         FROM concert
         WHERE is_release = 1 AND is_delete = 0;
     </select>
-    <select id="queryConcertByBandId" resultType="io.github.dingxinliang88.pojo.po.Concert">
+    <select id="queryConcertByBandId" resultType="io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO">
         SELECT concert_id, name, start_time, end_time, place, band_id, band_name, max_num
         FROM concert
         WHERE band_id = #{bandId} AND is_delete = 0;
     </select>
-
+    <select id="queryByConcertId" resultType="io.github.dingxinliang88.pojo.po.Concert">
+        SELECT concert_id, name, start_time, end_time, place, band_name, max_num, song_ids AS song_ids_str
+        FROM concert
+        WHERE concert_id = #{concertId} AND is_delete = 0
+        <if test="not inner">
+            AND is_release = 1
+        </if>
+    </select>
 
 </mapper>

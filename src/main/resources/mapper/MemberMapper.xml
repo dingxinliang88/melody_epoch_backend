@@ -26,8 +26,8 @@
     <update id="editMemberPart" parameterType="io.github.dingxinliang88.pojo.dto.member.EditPartReq">
         UPDATE member SET part = #{part} WHERE member_id = #{memberId} AND is_delete = 0;
     </update>
-    <update id="releaseMemberInfo">
-        UPDATE member SET is_release = 1 WHERE band_id = #{bandId} AND is_delete = 0;
+    <update id="updateReleaseStatusByBandId">
+        UPDATE member SET is_release = #{release} WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
     <update id="unReleaseMemberInfo">
         UPDATE member SET is_release = 0 WHERE band_id = #{bandId} AND is_delete = 0;
@@ -68,7 +68,7 @@
         FROM member
         WHERE member_id = #{memberId} AND is_delete = 0;
     </select>
-    <select id="queryMembersByBandId" resultType="io.github.dingxinliang88.pojo.po.Member">
+    <select id="queryMembersByBandId" resultType="io.github.dingxinliang88.pojo.vo.member.MemberInfoVO">
         SELECT member_id, name, gender, age, part, join_time, leave_time, band_id, band_name
         FROM member
         WHERE is_delete = 0 AND band_id = #{bandId}

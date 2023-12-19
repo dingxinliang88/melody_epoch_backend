@@ -58,7 +58,6 @@ public class BandController {
         return RespUtil.success(bandService.queryCurrBandReleaseStatus(request));
     }
 
-
     @PostMapping("/release")
     public BaseResponse<Boolean> releaseBand(HttpServletRequest request) {
         return RespUtil.success(bandService.releaseBand(request));

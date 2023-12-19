@@ -2,7 +2,7 @@ package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
-import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
+import io.github.dingxinliang88.pojo.dto.song.ReleaseSongReq;
 import io.github.dingxinliang88.pojo.po.Song;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongItemVO;
@@ -33,11 +33,6 @@ public class SongController {
         return RespUtil.success(songService.addSong(req, request));
     }
 
-    @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditSongReq req, HttpServletRequest request) {
-        return RespUtil.success(songService.editInfo(req, request));
-    }
-
     @GetMapping("/items")
     public BaseResponse<List<SongItemVO>> listSongItems(HttpServletRequest request) {
         return RespUtil.success(songService.listSongItems(request));
@@ -56,5 +51,10 @@ public class SongController {
     @GetMapping("/curr")
     public BaseResponse<List<Song>> currBandSongs(HttpServletRequest request) {
         return RespUtil.success(songService.currBandSongs(request));
+    }
+
+    @PostMapping("/release")
+    public BaseResponse<Boolean> releaseSong(@RequestBody @Validated ReleaseSongReq req, HttpServletRequest request) {
+        return RespUtil.success(songService.releaseSong(req, request));
     }
 }

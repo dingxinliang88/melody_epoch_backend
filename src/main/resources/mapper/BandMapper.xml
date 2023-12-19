@@ -26,8 +26,8 @@
     <update id="editInfo" parameterType="io.github.dingxinliang88.pojo.dto.band.EditBandReq">
         UPDATE band SET profile = #{profile} WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
-    <update id="releaseBandInfo">
-        UPDATE band SET is_release = 1 WHERE band_id = #{bandId} AND is_delete = 0;
+    <update id="updateReleaseStatusByBandId">
+        UPDATE band SET is_release = #{release} WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
     <update id="unReleaseBandInfo">
         UPDATE band SET is_release = 0 WHERE band_id = #{bandId} AND is_delete = 0;
@@ -39,7 +39,7 @@
     </select>
     <select id="queryBandInfoVOByBandId" resultType="io.github.dingxinliang88.pojo.vo.band.BandDetailsVO">
         SELECT band.band_id AS `band_id`, band.name AS name, found_time, member.`name` AS leader_name, member_num,
-        band.is_release AS is_release
+        band.profile AS profile, band.is_release AS is_release
         FROM band, member
         WHERE
         band.band_id = #{bandId}

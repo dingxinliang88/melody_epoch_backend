@@ -19,15 +19,21 @@
     <update id="editInfo" parameterType="io.github.dingxinliang88.pojo.dto.album.EditAlbumReq">
         UPDATE album SET profile = #{profile} WHERE album_id = #{albumId} AND is_delete = 0;
     </update>
-    <update id="releaseAlbumInfo">
-        UPDATE album SET is_release = 1 WHERE band_name = #{bandName} AND is_delete = 0;
+
+    <update id="updateAlbumReleaseStatusByAlbumId">
+        UPDATE album SET is_release = #{release}
+        WHERE album_id = #{albumId} AND is_delete = 0;
+    </update>
+    <update id="updateAlbumReleaseStatusByBandName">
+        UPDATE album SET is_release = #{release}
+        WHERE band_name = #{bandName} AND is_delete = 0;
     </update>
     <select id="listAlbumInfoVO" resultType="io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO">
         SELECT album_id, name, company, band_name, avg_score
         FROM album
         WHERE is_release = 1 AND is_delete = 0;
     </select>
-    <select id="queryAlbumByBandName" resultType="io.github.dingxinliang88.pojo.po.Album">
+    <select id="queryAlbumByBandName" resultType="io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO">
         SELECT album_id, name, company, band_name, release_time, profile, avg_score, is_release
         FROM album
         WHERE band_name = #{bandName} AND is_delete = 0;

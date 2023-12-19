@@ -9,4 +9,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ConcertJoinMapper extends BaseMapper<ConcertJoin> {
+
+    ConcertJoin queryByConcertIdAndUserId(Long concertId, Integer userId);
+
+    Integer queryCountByConcertId(Long concertId);
+
 }

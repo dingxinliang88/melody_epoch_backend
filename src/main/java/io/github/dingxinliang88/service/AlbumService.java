@@ -3,6 +3,7 @@ package io.github.dingxinliang88.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
+import io.github.dingxinliang88.pojo.dto.album.ReleaseAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
@@ -50,7 +51,7 @@ public interface AlbumService extends IService<Album> {
      * @param request http request
      * @return album list
      */
-    List<Album> currBandAllAlbums(HttpServletRequest request);
+    List<AlbumInfoVO> currBandAllAlbums(HttpServletRequest request);
 
     /**
      * 歌曲录入专辑
@@ -69,4 +70,13 @@ public interface AlbumService extends IService<Album> {
      * @return 专辑详细信息
      */
     AlbumDetailsVO getAlbumDetailsInfo(Integer albumId, HttpServletRequest request);
+
+    /**
+     * 发布专辑信息
+     *
+     * @param req     发布专辑信息
+     * @param request http request
+     * @return true - 发布成功
+     */
+    Boolean releaseAlbum(ReleaseAlbumReq req, HttpServletRequest request);
 }

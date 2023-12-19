@@ -32,12 +32,22 @@ public class SongInfoVO implements Serializable {
     /**
      * 乐队ID
      */
+    private Integer bandId;
+
+    /**
+     * 乐队名称
+     */
     private String bandName;
 
     /**
      * 歌曲作者
      */
     private String author;
+
+    /**
+     * 专辑ID
+     */
+    private Integer albumId;
 
     /**
      * 所属专辑名称

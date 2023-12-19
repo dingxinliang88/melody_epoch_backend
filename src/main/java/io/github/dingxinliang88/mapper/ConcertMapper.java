@@ -21,6 +21,7 @@ public interface ConcertMapper extends BaseMapper<Concert> {
     Boolean editInfo(Long concertId, String name, LocalDateTime startTime,
                      LocalDateTime endTime, Integer bandId, String place, String songIdsStr, Integer maxNum);
 
+
     /**
      * 获取演唱会信息VO
      *
@@ -35,19 +36,32 @@ public interface ConcertMapper extends BaseMapper<Concert> {
      * @param bandId 乐队ID
      * @return concert list
      */
-    List<Concert> queryConcertByBandId(Integer bandId);
+    List<ConcertInfoVO> queryConcertByBandId(Integer bandId);
 
     /**
-     * 发布演唱会信息
+     * 修改演唱会发布状态
      *
-     * @param bandId band id
+     * @param bandId  band id
+     * @param release release status
+     * @return true - 修改成功
      */
-    Boolean releaseConcertInfo(Integer bandId);
+    Boolean updateReleaseStatusByBandId(Integer bandId, Integer release);
+
 
     /**
-     * 撤销发布演唱会信息
+     * 根据 concert id 查询 concert 信息
      *
-     * @param bandId band id
+     * @param concertId concert id
+     * @return concert info
      */
-    Boolean unReleaseConcertInfo(Integer bandId);
+    Concert queryByConcertId(Long concertId, boolean inner);
+
+    /**
+     * 修改演唱会发布状态
+     *
+     * @param concertId concert id
+     * @param release   release status
+     * @return true - 修改成功
+     */
+    Boolean updateReleaseStatusByConcertId(Long concertId, Integer release);
 }

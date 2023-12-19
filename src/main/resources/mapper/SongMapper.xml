@@ -14,12 +14,8 @@
         <result column="is_release" property="isRelease"/>
         <result column="is_delete" property="isDelete"/>
     </resultMap>
-    <update id="editInfo" parameterType="io.github.dingxinliang88.pojo.dto.song.EditSongReq">
-        UPDATE song SET album_id = #{albumId}, album_name = #{albumName}
-        WHERE song_id = #{songId} AND band_id = #{bandId} AND is_delete = 0;
-    </update>
-    <update id="releaseSongInfo">
-        UPDATE song SET is_release = 1 WHERE band_id = #{bandId} AND is_delete = 0;
+    <update id="updateReleaseStatusByBandId">
+        UPDATE song SET is_release = #{release} WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
     <update id="editBatchSongAlbumInfo">
         UPDATE song SET album_id = #{albumId}, album_name = #{albumName}
@@ -29,15 +25,29 @@
         </foreach>
         AND is_delete = 0;
     </update>
+    <update id="updateBatchReleaseStatus">
+        UPDATE song SET is_release = #{release}
+        WHERE song_id IN
+        <foreach collection="songIds" item="songId" open="(" separator="," close=")">
+            #{songId}
+        </foreach>
+        AND is_delete = 0;
+    </update>
+    <update id="updateReleaseStatusBySongId">
+        UPDATE song SET is_release = #{release}
+        WHERE song_id = #{songId}
+        AND is_delete = 0;
+    </update>
     <select id="queryBySongIdAndBandIdInner" resultType="io.github.dingxinliang88.pojo.po.Song">
         SELECT song_id, name, band_id, author, album_id, album_name, is_release, is_delete
         FROM song
         WHERE song_id = #{songId} AND band_id = #{bandId} AND is_delete = 0;
     </select>
-    <select id="querySongsByBandId" resultType="io.github.dingxinliang88.pojo.po.Song">
-        SELECT song_id, name, band_id, author, album_id, album_name
-        FROM song
-        WHERE band_id = #{bandId} AND is_delete = 0 AND is_release = 1;
+    <select id="querySongsByBandId" resultType="io.github.dingxinliang88.pojo.vo.song.SongInfoVO">
+        SELECT song_id, song.name, song.band_id AS band_id, band.name AS band_name, author, album_id, album_name
+        FROM song JOIN band
+        ON band.band_id = song.band_id
+        WHERE song.band_id = #{bandId} AND song.is_delete = 0 AND song.is_release = 1;
     </select>
     <select id="listSongItemsByBandId" resultType="io.github.dingxinliang88.pojo.vo.song.SongItemVO">
         SELECT song_id, name
@@ -77,6 +87,25 @@
         SELECT song_id, name, band_id, author, album_id, album_name, is_release
         FROM song
         WHERE band_id = #{bandId} AND is_delete = 0;
+    </select>
+    <select id="queryBySongId" resultType="io.github.dingxinliang88.pojo.po.Song">
+        SELECT song_id, name, band_id, author, album_id, album_name, is_release
+        FROM song
+        WHERE is_delete = 0 AND song_id = #{bandId}
+        <if test="not inner">
+            AND is_release = 1
+        </if>;
+    </select>
+    <select id="queryBatchBySongId" resultType="io.github.dingxinliang88.pojo.vo.song.SongInfoVO">
+        SELECT song_id, song.name AS name, song.band_id AS band_id, band.name AS band_name, author, album_id, album_name
+        FROM song
+        JOIN band
+        ON song.band_id = band.band_id
+        WHERE song_id IN
+        <foreach collection="songIds" item="songId" open="(" separator="," close=")">
+            #{songId}
+        </foreach>
+        AND song.is_release = 1 AND song.is_delete = 0;
     </select>
 
 

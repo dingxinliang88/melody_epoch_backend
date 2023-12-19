@@ -2,11 +2,12 @@ package io.github.dingxinliang88.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.SongLikeMapper;
 import io.github.dingxinliang88.mapper.SongMapper;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
-import io.github.dingxinliang88.pojo.dto.song.EditSongReq;
+import io.github.dingxinliang88.pojo.dto.song.ReleaseSongReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Song;
@@ -59,22 +60,6 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
     }
 
     @Override
-    public Boolean editInfo(EditSongReq req, HttpServletRequest request) {
-        // 判断当前登录用户是否是乐队队长
-        UserLoginVO currUser = SysUtil.getCurrUser();
-
-        Band band = bandMapper.queryByBandId(req.getBandId(), true);
-        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "乐队不存在");
-        ThrowUtil.throwIf(!band.getLeaderId().equals(currUser.getUserId()), StatusCode.NO_AUTH_ERROR, "暂无权限");
-
-        // 判断当前的歌曲信息是否存在
-        Song song = songMapper.queryBySongIdAndBandIdInner(req.getSongId(), req.getBandId());
-        ThrowUtil.throwIf(null == song, StatusCode.NOT_FOUND_ERROR, "歌曲信息不存在");
-
-        return songMapper.editInfo(req);
-    }
-
-    @Override
     public List<SongItemVO> listSongItems(HttpServletRequest request) {
         // 判断当前登录用户是否是乐队队长
         UserLoginVO currUser = SysUtil.getCurrUser();
@@ -123,5 +108,20 @@ public class SongServiceImpl extends ServiceImpl<SongMapper, Song>
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
 
         return songMapper.queryByBandId(band.getBandId());
+    }
+
+    @Override
+    public Boolean releaseSong(ReleaseSongReq req, HttpServletRequest request) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
+
+        Integer songId = req.getSongId();
+        Song song = songMapper.queryBySongId(songId, true);
+        ThrowUtil.throwIf(!song.getBandId().equals(band.getBandId()), StatusCode.NOT_FOUND_ERROR, "暂无权限");
+
+        return songMapper.updateReleaseStatusBySongId(songId, CommonConstant.RELEASE);
     }
 }

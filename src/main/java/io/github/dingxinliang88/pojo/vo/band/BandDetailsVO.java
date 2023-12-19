@@ -1,10 +1,10 @@
 package io.github.dingxinliang88.pojo.vo.band;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-import io.github.dingxinliang88.pojo.po.Album;
-import io.github.dingxinliang88.pojo.po.Concert;
-import io.github.dingxinliang88.pojo.po.Member;
-import io.github.dingxinliang88.pojo.po.Song;
+import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
+import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -51,6 +51,11 @@ public class BandDetailsVO implements Serializable {
     private Integer memberNum;
 
     /**
+     * 乐队简介
+     */
+    private String profile;
+
+    /**
      * 是否发布
      */
     private Integer isRelease;
@@ -63,20 +68,20 @@ public class BandDetailsVO implements Serializable {
     /**
      * 成员信息
      */
-    private List<Member> members;
+    private List<MemberInfoVO> members;
 
     /**
      * 歌曲信息
      */
-    private List<Song> songs;
+    private List<SongInfoVO> songs;
 
     /**
      * 专辑信息
      */
-    private List<Album> albums;
+    private List<AlbumInfoVO> albums;
 
     /**
      * 演唱会信息
      */
-    private List<Concert> concerts;
+    private List<ConcertInfoVO> concerts;
 }

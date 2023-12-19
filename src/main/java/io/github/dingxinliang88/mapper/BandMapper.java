@@ -82,11 +82,13 @@ public interface BandMapper extends BaseMapper<Band> {
     List<Band> listBandInfo();
 
     /**
-     * 发布乐队信息
+     * 修改乐队发布状态
      *
-     * @param bandId band id
+     * @param bandId  band id
+     * @param release release status
+     * @return true - 修改成功
      */
-    Boolean releaseBandInfo(Integer bandId);
+    Boolean updateReleaseStatusByBandId(Integer bandId, Integer release);
 
     /**
      * 撤销发布乐队信息

@@ -1,22 +1,23 @@
 package io.github.dingxinliang88.pojo.vo.concert;
 
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.pojo.po.Concert;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * 演唱会信息VO
- *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Getter
 @Setter
 @NoArgsConstructor
-public class ConcertInfoVO implements Serializable {
+public class ConcertDetailsVO implements Serializable {
 
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
 
@@ -61,8 +62,27 @@ public class ConcertInfoVO implements Serializable {
     private Integer maxNum;
 
     /**
-     * 是否允许修改
-     * 开始时间前一个小时不让修改了
+     * 已加入人数
      */
-    private Boolean canEdit;
+    private Integer joinedNum;
+
+    /**
+     * 歌曲信息
+     */
+    private List<SongInfoVO> songInfoVOList;
+
+    private Boolean canJoin = Boolean.FALSE;
+    private Boolean isJoined = Boolean.FALSE;
+
+
+    public ConcertDetailsVO(Concert concert) {
+        this.concertId = concert.getConcertId();
+        this.name = concert.getName();
+        this.startTime = concert.getStartTime();
+        this.endTime = concert.getEndTime();
+        this.place = concert.getPlace();
+        this.bandId = concert.getBandId();
+        this.bandName = concert.getBandName();
+        this.maxNum = concert.getMaxNum();
+    }
 }

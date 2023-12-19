@@ -56,12 +56,6 @@ public class EditConcertReq implements Serializable {
     private String place;
 
     /**
-     * 乐队ID
-     */
-    @NotNull
-    private Integer bandId;
-
-    /**
      * 歌曲ID List
      */
     @NotNull(message = "演唱会歌曲不能为空")

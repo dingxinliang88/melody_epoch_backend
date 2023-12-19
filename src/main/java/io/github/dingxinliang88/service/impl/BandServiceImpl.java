@@ -2,14 +2,19 @@ package io.github.dingxinliang88.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.exception.BizException;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.*;
+import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
+import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.BandService;
 import io.github.dingxinliang88.utils.RedisUtil;
@@ -146,16 +151,16 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(bandId, SysUtil.getCurrUser().getUserId());
         bandDetailsVO.setIsLiked(bandLike != null);
         // 获取乐队成员信息
-        List<Member> members = memberMapper.queryMembersByBandId(bandId);
+        List<MemberInfoVO> members = memberMapper.queryMembersByBandId(bandId);
         bandDetailsVO.setMembers(members);
         // 获取专辑信息
-        List<Album> albums = albumMapper.queryAlbumByBandName(bandDetailsVO.getName());
+        List<AlbumInfoVO> albums = albumMapper.queryAlbumByBandName(bandDetailsVO.getName());
         bandDetailsVO.setAlbums(albums);
         // 获取歌曲信息
-        List<Song> songs = songMapper.querySongsByBandId(bandId);
+        List<SongInfoVO> songs = songMapper.querySongsByBandId(bandId);
         bandDetailsVO.setSongs(songs);
         // 获取演唱会信息
-        List<Concert> concerts = concertMapper.queryConcertByBandId(bandId);
+        List<ConcertInfoVO> concerts = concertMapper.queryConcertByBandId(bandId);
         bandDetailsVO.setConcerts(concerts);
 
         return bandDetailsVO;
@@ -173,11 +178,11 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         return transactionTemplate.execute(status -> {
             try {
                 // TODO 起一个异步线程去更新专辑发行时间
-                albumMapper.releaseAlbumInfo(band.getName());
-                songMapper.releaseSongInfo(band.getBandId());
-                concertMapper.releaseConcertInfo(band.getBandId());
-                memberMapper.releaseMemberInfo(band.getBandId());
-                return bandMapper.releaseBandInfo(band.getBandId());
+                albumMapper.updateAlbumReleaseStatusByBandName(band.getName(), CommonConstant.RELEASE);
+                songMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.RELEASE);
+                concertMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.RELEASE);
+                memberMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.RELEASE);
+                return bandMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.RELEASE);
             } catch (Exception e) {
                 status.setRollbackOnly();
                 throw e;
@@ -195,9 +200,9 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         // 事务处理
         return transactionTemplate.execute(status -> {
             try {
-                concertMapper.unReleaseConcertInfo(band.getBandId());
-                memberMapper.unReleaseMemberInfo(band.getBandId());
-                return bandMapper.unReleaseBandInfo(band.getBandId());
+                concertMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.UN_RELEASE);
+                memberMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.UN_RELEASE);
+                return bandMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.UN_RELEASE);
             } catch (Exception e) {
                 status.setRollbackOnly();
                 throw e;
