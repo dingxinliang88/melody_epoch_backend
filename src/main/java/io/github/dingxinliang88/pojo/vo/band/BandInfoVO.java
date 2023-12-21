@@ -1,7 +1,6 @@
 package io.github.dingxinliang88.pojo.vo.band;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@Builder
 public class BandInfoVO implements Serializable {
 
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
@@ -50,4 +48,12 @@ public class BandInfoVO implements Serializable {
      */
     private Boolean isLiked;
 
+    public BandInfoVO(Integer bandId, String name, LocalDateTime foundTime, String leaderName, Integer memberNum, Boolean isLiked) {
+        this.bandId = bandId;
+        this.name = name;
+        this.foundTime = foundTime;
+        this.leaderName = leaderName;
+        this.memberNum = memberNum;
+        this.isLiked = isLiked;
+    }
 }

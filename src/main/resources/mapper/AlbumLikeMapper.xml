@@ -32,6 +32,11 @@
         (SELECT album_id FROM album_like WHERE user_id = #{userId})
         AND album.is_release = 1 AND album.is_delete = 0;
     </select>
+    <select id="queryByAlbumId" resultType="io.github.dingxinliang88.pojo.po.AlbumLike">
+        SELECT id, album_id, user_id, score
+        FROM album_like
+        WHERE album_id = #{albumId};
+    </select>
 
 
 </mapper>

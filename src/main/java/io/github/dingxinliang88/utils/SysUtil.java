@@ -2,9 +2,8 @@ package io.github.dingxinliang88.utils;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
-
-import java.nio.charset.StandardCharsets;
 
 import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_LEN;
 import static io.github.dingxinliang88.constants.UserConstant.*;
@@ -40,7 +39,11 @@ public class SysUtil {
     }
 
     public static String encryptedPwd(String salt, String originPwd) {
-        return DigestUtil.md5Hex(salt + originPwd, StandardCharsets.UTF_8);
+        return DigestUtil.bcrypt(salt + originPwd);
+    }
+
+    public static boolean checkPwd(User user, String inputPwd) {
+        return DigestUtil.bcryptCheck(user.getSalt() + inputPwd, user.getPassword());
     }
 
     public static UserLoginVO getCurrUser() {

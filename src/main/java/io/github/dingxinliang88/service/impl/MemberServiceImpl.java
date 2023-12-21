@@ -117,8 +117,7 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member>
         List<Member> members = memberMapper.listMembers();
         return members.stream().map(member -> {
             MemberInfoVO memberInfoVO = new MemberInfoVO(member);
-            // todo magic number
-            if (member.getIsRelease() == 0) {
+            if (CommonConstant.UN_RELEASE.equals(member.getIsRelease())) {
                 memberInfoVO.setPart("-");
                 memberInfoVO.setBandName("-");
                 memberInfoVO.setJoinTime(null);

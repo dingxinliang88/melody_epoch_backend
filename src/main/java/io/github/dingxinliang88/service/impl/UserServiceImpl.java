@@ -70,7 +70,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private JwtTokenManager jwtTokenManager;
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
     public Integer userAccRegister(AccRegisterReq req, HttpServletRequest request) {
         String account = req.getAccount();
         String password = req.getPassword();
@@ -108,7 +107,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     return user.getUserId();
                 }
             } catch (Exception e) {
-                // Mark the transaction as rollback-only in case of an exception
                 status.setRollbackOnly();
                 throw e;
             }
@@ -162,7 +160,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                     return user.getUserId();
                 }
             } catch (Exception e) {
-                // Mark the transaction as rollback-only in case of an exception
                 status.setRollbackOnly();
                 throw e;
             }
@@ -180,9 +177,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
             ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "账号不存在！");
             // 校验密码
-            String encryptPwd = SysUtil.encryptedPwd(user.getSalt(), password);
-            String encryptPwdFromDb = user.getPassword();
-            ThrowUtil.throwIf(!encryptPwdFromDb.equals(encryptPwd), StatusCode.PASSWORD_NOT_MATCH, "密码错误！");
+            ThrowUtil.throwIf(!SysUtil.checkPwd(user, password), StatusCode.PASSWORD_NOT_MATCH, "密码错误！");
 
             UserLoginVO userLoginVO = UserLoginVO.builder()
                     .userId(user.getUserId())
@@ -314,8 +309,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
             return userMapper.updateEmailByUserId(SysUtil.getCurrUser().getUserId(), email);
         }
-
     }
+
+    // ------------------------------
+    // private util functions
+    // ------------------------------
 
 
     private UserLoginVO handleEmailPwdLogin(EmailLoginReq req) {
@@ -325,9 +323,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User userInfo;
         synchronized (email.intern()) {
             userInfo = userMapper.queryByEmail(email);
-            String salt = userInfo.getSalt();
-            String encryptedPwd = SysUtil.encryptedPwd(salt, password);
-            ThrowUtil.throwIf(!userInfo.getPassword().equals(encryptedPwd), StatusCode.PASSWORD_NOT_MATCH);
+            ThrowUtil.throwIf(!SysUtil.checkPwd(userInfo, password), StatusCode.PASSWORD_NOT_MATCH);
         }
 
         return UserLoginVO.builder()
@@ -361,7 +357,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .type(userInfo.getType())
                 .build();
     }
-
 
     private void insert2Member(Integer memberId, String name) {
         Member member = new Member(memberId, name);

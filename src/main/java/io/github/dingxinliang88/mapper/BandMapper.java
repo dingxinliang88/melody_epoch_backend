@@ -23,6 +23,15 @@ public interface BandMapper extends BaseMapper<Band> {
      */
     Band queryByBandId(Integer bandId, boolean inner);
 
+    /**
+     * 根据乐队名称查找乐队
+     *
+     * @param bandName 乐队名称
+     * @param inner    是否是inner使用
+     * @return band info
+     */
+    Band queryByBandName(String bandName, boolean inner);
+
 
     /**
      * 根据队长ID查找乐队

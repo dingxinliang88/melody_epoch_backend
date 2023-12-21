@@ -48,4 +48,13 @@ public interface AlbumLikeMapper extends BaseMapper<AlbumLike> {
      * @return like item list
      */
     List<AlbumInfoVO> listMyLikedAlbum(Integer userId);
+
+    /**
+     * 根据专辑搜索专辑喜欢信息
+     *
+     * @param albumId album id
+     * @return album like list
+     */
+    List<AlbumLike> queryByAlbumId(Integer albumId);
+
 }

@@ -38,18 +38,17 @@
         WHERE is_release = 1 AND is_delete = 0;
     </select>
     <select id="queryBandInfoVOByBandId" resultType="io.github.dingxinliang88.pojo.vo.band.BandDetailsVO">
-        SELECT band.band_id AS `band_id`, band.name AS name, found_time, member.`name` AS leader_name, member_num,
-        band.profile AS profile, band.is_release AS is_release
+        SELECT band.band_id AS `band_id`, band.name AS name, found_time, member.`name` AS leader_name,
+        member_num, band.profile AS profile, band.is_release AS is_release
         FROM band, member
-        WHERE
-        band.band_id = #{bandId}
+        WHERE band.band_id = #{bandId}
         AND band.leader_id = member.member_id
         AND band.is_release = 1
         AND band.is_delete = 0
         AND member.is_delete = 0;
     </select>
     <select id="queryByBandId" resultType="io.github.dingxinliang88.pojo.po.Band">
-        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
+        SELECT band_id, name, found_time, leader_id, profile, member_num,is_release, is_delete
         FROM band
         WHERE is_delete = 0 AND band_id = #{bandId}
         <if test="not inner">
@@ -57,7 +56,7 @@
         </if>;
     </select>
     <select id="queryByLeaderId" resultType="io.github.dingxinliang88.pojo.po.Band">
-        SELECT band_id, name, found_time, leader_id, profile, member_num, is_delete
+        SELECT band_id, name, found_time, leader_id, profile, member_num, is_release, is_delete
         FROM band
         WHERE is_delete = 0 AND (leader_id = #{leaderId})
         <if test="not inner">
@@ -66,6 +65,14 @@
     </select>
     <select id="queryCurrBandReleaseStatus" resultType="java.lang.Integer">
         SELECT is_release FROM band WHERE band_id = #{bandId} AND is_delete = 0;
+    </select>
+    <select id="queryByBandName" resultType="io.github.dingxinliang88.pojo.po.Band">
+        SELECT band_id, name, found_time, leader_id, profile, member_num, is_release, is_delete
+        FROM band
+        WHERE is_delete = 0 AND name = #{bandName}
+        <if test="not inner">
+            AND is_release = 1
+        </if>;
     </select>
 
 

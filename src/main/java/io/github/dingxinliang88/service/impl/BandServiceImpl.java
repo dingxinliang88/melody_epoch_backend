@@ -84,10 +84,13 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
             throw new BizException(StatusCode.NO_AUTH_ERROR, "没有权限创建乐队！");
         }
 
-        // todo 判断当前bandName是否已经被注册了
+        // 判断当前bandName是否已经被注册了
+        Band bandFromDB = bandMapper.queryByBandName(bandName, true);
+        ThrowUtil.throwIf(bandFromDB != null, StatusCode.PARAMS_ERROR, "当前乐队名称已经被注册");
+
 
         // 判断当前leaderId是否已经加入了队伍
-        Band bandFromDB = bandMapper.queryByLeaderId(leaderId, true);
+        bandFromDB = bandMapper.queryByLeaderId(leaderId, true);
         ThrowUtil.throwIf(bandFromDB != null, StatusCode.DUPLICATE_DATA, "该队长已经加入乐队了！");
 
         final Integer leader = leaderId;
@@ -132,15 +135,8 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         return bandInfoList.stream().map(band -> {
             String leaderName = memberMapper.queryNameByMemberId(band.getLeaderId());
             BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(band.getBandId(), SysUtil.getCurrUser().getUserId());
-            return BandInfoVO
-                    .builder()
-                    .bandId(band.getBandId())
-                    .leaderName(leaderName)
-                    .name(band.getName())
-                    .isLiked(bandLike != null)
-                    .foundTime(band.getFoundTime())
-                    .memberNum(band.getMemberNum())
-                    .build();
+            return new BandInfoVO(band.getBandId(), band.getName(), band.getFoundTime(),
+                    leaderName, band.getMemberNum(), bandLike != null);
         }).collect(Collectors.toList());
     }
 
@@ -177,7 +173,6 @@ public class BandServiceImpl extends ServiceImpl<BandMapper, Band>
         // 事务处理
         return transactionTemplate.execute(status -> {
             try {
-                // TODO 起一个异步线程去更新专辑发行时间
                 albumMapper.updateAlbumReleaseStatusByBandName(band.getName(), CommonConstant.RELEASE);
                 songMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.RELEASE);
                 concertMapper.updateReleaseStatusByBandId(band.getBandId(), CommonConstant.RELEASE);

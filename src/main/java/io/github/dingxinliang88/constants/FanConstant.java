@@ -1,12 +1,14 @@
 package io.github.dingxinliang88.constants;
 
 /**
+ * fan 常量类
+ *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 public interface FanConstant {
 
-    Integer LIKE_BAND = 0;
-    Integer LIKE_ALBUM = 1;
-    Integer LIKE_SONG = 2;
+    int LIKE_BAND = 0;
+    int LIKE_ALBUM = 1;
+    int LIKE_SONG = 2;
 
 }

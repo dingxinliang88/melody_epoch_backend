@@ -33,7 +33,6 @@ public class JwtTokenManager {
     @Resource
     private RedisUtil redisUtil;
 
-
     @Value("${jwt.secret_key}")
     private String secretKey;
 
@@ -90,7 +89,11 @@ public class JwtTokenManager {
 
             if (storedToken != null && storedToken.equals(token)) {
                 // 验证通过
-                return UserLoginVO.builder().userId(Integer.parseInt(userIdStr)).type(type).nickname(nickname).build();
+                return UserLoginVO.builder()
+                        .userId(Integer.parseInt(userIdStr))
+                        .type(type)
+                        .nickname(nickname)
+                        .build();
             }
         } catch (Exception e) {
             logger.error("invalid token: ", e);
@@ -113,7 +116,6 @@ public class JwtTokenManager {
         return expiration.before(new Date());
     }
 
-    // TODO 起一个定时任务，轮询
     public void cleanExpiredTokens() {
         Objects.requireNonNull(redisUtil.keys("user:*")).forEach(key -> {
             if (key.startsWith(ACCESS_TOKEN_PREFIX) || key.startsWith(REFRESH_TOKEN_PREFIX)) {

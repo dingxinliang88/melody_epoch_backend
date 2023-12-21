@@ -64,8 +64,6 @@ public class UserController {
         return RespUtil.success(userService.editUserInfo(req, request));
     }
 
-    // TODO 绑定邮箱
-
     @PostMapping("/bind/email")
     public BaseResponse<Boolean> bindEmail(@RequestBody @Validated BindEmailReq req, HttpServletRequest request) {
         return RespUtil.success(userService.bindEmail(req, request));

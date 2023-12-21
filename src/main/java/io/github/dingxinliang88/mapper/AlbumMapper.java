@@ -64,4 +64,13 @@ public interface AlbumMapper extends BaseMapper<Album> {
      * @return true - 发布成功
      */
     Boolean updateAlbumReleaseStatusByBandName(String bandName, Integer release);
+
+    /**
+     * 更新专辑均分
+     *
+     * @param albumId  album id
+     * @param avgScore avg score
+     * @return true - 更新成功
+     */
+    boolean updateAvgScore(Integer albumId, double avgScore);
 }

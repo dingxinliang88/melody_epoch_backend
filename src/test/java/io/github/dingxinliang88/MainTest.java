@@ -26,6 +26,16 @@ public class MainTest {
     }
 
     @Test
+    public void testBcrypt() {
+        String salt = "xrncupiydjsaot8F";
+        String originPassword = "member007";
+        String encryptedPassword = DigestUtil.bcrypt(salt + originPassword);
+        System.out.println("encryptedPassword = " + encryptedPassword);
+        System.out.println(encryptedPassword.length());
+        System.out.println(DigestUtil.bcryptCheck(salt + originPassword, encryptedPassword));
+    }
+
+    @Test
     public void genSecretKey() {
         String secretKey = RandomUtil.randomString(32);
         System.out.println("secretKey = " + secretKey);

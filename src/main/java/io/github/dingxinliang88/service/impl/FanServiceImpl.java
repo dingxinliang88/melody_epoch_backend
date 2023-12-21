@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.FanConstant;
@@ -18,11 +19,14 @@ import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.service.FanService;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,8 +38,13 @@ import java.util.stream.Collectors;
 public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         implements FanService {
 
+    private final Logger logger = LoggerFactory.getLogger(FanServiceImpl.class);
+
     @Resource
     private FanMapper fanMapper;
+
+    @Resource
+    private AlbumMapper albumMapper;
 
     @Resource
     private MemberMapper memberMapper;
@@ -48,6 +57,13 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
 
     @Resource
     private SongLikeMapper songLikeMapper;
+
+    private static final ExecutorService UPDATE_ALBUM_SCORE_THREAD_POOL = new ThreadPoolExecutor(
+            1, 2, 1000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(100),
+            r -> new Thread(r, "Album-Score-" + UUID.randomUUID().toString(true)), new ThreadPoolExecutor.AbortPolicy()
+    );
+    private static final int MAX_RETRIES = 3; // 设置最大重试次数
+
 
     @Override
     public Boolean editInfo(EditFanReq req, HttpServletRequest request) {
@@ -76,32 +92,63 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         Integer type = req.getType();
 
         // 查询是否已经收藏
-        // TODO 优化，去除if - else
-        if (FanConstant.LIKE_BAND.equals(type)) {
-            ThrowUtil.throwIf(bandLikeMapper.queryByBandIdAndUserId(likeId, currUser.getUserId()) != null,
-                    StatusCode.DUPLICATE_DATA, "已经喜欢过了");
-            BandLike bandLike = new BandLike();
-            bandLike.setBandId(likeId);
-            bandLike.setUserId(currUser.getUserId());
-            bandLikeMapper.insert(bandLike);
-        } else if (FanConstant.LIKE_ALBUM.equals(type)) {
-            ThrowUtil.throwIf(albumLikeMapper.queryByAlbumIdAndUserId(likeId, currUser.getUserId()) != null,
-                    StatusCode.DUPLICATE_DATA, "已经喜欢过了");
-            AlbumLike albumLike = new AlbumLike();
-            albumLike.setAlbumId(likeId);
-            albumLike.setUserId(currUser.getUserId());
-            albumLikeMapper.insert(albumLike);
-        } else if (FanConstant.LIKE_SONG.equals(type)) {
-            ThrowUtil.throwIf(songLikeMapper.queryBySongIdAndUserId(likeId, currUser.getUserId()) != null,
-                    StatusCode.DUPLICATE_DATA, "已经喜欢过了");
-            SongLike songLike = new SongLike();
-            songLike.setSongId(likeId);
-            songLike.setUserId(currUser.getUserId());
-            songLikeMapper.insert(songLike);
-        } else {
-            throw new BizException(StatusCode.PARAMS_ERROR);
+        switch (type) {
+            case FanConstant.LIKE_BAND:
+                ThrowUtil.throwIf(bandLikeMapper.queryByBandIdAndUserId(likeId, currUser.getUserId()) != null,
+                        StatusCode.DUPLICATE_DATA, "已经喜欢过了");
+                BandLike bandLike = new BandLike();
+                bandLike.setBandId(likeId);
+                bandLike.setUserId(currUser.getUserId());
+                bandLikeMapper.insert(bandLike);
+                break;
+            case FanConstant.LIKE_ALBUM:
+                ThrowUtil.throwIf(albumLikeMapper.queryByAlbumIdAndUserId(likeId, currUser.getUserId()) != null,
+                        StatusCode.DUPLICATE_DATA, "已经喜欢过了");
+                AlbumLike albumLike = new AlbumLike();
+                albumLike.setAlbumId(likeId);
+                albumLike.setUserId(currUser.getUserId());
+                albumLikeMapper.insert(albumLike);
+                break;
+            case FanConstant.LIKE_SONG:
+                ThrowUtil.throwIf(songLikeMapper.queryBySongIdAndUserId(likeId, currUser.getUserId()) != null,
+                        StatusCode.DUPLICATE_DATA, "已经喜欢过了");
+                SongLike songLike = new SongLike();
+                songLike.setSongId(likeId);
+                songLike.setUserId(currUser.getUserId());
+                songLikeMapper.insert(songLike);
+                break;
+            default:
+                throw new BizException(StatusCode.PARAMS_ERROR);
         }
         return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean unlike(LikeReq req, HttpServletRequest request) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
+
+        Integer likeId = req.getLikeId();
+        Integer type = req.getType();
+
+        // 查询是否已经收藏
+        switch (type) {
+            case FanConstant.LIKE_BAND:
+                ThrowUtil.throwIf(bandLikeMapper.queryByBandIdAndUserId(likeId, currUser.getUserId()) == null,
+                        StatusCode.DUPLICATE_DATA, "尚未喜欢过");
+                return bandLikeMapper.deleteByBandIdAndUserId(likeId, currUser.getUserId());
+            case FanConstant.LIKE_ALBUM:
+                ThrowUtil.throwIf(albumLikeMapper.queryByAlbumIdAndUserId(likeId, currUser.getUserId()) == null,
+                        StatusCode.DUPLICATE_DATA, "尚未喜欢过");
+                return albumLikeMapper.deleteByAlbumIdAndUserId(likeId, currUser.getUserId());
+            case FanConstant.LIKE_SONG:
+                ThrowUtil.throwIf(songLikeMapper.queryBySongIdAndUserId(likeId, currUser.getUserId()) == null,
+                        StatusCode.DUPLICATE_DATA, "尚未喜欢过");
+                return songLikeMapper.deleteBySongIdAndUserId(likeId, currUser.getUserId());
+            default:
+                throw new BizException(StatusCode.PARAMS_ERROR);
+        }
+
     }
 
     @Override
@@ -109,16 +156,17 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         UserLoginVO currUser = SysUtil.getCurrUser();
         ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
 
-        Integer albumId = req.getAlbumId();
+        final Integer albumId = req.getAlbumId();
         AlbumLike albumLike = albumLikeMapper.queryByAlbumIdAndUserId(albumId, currUser.getUserId());
         ThrowUtil.throwIf(albumLike == null, StatusCode.NOT_FOUND_ERROR, "该专辑还未被喜欢");
         ThrowUtil.throwIf(albumLike.getScore() != 0, StatusCode.DUPLICATE_DATA, "已经评分过了");
         Boolean res = albumLikeMapper.updateScore(req.getScore(), albumId, currUser.getUserId());
         if (res) {
-            // TODO 起异步线程更新均分
+            asyncUpdateAlbumAvgScore(albumId);
         }
         return res;
     }
+
 
     @Override
     public LikeAlbumStatusVO getLikeAlbumStatus(Integer albumId, HttpServletRequest request) {
@@ -136,32 +184,6 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         return likeAlbumStatusVO;
     }
 
-    @Override
-    public Boolean unlike(LikeReq req, HttpServletRequest request) {
-        UserLoginVO currUser = SysUtil.getCurrUser();
-        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
-
-        Integer likeId = req.getLikeId();
-        Integer type = req.getType();
-
-        // 查询是否已经收藏
-        // TODO 优化，去除if - else
-        if (FanConstant.LIKE_BAND.equals(type)) {
-            ThrowUtil.throwIf(bandLikeMapper.queryByBandIdAndUserId(likeId, currUser.getUserId()) == null,
-                    StatusCode.DUPLICATE_DATA, "尚未喜欢过");
-            return bandLikeMapper.deleteByBandIdAndUserId(likeId, currUser.getUserId());
-        } else if (FanConstant.LIKE_ALBUM.equals(type)) {
-            ThrowUtil.throwIf(albumLikeMapper.queryByAlbumIdAndUserId(likeId, currUser.getUserId()) == null,
-                    StatusCode.DUPLICATE_DATA, "尚未喜欢过");
-            return albumLikeMapper.deleteByAlbumIdAndUserId(likeId, currUser.getUserId());
-        } else if (FanConstant.LIKE_SONG.equals(type)) {
-            ThrowUtil.throwIf(songLikeMapper.queryBySongIdAndUserId(likeId, currUser.getUserId()) == null,
-                    StatusCode.DUPLICATE_DATA, "尚未喜欢过");
-            return songLikeMapper.deleteBySongIdAndUserId(likeId, currUser.getUserId());
-        } else {
-            throw new BizException(StatusCode.PARAMS_ERROR);
-        }
-    }
 
     @Override
     public List<BandInfoVO> listMyLikedBand(HttpServletRequest request) {
@@ -173,15 +195,8 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
         return bands.stream().map(band -> {
             String leaderName = memberMapper.queryNameByMemberId(band.getLeaderId());
             BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(band.getBandId(), SysUtil.getCurrUser().getUserId());
-            return BandInfoVO
-                    .builder()
-                    .bandId(band.getBandId())
-                    .leaderName(leaderName)
-                    .name(band.getName())
-                    .isLiked(bandLike != null)
-                    .foundTime(band.getFoundTime())
-                    .memberNum(band.getMemberNum())
-                    .build();
+            return new BandInfoVO(band.getBandId(), band.getName(), band.getFoundTime(),
+                    leaderName, band.getMemberNum(), bandLike != null);
         }).collect(Collectors.toList());
     }
 
@@ -204,5 +219,50 @@ public class FanServiceImpl extends ServiceImpl<FanMapper, Fan>
                 .peek(songInfoVO ->
                         songInfoVO.setIsLiked(true))
                 .collect(Collectors.toList());
+    }
+
+    // ---------------------------------
+    // private util function
+    // ---------------------------------
+    private void asyncUpdateAlbumAvgScore(Integer albumId) {
+        CompletableFuture.runAsync(() -> {
+            int retryCount = 0;
+            boolean updateRes = false;
+
+            while (retryCount < MAX_RETRIES) {
+                List<AlbumLike> albumLikeList = albumLikeMapper.queryByAlbumId(albumId);
+                updateRes = updateAlbumScore(albumLikeList, albumId);
+
+                if (updateRes) {
+                    // 如果更新成功，跳出循环
+                    break;
+                }
+
+                // 更新失败，等待一段时间后进行重试
+                retryCount++;
+                try {
+                    Thread.sleep(1000); // 休眠1秒钟
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+            if (!updateRes) {
+                logger.error("Max retry count reached. Unable to update album score.");
+            }
+        }, UPDATE_ALBUM_SCORE_THREAD_POOL);
+    }
+
+    private boolean updateAlbumScore(List<AlbumLike> albumLikeList, Integer albumId) {
+        List<AlbumLike> nonZeroScoreList = albumLikeList.stream()
+                .filter(albumLike -> albumLike.getScore() != 0)
+                .collect(Collectors.toList());
+        if (!nonZeroScoreList.isEmpty()) {
+            // 计算非零评分的平均值
+            double avgScore = nonZeroScoreList.stream().mapToDouble(AlbumLike::getScore).average().orElse(0.0);
+            // 更新数据库
+            return albumMapper.updateAvgScore(albumId, avgScore);
+        }
+        return true;
     }
 }

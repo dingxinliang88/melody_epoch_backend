@@ -31,7 +31,6 @@ public class MvcConfig implements WebMvcConfigurer {
                 .addMapping("/**")
                 // 允许发送cookie
                 .allowCredentials(true)
-                // TODO 根据项目实际情况修改放行域名
                 // .allowedOrigins("http://127.0.0.1:5173", "http://codejuzi.icu", "http://xxx.xxx.xxx")
                 .allowedOriginPatterns("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
