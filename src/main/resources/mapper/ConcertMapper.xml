@@ -49,17 +49,17 @@
         UPDATE concert SET is_release = #{release} WHERE concert_id = #{concertId} AND is_delete = 0;
     </update>
     <select id="listConcertInfoVO" resultType="io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO">
-        SELECT concert_id, name, start_time, end_time, place, band_name, max_num
+        SELECT concert_id, name, start_time, end_time, place, band_name, max_num, is_release
         FROM concert
         WHERE is_release = 1 AND is_delete = 0;
     </select>
     <select id="queryConcertByBandId" resultType="io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO">
-        SELECT concert_id, name, start_time, end_time, place, band_id, band_name, max_num
+        SELECT concert_id, name, start_time, end_time, place, band_id, band_name, max_num, is_release
         FROM concert
         WHERE band_id = #{bandId} AND is_delete = 0;
     </select>
     <select id="queryByConcertId" resultType="io.github.dingxinliang88.pojo.po.Concert">
-        SELECT concert_id, name, start_time, end_time, place, band_name, max_num, song_ids AS song_ids_str
+        SELECT concert_id, name, band_id, start_time, end_time, place, band_name, max_num, song_ids AS song_ids_str
         FROM concert
         WHERE concert_id = #{concertId} AND is_delete = 0
         <if test="not inner">

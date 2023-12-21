@@ -49,7 +49,7 @@ public class ConcertDetailsVO implements Serializable {
     /**
      * 举办乐队ID
      */
-    private Integer bandId; // band_id => bandId
+    private Integer bandId;
 
     /**
      * 举办乐队名称

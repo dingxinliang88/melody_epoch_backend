@@ -109,7 +109,8 @@ public class ConcertServiceImpl extends ServiceImpl<ConcertMapper, Concert>
         Long concertId = req.getConcertId();
         Concert concert = concertMapper.queryByConcertId(concertId, true);
         ThrowUtil.throwIf(!concert.getBandId().equals(band.getBandId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改演出信息!");
-
+        // concert时间合理
+        ThrowUtil.throwIf(concert.getStartTime().plusHours(-2).isBefore(LocalDateTime.now()), StatusCode.PARAMS_ERROR, "当前时间不合理");
         return concertMapper.updateReleaseStatusByConcertId(concertId, CommonConstant.RELEASE);
     }
 
@@ -126,6 +127,8 @@ public class ConcertServiceImpl extends ServiceImpl<ConcertMapper, Concert>
         Concert concert = concertMapper.queryByConcertId(concertId, true);
         ThrowUtil.throwIf(!concert.getBandId().equals(band.getBandId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改演出信息!");
 
+        // concert 时间合理
+        ThrowUtil.throwIf(concert.getStartTime().plusHours(-2).isBefore(LocalDateTime.now()), StatusCode.PARAMS_ERROR, "当前时间不合理");
         return concertMapper.updateReleaseStatusByConcertId(concertId, CommonConstant.UN_RELEASE);
     }
 

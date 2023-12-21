@@ -61,6 +61,11 @@ public class ConcertInfoVO implements Serializable {
     private Integer maxNum;
 
     /**
+     * 是否发布
+     */
+    private Integer isRelease;
+
+    /**
      * 是否允许修改
      * 开始时间前一个小时不让修改了
      */
