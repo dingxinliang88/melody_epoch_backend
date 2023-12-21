@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -29,39 +28,38 @@ public class ConcertController {
     private ConcertService concertService;
 
     @PostMapping("/add")
-    public BaseResponse<Long> addConcert(@RequestBody @Validated AddConcertReq req, HttpServletRequest request) {
-        return RespUtil.success(concertService.addConcert(req, request));
+    public BaseResponse<Long> addConcert(@RequestBody @Validated AddConcertReq req) {
+        return RespUtil.success(concertService.addConcert(req));
     }
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditConcertReq req, HttpServletRequest request) {
-        return RespUtil.success(concertService.editInfo(req, request));
+    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditConcertReq req) {
+        return RespUtil.success(concertService.editInfo(req));
     }
 
     @GetMapping("/list")
-    public BaseResponse<List<ConcertInfoVO>> listConcertInfoVO(HttpServletRequest request) {
-        return RespUtil.success(concertService.listConcertInfoVO(request));
+    public BaseResponse<List<ConcertInfoVO>> listConcertInfoVO() {
+        return RespUtil.success(concertService.listConcertInfoVO());
     }
 
     @PostMapping("/release")
-    public BaseResponse<Boolean> releaseConcert(@RequestBody @Validated ReleaseConcertReq req, HttpServletRequest request) {
-        return RespUtil.success(concertService.releaseConcert(req, request));
+    public BaseResponse<Boolean> releaseConcert(@RequestBody @Validated ReleaseConcertReq req) {
+        return RespUtil.success(concertService.releaseConcert(req));
     }
 
     @PostMapping("/unrelease")
-    public BaseResponse<Boolean> unReleaseConcert(@RequestBody @Validated ReleaseConcertReq req, HttpServletRequest request) {
-        return RespUtil.success(concertService.unReleaseConcert(req, request));
+    public BaseResponse<Boolean> unReleaseConcert(@RequestBody @Validated ReleaseConcertReq req) {
+        return RespUtil.success(concertService.unReleaseConcert(req));
     }
 
     @GetMapping("/curr")
-    public BaseResponse<List<ConcertInfoVO>> getCurrConcertInfo(HttpServletRequest request) {
-        return RespUtil.success(concertService.getCurrConcertInfo(request));
+    public BaseResponse<List<ConcertInfoVO>> getCurrConcertInfo() {
+        return RespUtil.success(concertService.getCurrConcertInfo());
     }
 
     @GetMapping("/all")
-    public BaseResponse<ConcertDetailsVO> getCurrConcertDetails(@RequestParam(value = "concertId") @NotNull Long concertId,
-                                                                HttpServletRequest request) {
-        return RespUtil.success(concertService.getCurrConcertDetails(concertId, request));
+    public BaseResponse<ConcertDetailsVO> getCurrConcertDetails(@RequestParam(value = "concertId") @NotNull Long concertId) {
+        return RespUtil.success(concertService.getCurrConcertDetails(concertId));
     }
 
 }

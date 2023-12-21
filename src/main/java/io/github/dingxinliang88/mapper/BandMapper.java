@@ -32,7 +32,6 @@ public interface BandMapper extends BaseMapper<Band> {
      */
     Band queryByBandName(String bandName, boolean inner);
 
-
     /**
      * 根据队长ID查找乐队
      *
@@ -47,8 +46,7 @@ public interface BandMapper extends BaseMapper<Band> {
      * @param bandId 乐队ID
      * @return band info
      */
-    BandDetailsVO queryBandInfoVOByBandId(Integer bandId);
-
+    BandDetailsVO queryBandInfoVOByBandId(Integer bandId, boolean inner);
 
     /**
      * 修改乐队人数

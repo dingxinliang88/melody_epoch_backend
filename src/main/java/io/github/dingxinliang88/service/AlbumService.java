@@ -1,82 +1,281 @@
 package io.github.dingxinliang88.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.ReleaseAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
+import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Album;
+import io.github.dingxinliang88.pojo.po.Band;
+import io.github.dingxinliang88.pojo.po.Comment;
 import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
+import io.github.dingxinliang88.pojo.vo.comment.CommentVO;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.SysUtil;
+import io.github.dingxinliang88.utils.ThrowUtil;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * Album Service
+ * Album Service Implementation
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
-public interface AlbumService extends IService<Album> {
+@Service
+public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
+
+    @Resource
+    private UserMapper userMapper;
+    @Resource
+    private SongMapper songMapper;
+
+    @Resource
+    private AlbumMapper albumMapper;
+
+    @Resource
+    private BandMapper bandMapper;
+
+    @Resource
+    private CommentMapper commentMapper;
+
+    @Resource
+    private AlbumLikeMapper albumLikeMapper;
+
+    @Resource
+    private TransactionTemplate transactionTemplate;
 
     /**
      * 添加专辑
      *
      * @param req     添加专辑请求
-     * @param request http request
      * @return 专辑ID
      */
-    Integer addAlbum(AddAlbumReq req, HttpServletRequest request);
+    public Integer addAlbum(AddAlbumReq req) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法创建专辑!");
+
+        Album album = new Album(req.getName(), req.getCompany(), band.getName(), req.getProfile());
+        albumMapper.insert(album);
+
+        return album.getAlbumId();
+    }
 
     /**
      * 修改专辑信息
      *
      * @param req     修改专辑请求
-     * @param request http request
      * @return true - 修改成功
      */
-    Boolean editInfo(EditAlbumReq req, HttpServletRequest request);
+    public Boolean editInfo(EditAlbumReq req) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        return albumMapper.editInfo(req);
+    }
 
     /**
      * 获取已经发布的专辑信息VO
      *
-     * @param request http request
      * @return album info vo
      */
-    List<AlbumInfoVO> listAlbumInfoVO(HttpServletRequest request);
+    public List<AlbumInfoVO> listAlbumInfoVO() {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+        List<AlbumInfoVO> albumInfoVOList = albumMapper.listAlbumInfoVO();
+        return albumInfoVOList.stream()
+                .peek(albumInfoVO -> {
+                    if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+                        albumInfoVO.setCanLike(Boolean.TRUE);
+                        albumInfoVO.setIsLiked(albumLikeMapper.queryByAlbumIdAndUserId(albumInfoVO.getAlbumId(), userId) != null);
+                    }
+                })
+                .collect(Collectors.toList());
+    }
 
     /**
      * 获取当前乐队所有的专辑信息
      *
-     * @param request http request
      * @return album list
      */
-    List<AlbumInfoVO> currBandAllAlbums(HttpServletRequest request);
+    public List<AlbumInfoVO> currBandAllAlbums() {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        return albumMapper.queryAlbumByBandName(band.getName());
+    }
 
     /**
      * 歌曲录入专辑
      *
      * @param req     歌曲录入专辑的请求
-     * @param request http request
      * @return true - 录入成功
      */
-    Boolean addSongsToAlbum(SongToAlbumReq req, HttpServletRequest request);
+    public Boolean addSongsToAlbum(SongToAlbumReq req) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        Album album = albumMapper.queryAlbumByAlbumId(req.getAlbumId(), true);
+        ThrowUtil.throwIf(!album.getBandName().equals(band.getName()), StatusCode.NO_AUTH_ERROR, "禁止的操作！");
+
+        Integer albumId = req.getAlbumId();
+        List<Integer> noneSelectedSongIds = req.getNoneSelectedSongIds();
+        List<Integer> selectedSongIds = req.getSelectedSongIds();
+
+        return transactionTemplate.execute(status -> {
+            try {
+                if (!noneSelectedSongIds.isEmpty()) {
+                    songMapper.editBatchSongAlbumInfo(noneSelectedSongIds, null, null);
+                }
+                if (!selectedSongIds.isEmpty()) {
+                    songMapper.editBatchSongAlbumInfo(selectedSongIds, albumId, album.getName());
+                }
+                return Boolean.TRUE;
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                throw e;
+            }
+        });
+    }
 
     /**
      * 获取专辑详细信息
      *
      * @param albumId 专辑ID
-     * @param request http request
      * @return 专辑详细信息
      */
-    AlbumDetailsVO getAlbumDetailsInfo(Integer albumId, HttpServletRequest request);
+    public AlbumDetailsVO getAlbumDetailsInfo(Integer albumId) {
+        // 获取专辑详细信息
+        Album album = albumMapper.queryAlbumByAlbumId(albumId, false);
+        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "专辑不存在！");
+        AlbumDetailsVO albumDetailsVO = new AlbumDetailsVO(album);
+        // 查询专辑的歌曲信息
+        List<SongInfoVO> songInfoVOList = songMapper.querySongInfoVOByAlbumId(albumId);
+        albumDetailsVO.setSongInfoList(songInfoVOList);
+        // 获取专辑的评论信息
+        List<Comment> comments = commentMapper.queryByAlbumId(albumId);
+        List<CommentVO> commentVOList = parseComments(comments);
+
+        albumDetailsVO.setCommentVOList(commentVOList);
+
+        return albumDetailsVO;
+    }
 
     /**
      * 发布专辑信息
      *
      * @param req     发布专辑信息
-     * @param request http request
      * @return true - 发布成功
      */
-    Boolean releaseAlbum(ReleaseAlbumReq req, HttpServletRequest request);
+    public Boolean releaseAlbum(ReleaseAlbumReq req) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        Integer albumId = req.getAlbumId();
+        Album album = albumMapper.queryAlbumByAlbumId(albumId, true);
+        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "专辑不存在！");
+        ThrowUtil.throwIf(!album.getBandName().equals(band.getName()), StatusCode.NO_AUTH_ERROR, "您不是该乐队的队长，无法修改专辑信息!");
+
+        return transactionTemplate.execute(status -> {
+            try {
+                String songIdsStr = album.getSongIdsStr();
+                if (StrUtil.isNotEmpty(songIdsStr)) {
+                    List<Integer> songIds = Arrays.stream(songIdsStr.split(","))
+                            .map(Integer::parseInt).collect(Collectors.toList());
+                    songMapper.updateBatchReleaseStatus(songIds, CommonConstant.RELEASE);
+                }
+                return albumMapper.updateAlbumReleaseStatusByAlbumId(albumId, CommonConstant.RELEASE);
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    // -------------------------------------
+    // util functions
+    // -------------------------------------
+
+    private List<CommentVO> parseComments(List<Comment> comments) {
+        if (comments.isEmpty()) return null;
+
+        // Step 1: Create a map to store comments grouped by parent comment ID
+        Map<Integer, List<Comment>> groupedComments = comments.stream()
+                .collect(Collectors.groupingBy(Comment::getParentId));
+
+        // Step 2: Process top-level comments and create CommentVO objects
+        List<CommentVO> result = new ArrayList<>();
+        List<Comment> topLevelComments = groupedComments.getOrDefault(0, Collections.emptyList());
+
+        for (Comment topLevelComment : topLevelComments) {
+            CommentVO commentVO = convertToCommentVO(topLevelComment);
+            processChildComments(commentVO, groupedComments);
+            result.add(commentVO);
+        }
+
+        // Step 3: Sort the top-level comments based on creation time
+        result.sort(Comparator.comparing(CommentVO::getCreateTime, Comparator.reverseOrder()));
+        return result;
+    }
+
+    private CommentVO convertToCommentVO(Comment comment) {
+        // Fetch user name from user table using userId
+        String userName = userMapper.queryNickNameByUserId(comment.getUserId());
+
+        // Create CommentVO
+        CommentVO commentVO = new CommentVO();
+        commentVO.setCommentId(comment.getCommentId());
+        commentVO.setAlbumId(comment.getAlbumId());
+        commentVO.setContent(comment.getContent());
+        commentVO.setParentId(comment.getParentId());
+        commentVO.setUserId(comment.getUserId());
+        commentVO.setUserName(userName); // Set the user name
+        commentVO.setCreateTime(comment.getCreateTime());
+        return commentVO;
+    }
+
+    private void processChildComments(CommentVO parentCommentVO, Map<Integer, List<Comment>> groupedComments) {
+        List<Comment> childComments = groupedComments.getOrDefault(parentCommentVO.getCommentId(), Collections.emptyList());
+        // Sort child comments based on creation time in descending order
+        childComments.sort(Comparator.comparing(Comment::getCreateTime, Comparator.reverseOrder()));
+        for (Comment childComment : childComments) {
+            CommentVO childCommentVO = convertToCommentVO(childComment);
+            processChildComments(childCommentVO, groupedComments);
+            // Initialize the childrenComments list if it's null
+            if (parentCommentVO.getChildrenComments() == null) {
+                parentCommentVO.setChildrenComments(new ArrayList<>());
+            }
+            parentCommentVO.getChildrenComments().add(childCommentVO);
+        }
+    }
 }

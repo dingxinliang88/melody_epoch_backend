@@ -32,7 +32,7 @@ public class BandMapperTest {
     @Test
     public void queryBandInfoVOByBandId() {
         Integer bandId = 1;
-        BandDetailsVO bandDetailsVO = bandMapper.queryBandInfoVOByBandId(bandId);
+        BandDetailsVO bandDetailsVO = bandMapper.queryBandInfoVOByBandId(bandId, true);
         System.out.println(JSONUtil.toJsonStr(bandDetailsVO));
     }
 

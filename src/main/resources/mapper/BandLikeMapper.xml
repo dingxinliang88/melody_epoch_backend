@@ -9,6 +9,7 @@
         <result column="band_id" property="bandId"/>
         <result column="user_id" property="userId"/>
     </resultMap>
+
     <delete id="deleteByBandIdAndUserId">
         DELETE
         FROM band_like

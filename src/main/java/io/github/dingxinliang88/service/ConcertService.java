@@ -1,81 +1,218 @@
 package io.github.dingxinliang88.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.ReleaseConcertReq;
+import io.github.dingxinliang88.pojo.enums.UserRoleType;
+import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Concert;
+import io.github.dingxinliang88.pojo.po.ConcertJoin;
+import io.github.dingxinliang88.pojo.po.SongLike;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertDetailsVO;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
+import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
+import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.SysUtil;
+import io.github.dingxinliang88.utils.ThrowUtil;
+import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Concert Service
+ * Comment Service Implementation
  *
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
-public interface ConcertService extends IService<Concert> {
+@Service
+public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
+
+    @Resource
+    private ConcertMapper concertMapper;
+
+    @Resource
+    private SongMapper songMapper;
+
+    @Resource
+    private BandMapper bandMapper;
+
+    @Resource
+    private ConcertJoinMapper concertJoinMapper;
+
+    @Resource
+    private SongLikeMapper songLikeMapper;
 
     /**
      * 添加演唱会信息
      *
      * @param req     添加演唱会请求
-     * @param request http request
      * @return 演唱会ID
      */
-    Long addConcert(AddConcertReq req, HttpServletRequest request);
+    public Long addConcert(AddConcertReq req) {
+        // 判断当前登录用户是否是队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "您不是队长，无法添加演出");
+
+        // 判断演出时间是否合理（晚于当前时间，至少持续两个小时）
+        ThrowUtil.throwIf(LocalDateTime.now().isAfter(req.getStartTime()), StatusCode.PARAMS_ERROR, "演出开始时间不能早于当前时间");
+        ThrowUtil.throwIf(req.getStartTime().plusHours(2).isAfter(req.getEndTime()), StatusCode.PARAMS_ERROR, "演出时间不能少于2小时");
+
+        String songIdsStr = StrUtil.join(",", req.getSongIdList());
+
+        Concert concert = new Concert(req.getName(), req.getStartTime(), req.getEndTime(), req.getPlace(),
+                band.getBandId(), band.getName(), songIdsStr, req.getMaxNum());
+
+        concertMapper.insert(concert);
+
+        return concert.getConcertId();
+    }
 
     /**
      * 修改演唱会信息
      *
      * @param req     修改演唱会信息
-     * @param request http request
      * @return true - 修改成功
      */
-    Boolean editInfo(EditConcertReq req, HttpServletRequest request);
+    public Boolean editInfo(EditConcertReq req) {
+        // 判断当前登录用户是否是队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "无权访问");
+
+        // 判断演出时间是否合理（晚于当前时间，至少持续两个小时）
+        ThrowUtil.throwIf(LocalDateTime.now().isAfter(req.getStartTime()), StatusCode.PARAMS_ERROR, "演出开始时间不能早于当前时间");
+        ThrowUtil.throwIf(req.getStartTime().plusHours(2).isAfter(req.getEndTime()), StatusCode.PARAMS_ERROR, "演出时间不能少于2小时");
+
+        String songIdsStr = StrUtil.join(",", req.getSongIdList());
+
+        return concertMapper.editInfo(req.getConcertId(), req.getName(), req.getStartTime(),
+                req.getEndTime(), band.getBandId(), req.getPlace(), songIdsStr, req.getMaxNum());
+
+    }
 
     /**
      * 获取演唱会信息
      *
-     * @param request http request
      * @return concert info vo
      */
-    List<ConcertInfoVO> listConcertInfoVO(HttpServletRequest request);
+    public List<ConcertInfoVO> listConcertInfoVO() {
+        return concertMapper.listConcertInfoVO();
+    }
 
     /**
      * 发布演唱会信息
      *
      * @param req     发布演唱会请求
-     * @param request http request
      * @return concert info vo
      */
-    Boolean releaseConcert(ReleaseConcertReq req, HttpServletRequest request);
+    public Boolean releaseConcert(ReleaseConcertReq req) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        Long concertId = req.getConcertId();
+        Concert concert = concertMapper.queryByConcertId(concertId, true);
+        ThrowUtil.throwIf(!concert.getBandId().equals(band.getBandId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改演出信息!");
+        // concert时间合理
+        ThrowUtil.throwIf(concert.getStartTime().plusHours(-2).isBefore(LocalDateTime.now()), StatusCode.PARAMS_ERROR, "当前时间不合理");
+        return concertMapper.updateReleaseStatusByConcertId(concertId, CommonConstant.RELEASE);
+    }
 
     /**
      * 撤销发布演唱会信息
      *
      * @param req     发布演唱会请求
-     * @param request http request
      * @return concert info vo
      */
-    Boolean unReleaseConcert(ReleaseConcertReq req, HttpServletRequest request);
+    public Boolean unReleaseConcert(ReleaseConcertReq req) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        Long concertId = req.getConcertId();
+        Concert concert = concertMapper.queryByConcertId(concertId, true);
+        ThrowUtil.throwIf(!concert.getBandId().equals(band.getBandId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改演出信息!");
+
+        // concert 时间合理
+        ThrowUtil.throwIf(concert.getStartTime().plusHours(-2).isBefore(LocalDateTime.now()), StatusCode.PARAMS_ERROR, "当前时间不合理");
+        return concertMapper.updateReleaseStatusByConcertId(concertId, CommonConstant.UN_RELEASE);
+    }
 
     /**
      * 获取当前乐队的演唱会信息
      *
-     * @param request http request
      * @return concert info vo list
      */
-    List<ConcertInfoVO> getCurrConcertInfo(HttpServletRequest request);
+    public List<ConcertInfoVO> getCurrConcertInfo() {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        List<ConcertInfoVO> concertInfoVOList = concertMapper.queryConcertByBandId(band.getBandId());
+
+        return concertInfoVOList.stream().peek(concertInfoVO -> {
+            LocalDateTime startTime = concertInfoVO.getStartTime();
+            concertInfoVO.setCanEdit(
+                    startTime.plusHours(2).isBefore(LocalDateTime.now())
+            );
+        }).collect(Collectors.toList());
+    }
 
     /**
      * 获取当前演唱会信息
      *
      * @param concertId concert id
-     * @param request   http request
      * @return concert details
      */
-    ConcertDetailsVO getCurrConcertDetails(Long concertId, HttpServletRequest request);
+    public ConcertDetailsVO getCurrConcertDetails(Long concertId) {
+        Concert concert = concertMapper.queryByConcertId(concertId, true);
+        ThrowUtil.throwIf(concert == null, StatusCode.NO_AUTH_ERROR, "演唱会不存在!");
+
+        ConcertDetailsVO concertDetailsVO = new ConcertDetailsVO(concert);
+
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+            concertDetailsVO.setCanJoin(Boolean.TRUE);
+            ConcertJoin concertJoin = concertJoinMapper.queryByConcertIdAndUserId(concertId, currUser.getUserId());
+            concertDetailsVO.setIsJoined(concertJoin != null);
+        }
+
+        // 设置人数
+        concertDetailsVO.setJoinedNum(concertJoinMapper.queryCountByConcertId(concertId));
+
+        // 处理歌曲
+        String songIdsStr = concert.getSongIdsStr();
+        List<Integer> songIds
+                = Arrays.stream(songIdsStr.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+        List<SongInfoVO> songInfoVOList = songMapper.queryBatchBySongId(songIds);
+        songInfoVOList = songInfoVOList.stream().peek(songInfoVO -> {
+            if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+                songInfoVO.setCanLike(Boolean.TRUE);
+                SongLike songLike = songLikeMapper.queryBySongIdAndUserId(songInfoVO.getSongId(), currUser.getUserId());
+                songInfoVO.setIsLiked(songLike != null);
+            }
+        }).collect(Collectors.toList());
+
+        concertDetailsVO.setSongInfoVOList(songInfoVOList);
+
+        return concertDetailsVO;
+    }
 }

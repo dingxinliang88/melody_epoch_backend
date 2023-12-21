@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -29,32 +28,32 @@ public class SongController {
     private SongService songService;
 
     @PostMapping("/add")
-    public BaseResponse<Integer> addSong(@RequestBody @Validated AddSongReq req, HttpServletRequest request) {
-        return RespUtil.success(songService.addSong(req, request));
+    public BaseResponse<Integer> addSong(@RequestBody @Validated AddSongReq req) {
+        return RespUtil.success(songService.addSong(req));
     }
 
     @GetMapping("/items")
-    public BaseResponse<List<SongItemVO>> listSongItems(HttpServletRequest request) {
-        return RespUtil.success(songService.listSongItems(request));
+    public BaseResponse<List<SongItemVO>> listSongItems() {
+        return RespUtil.success(songService.listSongItems());
     }
 
     @GetMapping("/list")
-    public BaseResponse<List<SongInfoVO>> listSongInfoVO(HttpServletRequest request) {
-        return RespUtil.success(songService.listSongInfoVO(request));
+    public BaseResponse<List<SongInfoVO>> listSongInfoVO() {
+        return RespUtil.success(songService.listSongInfoVO());
     }
 
     @GetMapping("/album")
-    public BaseResponse<SongToAlbumVO> listSongToAlbum(@RequestParam("albumId") Integer albumId, HttpServletRequest request) {
-        return RespUtil.success(songService.listSongToAlbum(albumId, request));
+    public BaseResponse<SongToAlbumVO> listSongToAlbum(@RequestParam("albumId") Integer albumId) {
+        return RespUtil.success(songService.listSongToAlbum(albumId));
     }
 
     @GetMapping("/curr")
-    public BaseResponse<List<Song>> currBandSongs(HttpServletRequest request) {
-        return RespUtil.success(songService.currBandSongs(request));
+    public BaseResponse<List<Song>> currBandSongs() {
+        return RespUtil.success(songService.currBandSongs());
     }
 
     @PostMapping("/release")
-    public BaseResponse<Boolean> releaseSong(@RequestBody @Validated ReleaseSongReq req, HttpServletRequest request) {
-        return RespUtil.success(songService.releaseSong(req, request));
+    public BaseResponse<Boolean> releaseSong(@RequestBody @Validated ReleaseSongReq req) {
+        return RespUtil.success(songService.releaseSong(req));
     }
 }

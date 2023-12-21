@@ -29,7 +29,6 @@ public interface AlbumMapper extends BaseMapper<Album> {
      */
     List<AlbumInfoVO> listAlbumInfoVO();
 
-
     /**
      * 根据乐队名称查询对应的专辑信息
      *

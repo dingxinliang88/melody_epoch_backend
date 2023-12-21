@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -32,44 +31,43 @@ public class FanController {
 
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody EditFanReq req, HttpServletRequest request) {
-        return RespUtil.success(fanService.editInfo(req, request));
+    public BaseResponse<Boolean> editInfo(@RequestBody EditFanReq req) {
+        return RespUtil.success(fanService.editInfo(req));
     }
 
     @PostMapping("/like")
-    public BaseResponse<Boolean> like(@RequestBody @Validated LikeReq req, HttpServletRequest request) {
-        return RespUtil.success(fanService.like(req, request));
+    public BaseResponse<Boolean> like(@RequestBody @Validated LikeReq req) {
+        return RespUtil.success(fanService.like(req));
     }
 
     @PostMapping("/unlike")
-    public BaseResponse<Boolean> unlike(@RequestBody @Validated LikeReq req, HttpServletRequest request) {
-        return RespUtil.success(fanService.unlike(req, request));
+    public BaseResponse<Boolean> unlike(@RequestBody @Validated LikeReq req) {
+        return RespUtil.success(fanService.unlike(req));
     }
 
     @GetMapping("/like/album/status")
-    public BaseResponse<LikeAlbumStatusVO> getLikeAlbumStatus(@RequestParam(value = "albumId") @NotNull Integer albumId,
-                                                              HttpServletRequest request) {
-        return RespUtil.success(fanService.getLikeAlbumStatus(albumId, request));
+    public BaseResponse<LikeAlbumStatusVO> getLikeAlbumStatus(@RequestParam(value = "albumId") @NotNull Integer albumId) {
+        return RespUtil.success(fanService.getLikeAlbumStatus(albumId));
     }
 
     @PostMapping("/score")
-    public BaseResponse<Boolean> scoreAlbum(@RequestBody @Validated ScoreAlbumReq req, HttpServletRequest request) {
-        return RespUtil.success(fanService.scoreAlbum(req, request));
+    public BaseResponse<Boolean> scoreAlbum(@RequestBody @Validated ScoreAlbumReq req) {
+        return RespUtil.success(fanService.scoreAlbum(req));
     }
 
     @GetMapping("/like/band")
-    public BaseResponse<List<BandInfoVO>> listMyLikedBand(HttpServletRequest request) {
-        return RespUtil.success(fanService.listMyLikedBand(request));
+    public BaseResponse<List<BandInfoVO>> listMyLikedBand() {
+        return RespUtil.success(fanService.listMyLikedBand());
     }
 
     @GetMapping("/like/album")
-    public BaseResponse<List<AlbumInfoVO>> listMyLikedAlbum(HttpServletRequest request) {
-        return RespUtil.success(fanService.listMyLikedAlbum(request));
+    public BaseResponse<List<AlbumInfoVO>> listMyLikedAlbum() {
+        return RespUtil.success(fanService.listMyLikedAlbum());
     }
 
     @GetMapping("/like/song")
-    public BaseResponse<List<SongInfoVO>> listMyLikedSong(HttpServletRequest request) {
-        return RespUtil.success(fanService.listMyLikedSong(request));
+    public BaseResponse<List<SongInfoVO>> listMyLikedSong() {
+        return RespUtil.success(fanService.listMyLikedSong());
     }
 
 }

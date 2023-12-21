@@ -24,7 +24,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Resource
     private JwtTokenManager jwtTokenManager;
 
-    @Override
+    
     public void addCorsMappings(CorsRegistry registry) {
         registry
                 // 覆盖所有请求
@@ -39,7 +39,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     }
 
-    @Override
+    
     public void addInterceptors(InterceptorRegistry registry) {
         registry
                 .addInterceptor(new RefreshTokenInterceptor(jwtTokenManager, redisUtil))
@@ -65,7 +65,7 @@ public class MvcConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 
-    @Override
+    
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");

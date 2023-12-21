@@ -70,7 +70,6 @@ public interface MemberMapper extends BaseMapper<Member> {
      */
     Boolean editMemberPart(Integer memberId, String part);
 
-
     /**
      * 根据乐队ID获取乐队成员信息
      *
@@ -86,7 +85,6 @@ public interface MemberMapper extends BaseMapper<Member> {
      * @return member info vo list
      */
     List<MemberInfoVO> listMemberInfoVO(Integer bandId);
-
 
     /**
      * 查询出所有的乐队成员信息

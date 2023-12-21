@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 评论模块
@@ -26,7 +25,7 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/add")
-    public BaseResponse<Integer> addComment(@RequestBody @Validated AddCommentReq req, HttpServletRequest request) {
-        return RespUtil.success(commentService.addComment(req, request));
+    public BaseResponse<Integer> addComment(@RequestBody @Validated AddCommentReq req) {
+        return RespUtil.success(commentService.addComment(req));
     }
 }

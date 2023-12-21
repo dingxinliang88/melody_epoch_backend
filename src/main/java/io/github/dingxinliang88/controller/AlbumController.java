@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -30,38 +29,38 @@ public class AlbumController {
     private AlbumService albumService;
 
     @PostMapping("/add")
-    public BaseResponse<Integer> addAlbum(@RequestBody @Validated AddAlbumReq req, HttpServletRequest request) {
-        return RespUtil.success(albumService.addAlbum(req, request));
+    public BaseResponse<Integer> addAlbum(@RequestBody @Validated AddAlbumReq req) {
+        return RespUtil.success(albumService.addAlbum(req));
     }
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditAlbumReq req, HttpServletRequest request) {
-        return RespUtil.success(albumService.editInfo(req, request));
+    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditAlbumReq req) {
+        return RespUtil.success(albumService.editInfo(req));
     }
 
+    // TODO 分页获取
     @GetMapping("/list")
-    public BaseResponse<List<AlbumInfoVO>> listAlbumInfoVO(HttpServletRequest request) {
-        return RespUtil.success(albumService.listAlbumInfoVO(request));
+    public BaseResponse<List<AlbumInfoVO>> listAlbumInfoVO() {
+        return RespUtil.success(albumService.listAlbumInfoVO());
     }
 
     @GetMapping("/info")
-    public BaseResponse<AlbumDetailsVO> getAlbumDetailsInfo(@RequestParam(value = "albumId") @NotNull Integer albumId,
-                                                            HttpServletRequest request) {
-        return RespUtil.success(albumService.getAlbumDetailsInfo(albumId, request));
+    public BaseResponse<AlbumDetailsVO> getAlbumDetailsInfo(@RequestParam(value = "albumId") @NotNull Integer albumId) {
+        return RespUtil.success(albumService.getAlbumDetailsInfo(albumId));
     }
 
     @GetMapping("/curr")
-    public BaseResponse<List<AlbumInfoVO>> currBandAllAlbums(HttpServletRequest request) {
-        return RespUtil.success(albumService.currBandAllAlbums(request));
+    public BaseResponse<List<AlbumInfoVO>> currBandAllAlbums() {
+        return RespUtil.success(albumService.currBandAllAlbums());
     }
 
     @PutMapping("/songs")
-    public BaseResponse<Boolean> addSongsToAlbum(@RequestBody @Validated SongToAlbumReq req, HttpServletRequest request) {
-        return RespUtil.success(albumService.addSongsToAlbum(req, request));
+    public BaseResponse<Boolean> addSongsToAlbum(@RequestBody @Validated SongToAlbumReq req) {
+        return RespUtil.success(albumService.addSongsToAlbum(req));
     }
 
     @PostMapping("/release")
-    public BaseResponse<Boolean> releaseAlbum(@RequestBody @Validated ReleaseAlbumReq req, HttpServletRequest request) {
-        return RespUtil.success(albumService.releaseAlbum(req, request));
+    public BaseResponse<Boolean> releaseAlbum(@RequestBody @Validated ReleaseAlbumReq req) {
+        return RespUtil.success(albumService.releaseAlbum(req));
     }
 }

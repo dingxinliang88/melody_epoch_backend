@@ -31,7 +31,6 @@ public interface SongMapper extends BaseMapper<Song> {
      */
     List<SongInfoVO> querySongsByBandId(Integer bandId);
 
-
     /**
      * 获取歌曲元素VO list
      *
@@ -53,7 +52,6 @@ public interface SongMapper extends BaseMapper<Song> {
      * @return song vo list
      */
     List<SongInfoVO> listSongInfoVO();
-
 
     /**
      * 查询乐队当前专辑的歌曲

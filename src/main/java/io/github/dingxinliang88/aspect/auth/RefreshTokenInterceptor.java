@@ -33,7 +33,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         this.redisUtil = redisUtil;
     }
 
-    @Override
+
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         if (HttpMethod.OPTIONS.toString().equals(request.getMethod())) {
             return true;

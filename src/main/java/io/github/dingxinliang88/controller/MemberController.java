@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -27,28 +26,28 @@ public class MemberController {
     private MemberService memberService;
 
     @PostMapping("/join")
-    public BaseResponse<Boolean> joinBand(@RequestBody @Validated JoinBandReq req, HttpServletRequest request) {
-        return RespUtil.success(memberService.joinBand(req, request));
+    public BaseResponse<Boolean> joinBand(@RequestBody @Validated JoinBandReq req) {
+        return RespUtil.success(memberService.joinBand(req));
     }
 
     @PostMapping("/leave")
-    public BaseResponse<Boolean> leaveBand(@RequestBody @Validated LeaveBandReq req, HttpServletRequest request) {
-        return RespUtil.success(memberService.leaveBand(req, request));
+    public BaseResponse<Boolean> leaveBand(@RequestBody @Validated LeaveBandReq req) {
+        return RespUtil.success(memberService.leaveBand(req));
     }
 
     @PutMapping("/part")
-    public BaseResponse<Boolean> editMemberPart(@RequestBody @Validated EditPartReq req, HttpServletRequest request) {
-        return RespUtil.success(memberService.editMemberPart(req, request));
+    public BaseResponse<Boolean> editMemberPart(@RequestBody @Validated EditPartReq req) {
+        return RespUtil.success(memberService.editMemberPart(req));
     }
 
     @GetMapping("/list")
-    public BaseResponse<List<MemberInfoVO>> listMembers(HttpServletRequest request) {
-        return RespUtil.success(memberService.listMembers(request));
+    public BaseResponse<List<MemberInfoVO>> listMembers() {
+        return RespUtil.success(memberService.listMembers());
     }
 
     @GetMapping("/curr_band")
-    public BaseResponse<List<MemberInfoVO>> listMemberInCurrBand(HttpServletRequest request) {
-        return RespUtil.success(memberService.listMemberInCurrBand(request));
+    public BaseResponse<List<MemberInfoVO>> listMemberInCurrBand() {
+        return RespUtil.success(memberService.listMemberInCurrBand());
     }
 
 }
