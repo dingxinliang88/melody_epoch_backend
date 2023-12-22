@@ -1,11 +1,5 @@
 package io.github.dingxinliang88.constants;
 
-import cn.hutool.core.collection.CollectionUtil;
-
-import java.util.Set;
-
-import static io.github.dingxinliang88.pojo.enums.UserRoleType.*;
-
 /**
  * 用户常量类
  *
@@ -25,10 +19,8 @@ public interface UserConstant {
     String DEFAULT_NICK_NAME_PREFIX = "user_";
     int NICK_NAME_LEN = 20;
 
-
     Integer CODE_LOGIN = 0;
     Integer PASSWORD_LOGIN = 1;
-
     String ACCESS_TOKEN_PREFIX = "user:access_token:";
     String REFRESH_TOKEN_PREFIX = "user:refresh_token:";
     long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24h => ms
@@ -36,8 +28,6 @@ public interface UserConstant {
     // endregion
 
     // user role type
-    Set<Integer> USER_ROLE_SET = CollectionUtil.newHashSet(ADMIN.getType(), MEMBER.getType(), FAN.getType());
-
     String USER_AUTH_TYPE_PREFIX = "user:auth:";
 
     // endregion

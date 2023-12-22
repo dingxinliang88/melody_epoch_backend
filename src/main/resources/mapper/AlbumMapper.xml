@@ -55,6 +55,12 @@
         </if>
         AND is_delete = 0;
     </select>
+    <select id="queryTopAlbums" resultType="io.github.dingxinliang88.pojo.vo.album.TopAlbumVO">
+        SELECT album_id, name, band_name, avg_score
+        FROM album
+        ORDER BY avg_score DESC
+        LIMIT #{topN};
+    </select>
 
 
 </mapper>

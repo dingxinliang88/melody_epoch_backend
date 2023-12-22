@@ -58,6 +58,11 @@ public class RedisUtil {
         redisTemplate.delete(key);
     }
 
+    public Set<Object> reverseRange(String key, int start, int end) {
+        validateKey(key);
+        return redisTemplate.opsForZSet().reverseRange(key, start, end);
+    }
+
     public Set<String> keys(String pattern) {
         return redisTemplate.keys(pattern);
     }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
 import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
+import io.github.dingxinliang88.pojo.vo.album.TopAlbumVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -72,4 +73,12 @@ public interface AlbumMapper extends BaseMapper<Album> {
      * @return true - 更新成功
      */
     boolean updateAvgScore(Integer albumId, double avgScore);
+
+    /**
+     * 获取到 TopN 的专辑信息
+     *
+     * @param topN top n
+     * @return top album vo info list
+     */
+    List<TopAlbumVO> queryTopAlbums(int topN);
 }

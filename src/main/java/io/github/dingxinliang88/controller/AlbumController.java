@@ -7,6 +7,7 @@ import io.github.dingxinliang88.pojo.dto.album.ReleaseAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.SongToAlbumReq;
 import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
+import io.github.dingxinliang88.pojo.vo.album.TopAlbumVO;
 import io.github.dingxinliang88.service.AlbumService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -62,5 +63,10 @@ public class AlbumController {
     @PostMapping("/release")
     public BaseResponse<Boolean> releaseAlbum(@RequestBody @Validated ReleaseAlbumReq req) {
         return RespUtil.success(albumService.releaseAlbum(req));
+    }
+
+    @GetMapping("/top")
+    public BaseResponse<List<TopAlbumVO>> getTopAlbums() {
+        return RespUtil.success(albumService.topAlbums());
     }
 }

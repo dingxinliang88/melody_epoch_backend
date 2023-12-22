@@ -1,8 +1,12 @@
 package io.github.dingxinliang88.service;
 
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.constants.AlbumConstant;
 import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
@@ -15,9 +19,11 @@ import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Comment;
 import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
+import io.github.dingxinliang88.pojo.vo.album.TopAlbumVO;
 import io.github.dingxinliang88.pojo.vo.comment.CommentVO;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import org.springframework.stereotype.Service;
@@ -25,6 +31,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,12 +60,20 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     private AlbumLikeMapper albumLikeMapper;
 
     @Resource
+    private RedisUtil redisUtil;
+
+    @Resource
     private TransactionTemplate transactionTemplate;
+
+    private static final ExecutorService CACHE_TOP_ALBUMS_THREAD_POOL = new ThreadPoolExecutor(
+            1, 2, 5000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(50),
+            r -> new Thread(r, "Top-Album-" + UUID.randomUUID().toString(true)), new ThreadPoolExecutor.AbortPolicy()
+    );
 
     /**
      * 添加专辑
      *
-     * @param req     添加专辑请求
+     * @param req 添加专辑请求
      * @return 专辑ID
      */
     public Integer addAlbum(AddAlbumReq req) {
@@ -78,7 +93,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     /**
      * 修改专辑信息
      *
-     * @param req     修改专辑请求
+     * @param req 修改专辑请求
      * @return true - 修改成功
      */
     public Boolean editInfo(EditAlbumReq req) {
@@ -130,7 +145,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     /**
      * 歌曲录入专辑
      *
-     * @param req     歌曲录入专辑的请求
+     * @param req 歌曲录入专辑的请求
      * @return true - 录入成功
      */
     public Boolean addSongsToAlbum(SongToAlbumReq req) {
@@ -190,7 +205,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     /**
      * 发布专辑信息
      *
-     * @param req     发布专辑信息
+     * @param req 发布专辑信息
      * @return true - 发布成功
      */
     public Boolean releaseAlbum(ReleaseAlbumReq req) {
@@ -220,6 +235,31 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    /**
+     * 获取 TopN 专辑
+     *
+     * @return topN 专辑
+     */
+    public List<TopAlbumVO> topAlbums() {
+        // 尝试从缓存中获取数据
+        Object topAlbumsObj = redisUtil.get(AlbumConstant.TOP_ALBUMS_KEY);
+        if (topAlbumsObj != null) {
+            String topAlbumsJson = topAlbumsObj.toString();
+            return JSONUtil.toBean(topAlbumsJson, new TypeReference<List<TopAlbumVO>>() {
+            }, false);
+        }
+
+        // 从数据库中查询
+        List<TopAlbumVO> topAlbumVOList = albumMapper.queryTopAlbums(AlbumConstant.TopN);
+
+        // 存入缓存
+        CompletableFuture.runAsync(() -> {
+            save2Cache(topAlbumVOList);
+        }, CACHE_TOP_ALBUMS_THREAD_POOL);
+
+        return topAlbumVOList;
     }
 
     // -------------------------------------
@@ -278,4 +318,10 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
             parentCommentVO.getChildrenComments().add(childCommentVO);
         }
     }
+
+    private void save2Cache(List<TopAlbumVO> topAlbumVOList) {
+        String topJson = JSONUtil.toJsonStr(topAlbumVOList);
+        redisUtil.setExpiredHours(AlbumConstant.TOP_ALBUMS_KEY, topJson, AlbumConstant.TOP_ALBUMS_EXPIRE_TIME);
+    }
+
 }
