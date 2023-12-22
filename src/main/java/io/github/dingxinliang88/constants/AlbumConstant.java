@@ -8,7 +8,7 @@ public interface AlbumConstant {
     /**
      * TopN Album Redis Key
      */
-    String TOP_ALBUMS_KEY = "album:top";
+    String TOP_ALBUMS_KEY = "album:top:data";
 
     /**
      * TopN albums expire time (hours)
@@ -19,5 +19,12 @@ public interface AlbumConstant {
      * TopN num
      */
     int TopN = 10;
+
+
+    String TOP_ALBUM_CACHE_EPOCH_KEY = "album:top:epoch";
+
+    int EPOCH = 15; // 1111
+
+    int INIT_EPOCH = 0;
 
 }

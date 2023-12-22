@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -58,9 +59,13 @@ public class RedisUtil {
         redisTemplate.delete(key);
     }
 
-    public Set<Object> reverseRange(String key, int start, int end) {
+    public void delete(String... key) {
+        redisTemplate.delete(CollUtil.newHashSet(key));
+    }
+
+    public Long increment(String key, int incr) {
         validateKey(key);
-        return redisTemplate.opsForZSet().reverseRange(key, start, end);
+        return redisTemplate.opsForValue().increment(key, incr);
     }
 
     public Set<String> keys(String pattern) {

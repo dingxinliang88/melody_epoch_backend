@@ -3,6 +3,7 @@ package io.github.dingxinliang88.service;
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.constants.AlbumConstant;
 import io.github.dingxinliang88.constants.FanConstant;
 import io.github.dingxinliang88.exception.BizException;
 import io.github.dingxinliang88.mapper.*;
@@ -16,6 +17,7 @@ import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
 import io.github.dingxinliang88.pojo.vo.fan.LikeAlbumStatusVO;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import org.slf4j.Logger;
@@ -36,6 +38,9 @@ import java.util.stream.Collectors;
 public class FanService extends ServiceImpl<FanMapper, Fan> {
 
     private final Logger logger = LoggerFactory.getLogger(FanService.class);
+
+    @Resource
+    private RedisUtil redisUtil;
 
     @Resource
     private FanMapper fanMapper;
@@ -65,7 +70,7 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     /**
      * 乐迷修改自己的信息
      *
-     * @param req     修改信息请求
+     * @param req 修改信息请求
      * @return true - 修改成功
      */
     public Boolean editInfo(EditFanReq req) {
@@ -88,7 +93,7 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     /**
      * 喜欢收藏
      *
-     * @param req     喜欢收藏请求
+     * @param req 喜欢收藏请求
      * @return true - 喜欢成功
      */
     public Boolean like(LikeReq req) {
@@ -133,7 +138,7 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     /**
      * 撤销喜欢收藏
      *
-     * @param req     撤销喜欢收藏请求
+     * @param req 撤销喜欢收藏请求
      * @return true - 撤销成功
      */
     public Boolean unlike(LikeReq req) {
@@ -166,7 +171,7 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     /**
      * 给专辑打分请求
      *
-     * @param req     打分请求
+     * @param req 打分请求
      * @return true - 打分成功
      */
     public Boolean scoreAlbum(ScoreAlbumReq req) {
@@ -179,6 +184,8 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
         ThrowUtil.throwIf(albumLike.getScore() != 0, StatusCode.DUPLICATE_DATA, "已经评分过了");
 
         Boolean res = albumLikeMapper.updateScore(req.getScore(), albumId, currUser.getUserId());
+        // 更新 打分次数
+        redisUtil.increment(AlbumConstant.TOP_ALBUM_CACHE_EPOCH_KEY, 1);
         if (res) {
             asyncUpdateAlbumAvgScore(albumId);
         }
