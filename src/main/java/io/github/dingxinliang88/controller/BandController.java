@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
@@ -11,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -39,6 +41,11 @@ public class BandController {
     @GetMapping("/list")
     public BaseResponse<List<BandInfoVO>> listBandBriefInfo() {
         return RespUtil.success(bandService.listBandBriefInfo());
+    }
+
+    @GetMapping("/list/page")
+    public BaseResponse<Page<BandInfoVO>> listBandBriefInfoByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
+        return RespUtil.success(bandService.listBandBriefInfoByPage(current));
     }
 
     @GetMapping("/list/all")

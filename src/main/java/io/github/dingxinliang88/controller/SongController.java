@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.ReleaseSongReq;
@@ -13,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -42,6 +45,11 @@ public class SongController {
         return RespUtil.success(songService.listSongInfoVO());
     }
 
+    @GetMapping("/list/page")
+    public BaseResponse<Page<SongInfoVO>> listSongInfoVOByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
+        return RespUtil.success(songService.listSongInfoVOByPage(current));
+    }
+
     @GetMapping("/album")
     public BaseResponse<SongToAlbumVO> listSongToAlbum(@RequestParam("albumId") Integer albumId) {
         return RespUtil.success(songService.listSongToAlbum(albumId));
@@ -50,6 +58,12 @@ public class SongController {
     @GetMapping("/curr")
     public BaseResponse<List<Song>> currBandSongs() {
         return RespUtil.success(songService.currBandSongs());
+    }
+
+    @GetMapping("/curr/page")
+    public BaseResponse<Page<Song>> currBandSongsByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                        @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(songService.currBandSongsByPage(current, size));
     }
 
     @PostMapping("/release")

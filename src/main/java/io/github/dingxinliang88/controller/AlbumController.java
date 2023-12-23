@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -39,10 +41,14 @@ public class AlbumController {
         return RespUtil.success(albumService.editInfo(req));
     }
 
-    // TODO 分页获取
     @GetMapping("/list")
     public BaseResponse<List<AlbumInfoVO>> listAlbumInfoVO() {
         return RespUtil.success(albumService.listAlbumInfoVO());
+    }
+
+    @GetMapping("/list/page")
+    public BaseResponse<Page<AlbumInfoVO>> listAlbumInfoVOByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
+        return RespUtil.success(albumService.listAlbumInfoVOByPage(current));
     }
 
     @GetMapping("/info")
@@ -53,6 +59,12 @@ public class AlbumController {
     @GetMapping("/curr")
     public BaseResponse<List<AlbumInfoVO>> currBandAllAlbums() {
         return RespUtil.success(albumService.currBandAllAlbums());
+    }
+
+    @GetMapping("/curr/page")
+    public BaseResponse<Page<AlbumInfoVO>> currBandAllAlbumsByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                                   @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(albumService.currBandAllAlbumsByPage(current, size));
     }
 
     @PutMapping("/songs")

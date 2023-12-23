@@ -1,11 +1,13 @@
 package io.github.dingxinliang88.pojo.vo.album;
 
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.pojo.po.Album;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
@@ -53,6 +55,11 @@ public class AlbumInfoVO implements Serializable {
     private String profile;
 
     /**
+     * 发行时间
+     */
+    private LocalDateTime releaseTime;
+
+    /**
      * 可以喜欢标志
      */
     private Boolean canLike = Boolean.FALSE;
@@ -61,4 +68,17 @@ public class AlbumInfoVO implements Serializable {
      * 是否喜欢
      */
     private Boolean isLiked;
+
+    public static AlbumInfoVO albumToVO(Album album) {
+        AlbumInfoVO albumInfoVO = new AlbumInfoVO();
+        albumInfoVO.setAlbumId(album.getAlbumId());
+        albumInfoVO.setName(album.getName());
+        albumInfoVO.setCompany(albumInfoVO.getName());
+        albumInfoVO.setBandName(album.getBandName());
+        albumInfoVO.setAvgScore(album.getAvgScore());
+        albumInfoVO.setReleaseTime(album.getReleaseTime());
+        albumInfoVO.setIsRelease(album.getIsRelease());
+        albumInfoVO.setProfile(album.getProfile());
+        return albumInfoVO;
+    }
 }

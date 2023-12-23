@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.pojo.vo.concert;
 
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.pojo.po.Concert;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -69,5 +70,19 @@ public class ConcertInfoVO implements Serializable {
      * 是否允许修改
      * 开始时间前一个小时不让修改了
      */
-    private Boolean canEdit;
+    private Boolean canEdit = Boolean.FALSE;
+
+    public static ConcertInfoVO concertToVO(Concert concert) {
+        ConcertInfoVO concertInfoVO = new ConcertInfoVO();
+        concertInfoVO.setConcertId(concert.getConcertId());
+        concertInfoVO.setName(concert.getName());
+        concertInfoVO.setStartTime(concert.getStartTime());
+        concertInfoVO.setEndTime(concert.getEndTime());
+        concertInfoVO.setPlace(concert.getPlace());
+        concertInfoVO.setBandId(concert.getBandId());
+        concertInfoVO.setBandName(concert.getBandName());
+        concertInfoVO.setMaxNum(concert.getMaxNum());
+        concertInfoVO.setIsRelease(concert.getIsRelease());
+        return concertInfoVO;
+    }
 }

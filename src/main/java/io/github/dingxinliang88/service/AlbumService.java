@@ -4,6 +4,8 @@ import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.AlbumConstant;
@@ -127,6 +129,22 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     }
 
     /**
+     * 分页获取已经发布的专辑信息VO
+     *
+     * @param current 页码
+     * @return album info vo
+     */
+    public Page<AlbumInfoVO> listAlbumInfoVOByPage(Integer current) {
+        LambdaQueryWrapper<Album> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Album::getIsRelease, CommonConstant.RELEASE);
+
+        Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, CommonConstant.DEFAULT_PAGE_SIZE), queryWrapper);
+
+        return convertAlbumInfoVOPage(albumPage, false);
+    }
+
+
+    /**
      * 获取当前乐队所有的专辑信息
      *
      * @return album list
@@ -140,6 +158,26 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
 
         return albumMapper.queryAlbumByBandName(band.getName());
+    }
+
+    /**
+     * 分页获取当前乐队所有的专辑信息
+     *
+     * @param current 页码
+     * @return album list
+     */
+    public Page<AlbumInfoVO> currBandAllAlbumsByPage(Integer current, Integer size) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+        LambdaQueryWrapper<Album> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Album::getBandName, band.getName());
+        Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertAlbumInfoVOPage(albumPage, true);
     }
 
     /**
@@ -323,5 +361,26 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
         String topJson = JSONUtil.toJsonStr(topAlbumVOList);
         redisUtil.setExpiredHours(AlbumConstant.TOP_ALBUMS_KEY, topJson, AlbumConstant.TOP_ALBUMS_EXPIRE_TIME);
     }
+
+    private Page<AlbumInfoVO> convertAlbumInfoVOPage(Page<Album> albumPage, boolean curr) {
+        Page<AlbumInfoVO> albumInfoVOPage
+                = new Page<>(albumPage.getCurrent(), albumPage.getSize(), albumPage.getTotal(), albumPage.searchCount());
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+        List<AlbumInfoVO> albumInfoVOList = albumPage.getRecords().stream()
+                .map(album -> {
+                    AlbumInfoVO albumInfoVO = AlbumInfoVO.albumToVO(album);
+                    if (!curr && UserRoleType.FAN.getType().equals(currUser.getType())) {
+                        albumInfoVO.setCanLike(Boolean.TRUE);
+                        albumInfoVO.setIsLiked(albumLikeMapper.queryByAlbumIdAndUserId(album.getAlbumId(), userId) != null);
+                    }
+                    return albumInfoVO;
+                })
+                .collect(Collectors.toList());
+
+        albumInfoVOPage.setRecords(albumInfoVOList);
+        return albumInfoVOPage;
+    }
+
 
 }

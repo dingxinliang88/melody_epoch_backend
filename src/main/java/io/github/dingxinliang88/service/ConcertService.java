@@ -1,6 +1,8 @@
 package io.github.dingxinliang88.service;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.CommonConstant;
@@ -53,7 +55,7 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
     /**
      * 添加演唱会信息
      *
-     * @param req     添加演唱会请求
+     * @param req 添加演唱会请求
      * @return 演唱会ID
      */
     public Long addConcert(AddConcertReq req) {
@@ -79,7 +81,7 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
     /**
      * 修改演唱会信息
      *
-     * @param req     修改演唱会信息
+     * @param req 修改演唱会信息
      * @return true - 修改成功
      */
     public Boolean editInfo(EditConcertReq req) {
@@ -109,9 +111,26 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
     }
 
     /**
+     * 分页获取演唱会信息
+     * 每页数量限制为15
+     *
+     * @param current 当前页码
+     * @return concert info vo
+     */
+    public Page<ConcertInfoVO> listConcertInfoVOByPage(Integer current) {
+        LambdaQueryWrapper<Concert> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Concert::getIsRelease, CommonConstant.RELEASE);
+
+        Page<Concert> concertPage = concertMapper.selectPage(new Page<>(current, CommonConstant.DEFAULT_PAGE_SIZE), queryWrapper);
+
+        return convertConcertInfoVOPage(concertPage, false);
+    }
+
+
+    /**
      * 发布演唱会信息
      *
-     * @param req     发布演唱会请求
+     * @param req 发布演唱会请求
      * @return concert info vo
      */
     public Boolean releaseConcert(ReleaseConcertReq req) {
@@ -133,7 +152,7 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
     /**
      * 撤销发布演唱会信息
      *
-     * @param req     发布演唱会请求
+     * @param req 发布演唱会请求
      * @return concert info vo
      */
     public Boolean unReleaseConcert(ReleaseConcertReq req) {
@@ -171,9 +190,30 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
         return concertInfoVOList.stream().peek(concertInfoVO -> {
             LocalDateTime startTime = concertInfoVO.getStartTime();
             concertInfoVO.setCanEdit(
-                    startTime.plusHours(2).isBefore(LocalDateTime.now())
+                    LocalDateTime.now().isBefore(startTime.minusHours(1))
             );
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 分页获取当前乐队的演唱会信息
+     *
+     * @param current 页码
+     * @return concert info vo list
+     */
+    public Page<ConcertInfoVO> getCurrConcertInfoByPage(Integer current, Integer size) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Integer userId = currUser.getUserId();
+
+        Band band = bandMapper.queryByLeaderId(userId, true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        LambdaQueryWrapper<Concert> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Concert::getBandId, band.getBandId());
+        Page<Concert> concertPage = concertMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertConcertInfoVOPage(concertPage, true);
     }
 
     /**
@@ -215,4 +255,27 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
 
         return concertDetailsVO;
     }
+
+    // --------------------------
+    // private util function
+    // --------------------------
+
+    private Page<ConcertInfoVO> convertConcertInfoVOPage(Page<Concert> concertPage, boolean curr) {
+        Page<ConcertInfoVO> concertInfoVOPage
+                = new Page<>(concertPage.getCurrent(), concertPage.getSize(), concertPage.getTotal(), concertPage.searchCount());
+
+        List<ConcertInfoVO> concertInfoVOList = concertPage.getRecords().stream().map(ConcertInfoVO::concertToVO).collect(Collectors.toList());
+        if (curr) {
+            concertInfoVOList = concertInfoVOList.stream().peek(concertInfoVO -> {
+                LocalDateTime startTime = concertInfoVO.getStartTime();
+                concertInfoVO.setCanEdit(
+                        LocalDateTime.now().isBefore(startTime.minusHours(1))
+                );
+            }).collect(Collectors.toList());
+        }
+        concertInfoVOPage.setRecords(concertInfoVOList);
+        return concertInfoVOPage;
+    }
+
+
 }

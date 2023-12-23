@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -42,6 +44,11 @@ public class ConcertController {
         return RespUtil.success(concertService.listConcertInfoVO());
     }
 
+    @GetMapping("/list/page")
+    public BaseResponse<Page<ConcertInfoVO>> listConcertInfoVOByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
+        return RespUtil.success(concertService.listConcertInfoVOByPage(current));
+    }
+
     @PostMapping("/release")
     public BaseResponse<Boolean> releaseConcert(@RequestBody @Validated ReleaseConcertReq req) {
         return RespUtil.success(concertService.releaseConcert(req));
@@ -55,6 +62,12 @@ public class ConcertController {
     @GetMapping("/curr")
     public BaseResponse<List<ConcertInfoVO>> getCurrConcertInfo() {
         return RespUtil.success(concertService.getCurrConcertInfo());
+    }
+
+    @GetMapping("/curr/page")
+    public BaseResponse<Page<ConcertInfoVO>> getCurrConcertInfoByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                                      @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(concertService.getCurrConcertInfoByPage(current, size));
     }
 
     @GetMapping("/all")

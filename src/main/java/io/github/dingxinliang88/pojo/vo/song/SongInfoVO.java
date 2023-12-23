@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.pojo.vo.song;
 
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.pojo.po.Song;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,4 +64,16 @@ public class SongInfoVO implements Serializable {
      * 是否喜欢
      */
     private Boolean isLiked;
+
+    public static SongInfoVO songToVO(Song song) {
+        SongInfoVO songInfoVO = new SongInfoVO();
+        songInfoVO.setSongId(song.getSongId());
+        songInfoVO.setName(song.getName());
+        songInfoVO.setBandId(song.getBandId());
+        songInfoVO.setAuthor(song.getAuthor());
+        songInfoVO.setAlbumId(song.getAlbumId());
+        songInfoVO.setAlbumName(song.getAlbumName());
+
+        return songInfoVO;
+    }
 }

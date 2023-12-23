@@ -1,5 +1,7 @@
 package io.github.dingxinliang88.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.CommonConstant;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Service
-public class MemberService extends ServiceImpl<MemberMapper, Member>{
+public class MemberService extends ServiceImpl<MemberMapper, Member> {
 
     @Resource
     private MemberMapper memberMapper;
@@ -43,7 +45,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member>{
     /**
      * 加入乐队
      *
-     * @param req     加入乐队请求
+     * @param req 加入乐队请求
      * @return true - 加入成功
      */
     public Boolean joinBand(JoinBandReq req) {
@@ -79,7 +81,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member>{
     /**
      * 离开乐队
      *
-     * @param req     离开乐队请求
+     * @param req 离开乐队请求
      * @return true - 离开成功
      */
     public Boolean leaveBand(LeaveBandReq req) {
@@ -108,7 +110,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member>{
     /**
      * 修改乐队成员分工（仅队长）
      *
-     * @param req     修改分工请求
+     * @param req 修改分工请求
      * @return true - 修改成功
      */
     public Boolean editMemberPart(EditPartReq req) {
@@ -128,7 +130,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member>{
      *
      * @return member info vo list
      */
-    public List<MemberInfoVO> listMembers() {
+    public List<MemberInfoVO> listMemberInfoVO() {
         List<Member> members = memberMapper.listMembers();
         return members.stream().map(member -> {
             MemberInfoVO memberInfoVO = new MemberInfoVO(member);
@@ -143,6 +145,19 @@ public class MemberService extends ServiceImpl<MemberMapper, Member>{
     }
 
     /**
+     * 查询所有乐队成员信息（包括未加入乐队的）
+     *
+     * @return member info vo list
+     */
+    public Page<MemberInfoVO> listMemberInfoVOByPage(Integer current) {
+        LambdaQueryWrapper<Member> queryWrapper = new LambdaQueryWrapper<>();
+        Page<Member> memberPage = memberMapper.selectPage(new Page<>(current, CommonConstant.DEFAULT_PAGE_SIZE), queryWrapper);
+
+        return convertMemberInfoVOPage(memberPage, false);
+    }
+
+
+    /**
      * 获取当前登录用户（队长）所在的乐队的所有乐队成员信息
      *
      * @return member info vo list
@@ -154,6 +169,23 @@ public class MemberService extends ServiceImpl<MemberMapper, Member>{
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止的操作！");
 
         return memberMapper.listMemberInfoVO(band.getBandId());
+    }
+
+    /**
+     * 分页获取当前登录用户（队长）所在的乐队的所有乐队成员信息
+     *
+     * @return member info vo list
+     */
+    public Page<MemberInfoVO> listMemberInCurrBandByPage(Integer current, Integer size) {
+        // 获取当前登录用户，队长的操作
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止的操作！");
+
+        LambdaQueryWrapper<Member> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Member::getBandId, band.getBandId());
+        Page<Member> memberPage = memberMapper.selectPage(new Page<>(current, size), queryWrapper);
+        return convertMemberInfoVOPage(memberPage, true);
     }
 
     // ------------------------
@@ -197,5 +229,24 @@ public class MemberService extends ServiceImpl<MemberMapper, Member>{
             }
         });
     }
+
+    private Page<MemberInfoVO> convertMemberInfoVOPage(Page<Member> memberPage, boolean curr) {
+        Page<MemberInfoVO> memberInfoVOPage = new Page<>(memberPage.getCurrent(), memberPage.getSize(), memberPage.getTotal(), memberPage.searchCount());
+
+        List<MemberInfoVO> memberInfoVOList = memberPage.getRecords().stream().map(member -> {
+            MemberInfoVO memberInfoVO = new MemberInfoVO(member);
+            if (!curr && CommonConstant.UN_RELEASE.equals(member.getIsRelease())) {
+                memberInfoVO.setPart("-");
+                memberInfoVO.setBandName("-");
+                memberInfoVO.setJoinTime(null);
+                memberInfoVO.setLeaveTime(null);
+            }
+            return memberInfoVO;
+        }).collect(Collectors.toList());
+        memberInfoVOPage.setRecords(memberInfoVOList);
+        return memberInfoVOPage;
+
+    }
+
 
 }

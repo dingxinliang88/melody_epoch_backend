@@ -1,5 +1,7 @@
 package io.github.dingxinliang88.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.CommonConstant;
@@ -8,13 +10,11 @@ import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
-import io.github.dingxinliang88.pojo.po.*;
-import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
+import io.github.dingxinliang88.pojo.po.Band;
+import io.github.dingxinliang88.pojo.po.BandLike;
+import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
-import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
-import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
-import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -64,7 +64,7 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
     /**
      * 创建乐队
      *
-     * @param req     创建乐队请求
+     * @param req 创建乐队请求
      * @return band id
      */
     public Integer addBand(AddBandReq req) {
@@ -116,7 +116,7 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
     /**
      * 修改乐队信息（仅队长）
      *
-     * @param req     修改乐队信息请求
+     * @param req 修改乐队信息请求
      * @return true - 修改成功
      */
     public Boolean editInfo(EditBandReq req) {
@@ -151,9 +151,25 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
     }
 
     /**
+     * 分页获取乐队简略信息
+     * 每页限制为15条
+     *
+     * @param current 当前页码
+     * @return band brief info
+     */
+    public Page<BandInfoVO> listBandBriefInfoByPage(Integer current) {
+        LambdaQueryWrapper<Band> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Band::getIsRelease, CommonConstant.RELEASE);
+
+        Page<Band> bandPage = bandMapper.selectPage(new Page<>(current, CommonConstant.DEFAULT_PAGE_SIZE), queryWrapper);
+
+        return convertBandInfoVOPage(bandPage);
+    }
+
+    /**
      * 获取乐队详细信息
      *
-     * @param bandId  乐队ID
+     * @param bandId 乐队ID
      * @return band info vo
      */
     public BandDetailsVO listBandInfoVO(Integer bandId) {
@@ -161,18 +177,6 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
         BandDetailsVO bandDetailsVO = bandMapper.queryBandInfoVOByBandId(bandId, true);
         BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(bandId, SysUtil.getCurrUser().getUserId());
         bandDetailsVO.setIsLiked(bandLike != null);
-        // 获取乐队成员信息
-        List<MemberInfoVO> members = memberMapper.queryMembersByBandId(bandId);
-        bandDetailsVO.setMembers(members);
-        // 获取专辑信息
-        List<AlbumInfoVO> albums = albumMapper.queryAlbumByBandName(bandDetailsVO.getName());
-        bandDetailsVO.setAlbums(albums);
-        // 获取歌曲信息
-        List<SongInfoVO> songs = songMapper.querySongsByBandId(bandId);
-        bandDetailsVO.setSongs(songs);
-        // 获取演唱会信息
-        List<ConcertInfoVO> concerts = concertMapper.queryConcertByBandId(bandId);
-        bandDetailsVO.setConcerts(concerts);
 
         return bandDetailsVO;
     }
@@ -256,6 +260,24 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止该操作");
 
         return bandMapper.queryCurrBandReleaseStatus(band.getBandId());
+    }
+
+
+    // --------------------------
+    // private util function
+    // --------------------------
+
+    private Page<BandInfoVO> convertBandInfoVOPage(Page<Band> bandPage) {
+        Page<BandInfoVO> bandInfoVOPage = new Page<>(bandPage.getCurrent(), bandPage.getSize(), bandPage.getTotal(), bandPage.searchCount());
+
+        List<BandInfoVO> bandInfoVOList = bandPage.getRecords().stream().map(band -> {
+            String leaderName = memberMapper.queryNameByMemberId(band.getLeaderId());
+            BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(band.getBandId(), SysUtil.getCurrUser().getUserId());
+            return new BandInfoVO(band.getBandId(), band.getName(), band.getFoundTime(),
+                    leaderName, band.getMemberNum(), bandLike != null);
+        }).collect(Collectors.toList());
+        bandInfoVOPage.setRecords(bandInfoVOList);
+        return bandInfoVOPage;
     }
 
 

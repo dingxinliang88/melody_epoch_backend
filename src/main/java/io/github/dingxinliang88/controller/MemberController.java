@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
@@ -11,6 +12,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -41,13 +44,24 @@ public class MemberController {
     }
 
     @GetMapping("/list")
-    public BaseResponse<List<MemberInfoVO>> listMembers() {
-        return RespUtil.success(memberService.listMembers());
+    public BaseResponse<List<MemberInfoVO>> listMemberInfoVO() {
+        return RespUtil.success(memberService.listMemberInfoVO());
     }
 
-    @GetMapping("/curr_band")
+    @GetMapping("/list/page")
+    public BaseResponse<Page<MemberInfoVO>> listMemberInfoVOByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
+        return RespUtil.success(memberService.listMemberInfoVOByPage(current));
+    }
+
+    @GetMapping("/curr")
     public BaseResponse<List<MemberInfoVO>> listMemberInCurrBand() {
         return RespUtil.success(memberService.listMemberInCurrBand());
+    }
+
+    @GetMapping("/curr/page")
+    public BaseResponse<Page<MemberInfoVO>> listMemberInCurrBandByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                                       @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(memberService.listMemberInCurrBandByPage(current, size));
     }
 
 }

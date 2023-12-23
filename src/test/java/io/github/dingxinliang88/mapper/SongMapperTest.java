@@ -32,7 +32,6 @@ public class SongMapperTest {
         List<SongInfoVO> songInfoVOS = songMapper.listSongInfoVO();
         System.out.println(songInfoVOS);
     }
-
     @Test
     public void queryCurrAlbumSongs() {
         Integer bandId = 4;

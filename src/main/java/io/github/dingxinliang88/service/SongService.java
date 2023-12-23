@@ -1,5 +1,7 @@
 package io.github.dingxinliang88.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.CommonConstant;
@@ -20,7 +22,9 @@ import io.github.dingxinliang88.utils.ThrowUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -43,7 +47,7 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
     /**
      * 添加歌曲信息
      *
-     * @param req     添加歌曲请求
+     * @param req 添加歌曲请求
      * @return 歌曲ID
      */
     public Integer addSong(AddSongReq req) {
@@ -73,7 +77,6 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
         Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
 
-
         return songMapper.listSongItemsByBandId(band.getBandId());
     }
 
@@ -83,8 +86,8 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
      * @return song info vo list
      */
     public List<SongInfoVO> listSongInfoVO() {
-        UserLoginVO currUser = SysUtil.getCurrUser();
         List<SongInfoVO> songInfoVOList = songMapper.listSongInfoVO();
+        UserLoginVO currUser = SysUtil.getCurrUser();
         return songInfoVOList.stream()
                 .peek(songInfoVO -> {
                     if (UserRoleType.FAN.getType().equals(currUser.getType())) {
@@ -94,6 +97,22 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
                 })
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 分页获取已经发布的歌曲信息
+     * 每页数量限制为15
+     *
+     * @param current 当前页码
+     * @return song info vo list
+     */
+    public Page<SongInfoVO> listSongInfoVOByPage(int current) {
+        LambdaQueryWrapper<Song> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Song::getIsRelease, CommonConstant.RELEASE);
+        Page<Song> songPage = songMapper.selectPage(new Page<>(current, CommonConstant.DEFAULT_PAGE_SIZE), queryWrapper);
+
+        return convertSongInfoVOPage(songPage);
+    }
+
 
     /**
      * 查询已经录入当前专辑的歌曲信息和未录入专辑的歌曲信息
@@ -130,9 +149,28 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
     }
 
     /**
+     * 分页查询当前乐队的歌曲信息
+     *
+     * @param current 页码
+     * @param size    每页数据数量
+     * @return song info
+     */
+    public Page<Song> currBandSongsByPage(Integer current, Integer size) {
+        // 判断当前登录用户是否是乐队队长
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "暂无权限");
+
+        LambdaQueryWrapper<Song> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Song::getBandId, band.getBandId());
+        return songMapper.selectPage(new Page<>(current, size), queryWrapper);
+    }
+
+    /**
      * 发布歌曲信息
      *
-     * @param req     发布歌曲信息请求
+     * @param req 发布歌曲信息请求
      * @return true - 发布成功
      */
     public Boolean releaseSong(ReleaseSongReq req) {
@@ -148,4 +186,38 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
 
         return songMapper.updateReleaseStatusBySongId(songId, CommonConstant.RELEASE);
     }
+
+    // --------------------------
+    // private util function
+    // --------------------------
+
+    private Page<SongInfoVO> convertSongInfoVOPage(Page<Song> songPage) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        Page<SongInfoVO> songInfoVOPage
+                = new Page<>(songPage.getCurrent(), songPage.getSize(), songPage.getTotal(), songPage.searchCount());
+
+        Map<Integer, String> bandNameMap = new HashMap<>(16);
+        List<SongInfoVO> songInfoVOList = songPage.getRecords().stream().map(song -> {
+            SongInfoVO songInfoVO = SongInfoVO.songToVO(song);
+            Integer bandId = song.getBandId();
+            if (!bandNameMap.containsKey(bandId)) {
+                Band band = bandMapper.queryByBandId(bandId, true);
+                bandNameMap.put(bandId, band.getName());
+            }
+            songInfoVO.setBandName(bandNameMap.get(bandId));
+
+            if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+                songInfoVO.setCanLike(Boolean.TRUE);
+                // TODO 查询次数太多啦，最好一次查出来
+                songInfoVO.setIsLiked(songLikeMapper.queryBySongIdAndUserId(songInfoVO.getSongId(), currUser.getUserId()) != null);
+            }
+            return songInfoVO;
+        }).collect(Collectors.toList());
+
+        songInfoVOPage.setRecords(songInfoVOList);
+        return songInfoVOPage;
+    }
+
+
 }
