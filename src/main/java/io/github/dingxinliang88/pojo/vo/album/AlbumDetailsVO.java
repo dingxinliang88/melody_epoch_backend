@@ -3,7 +3,6 @@ package io.github.dingxinliang88.pojo.vo.album;
 import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.vo.comment.CommentVO;
-import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -60,9 +59,9 @@ public class AlbumDetailsVO implements Serializable {
     private Float avgScore;
 
     /**
-     * 专辑内部歌曲信息
+     * 是否可以评论
      */
-    private List<SongInfoVO> songInfoList;
+    private Boolean canComment;
 
     /**
      * 专辑评论信息

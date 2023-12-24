@@ -8,6 +8,7 @@ import io.github.dingxinliang88.pojo.dto.concert.JoinConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.ReleaseConcertReq;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertDetailsVO;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertJoinInfoVO;
 import io.github.dingxinliang88.service.ConcertService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -60,6 +61,11 @@ public class ConcertController {
         return RespUtil.success(concertService.unReleaseConcert(req));
     }
 
+    /**
+     * @see ConcertController#getCurrConcertInfoByPage(Integer, Integer)
+     * @deprecated
+     */
+    @Deprecated
     @GetMapping("/curr")
     public BaseResponse<List<ConcertInfoVO>> getCurrConcertInfo() {
         return RespUtil.success(concertService.getCurrConcertInfo());
@@ -91,5 +97,10 @@ public class ConcertController {
     @PostMapping("/leave")
     public BaseResponse<Boolean> leaveConcert(@RequestBody @Validated JoinConcertReq req) {
         return RespUtil.success(concertService.leaveConcert(req));
+    }
+
+    @GetMapping("/join/status")
+    public BaseResponse<ConcertJoinInfoVO> getCurrConcertJoinInfo(@RequestParam(value = "concertId") @NotNull Long concertId) {
+        return RespUtil.success(concertService.getCurrConcertJoinInfo(concertId));
     }
 }

@@ -1,6 +1,8 @@
 package io.github.dingxinliang88.service;
 
 import cn.hutool.core.lang.UUID;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.AlbumConstant;
@@ -13,6 +15,7 @@ import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.*;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
 import io.github.dingxinliang88.pojo.vo.fan.LikeAlbumStatusVO;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
@@ -24,9 +27,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+
+import static io.github.dingxinliang88.constants.CommonConstant.RELEASE;
 
 /**
  * Fan Service Implementation
@@ -45,10 +52,19 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     private FanMapper fanMapper;
 
     @Resource
+    private BandMapper bandMapper;
+
+    @Resource
+    private SongMapper songMapper;
+
+    @Resource
     private AlbumMapper albumMapper;
 
     @Resource
     private MemberMapper memberMapper;
+
+    @Resource
+    private ConcertMapper concertMapper;
 
     @Resource
     private BandLikeMapper bandLikeMapper;
@@ -208,6 +224,25 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     }
 
     /**
+     * 分页查询我喜欢的乐队
+     *
+     * @return like item list
+     */
+    public Page<BandInfoVO> listMyLikedBandByPage(Integer current, Integer size) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
+
+        LambdaQueryWrapper<Band> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Band::getBandId, "SELECT band_id FROM band_like\n" +
+                        "WHERE user_id = " + currUser.getUserId())
+                .eq(Band::getIsRelease, RELEASE);
+        Page<Band> bandPage = bandMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertBandInfoVOPage(bandPage);
+    }
+
+
+    /**
      * 查询我喜欢的专辑
      *
      * @return like item list
@@ -217,9 +252,25 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
         ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
         List<AlbumInfoVO> albums = albumLikeMapper.listMyLikedAlbum(currUser.getUserId());
         return albums.stream()
-                .peek(albumInfoVO -> albumInfoVO.setIsLiked(true))
+                .peek(albumInfoVO -> {
+                    albumInfoVO.setCanLike(Boolean.TRUE);
+                    albumInfoVO.setIsLiked(Boolean.TRUE);
+                })
                 .collect(Collectors.toList());
     }
+
+    public Page<AlbumInfoVO> listMyLikedAlbumByPage(Integer current, Integer size) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
+
+        LambdaQueryWrapper<Album> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Album::getAlbumId, "SELECT album_id FROM album_like WHERE user_id = " + currUser.getUserId())
+                .eq(Album::getIsRelease, RELEASE);
+        Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertAlbumInfoVOPage(albumPage);
+    }
+
 
     /**
      * 查询我喜欢的歌曲
@@ -235,6 +286,42 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
                         songInfoVO.setIsLiked(true))
                 .collect(Collectors.toList());
     }
+
+
+    /**
+     * 分页查询我喜欢的歌曲
+     *
+     * @return like item list
+     */
+    public Page<SongInfoVO> listMyLikedSongByPage(Integer current, Integer size) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
+
+        LambdaQueryWrapper<Song> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Song::getSongId, "SELECT song_id FROM song_like WHERE user_id = " + currUser.getUserId())
+                .eq(Song::getIsRelease, RELEASE);
+        Page<Song> songPage = songMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertSongInfoVOPage(songPage);
+    }
+
+    /**
+     * 分页查询我加入的演唱会
+     *
+     * @return concert info vo page
+     */
+    public Page<ConcertInfoVO> listMyJoinedConcertByPage(Integer current, Integer size) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
+
+        LambdaQueryWrapper<Concert> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Concert::getConcertId, "SELECT concert_id FROM concert_join WHERE user_id = " + currUser.getUserId())
+                .eq(Concert::getIsRelease, RELEASE);
+        Page<Concert> concertPage = concertMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertConcertInfoVOPage(concertPage);
+    }
+
 
     // ---------------------------------
     // private util function
@@ -291,4 +378,61 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
         }
         return true;
     }
+
+    private Page<BandInfoVO> convertBandInfoVOPage(Page<Band> bandPage) {
+        Page<BandInfoVO> bandInfoVOPage = new Page<>(bandPage.getCurrent(), bandPage.getSize(), bandPage.getTotal(), bandPage.searchCount());
+
+        List<BandInfoVO> bandInfoVOList = bandPage.getRecords().stream().map(band -> {
+            String leaderName = memberMapper.queryNameByMemberId(band.getLeaderId());
+            BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(band.getBandId(), SysUtil.getCurrUser().getUserId());
+            return new BandInfoVO(band.getBandId(), band.getName(), band.getFoundTime(),
+                    leaderName, band.getMemberNum(), bandLike != null);
+        }).collect(Collectors.toList());
+        bandInfoVOPage.setRecords(bandInfoVOList);
+
+        return bandInfoVOPage;
+    }
+
+    private Page<AlbumInfoVO> convertAlbumInfoVOPage(Page<Album> albumPage) {
+        Page<AlbumInfoVO> albumInfoVOPage = new Page<>(albumPage.getCurrent(), albumPage.getSize(), albumPage.getTotal(), albumPage.searchCount());
+
+        List<AlbumInfoVO> albumInfoVOList = albumPage.getRecords().stream().map(album -> {
+            AlbumInfoVO albumInfoVO = AlbumInfoVO.albumToVO(album);
+            albumInfoVO.setCanLike(Boolean.TRUE);
+            albumInfoVO.setIsLiked(Boolean.TRUE);
+            return albumInfoVO;
+        }).collect(Collectors.toList());
+        albumInfoVOPage.setRecords(albumInfoVOList);
+        return albumInfoVOPage;
+    }
+
+    private Page<SongInfoVO> convertSongInfoVOPage(Page<Song> songPage) {
+        Page<SongInfoVO> songInfoVOPage = new Page<>(songPage.getCurrent(), songPage.getSize(), songPage.getTotal(), songPage.searchCount());
+
+        Map<Integer, String> bandNameMap = new HashMap<>(16);
+        List<SongInfoVO> songInfoVOList = songPage.getRecords().stream().map(song -> {
+            SongInfoVO songInfoVO = SongInfoVO.songToVO(song);
+            Integer bandId = song.getBandId();
+            if (!bandNameMap.containsKey(bandId)) {
+                Band band = bandMapper.queryByBandId(bandId, true);
+                bandNameMap.put(bandId, band.getName());
+            }
+            songInfoVO.setBandName(bandNameMap.get(bandId));
+            songInfoVO.setCanLike(Boolean.TRUE);
+            songInfoVO.setIsLiked(Boolean.TRUE);
+            return songInfoVO;
+        }).collect(Collectors.toList());
+        songInfoVOPage.setRecords(songInfoVOList);
+
+        return songInfoVOPage;
+    }
+
+    private Page<ConcertInfoVO> convertConcertInfoVOPage(Page<Concert> concertPage) {
+        Page<ConcertInfoVO> concertInfoVOPage = new Page<>(concertPage.getCurrent(), concertPage.getSize(), concertPage.getTotal(), concertPage.searchCount());
+        List<ConcertInfoVO> concertInfoVOList = concertPage.getRecords().stream().map(ConcertInfoVO::concertToVO).collect(Collectors.toList());
+        concertInfoVOPage.setRecords(concertInfoVOList);
+        return concertInfoVOPage;
+    }
+
+
 }

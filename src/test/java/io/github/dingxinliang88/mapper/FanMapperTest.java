@@ -33,4 +33,5 @@ public class FanMapperTest {
 
         fanMapper.updateInfoByFanId(req);
     }
+
 }

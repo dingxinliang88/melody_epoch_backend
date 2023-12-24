@@ -40,6 +40,11 @@ public class SongController {
         return RespUtil.success(songService.listSongItems());
     }
 
+    /**
+     * @see SongController#listSongInfoVOByPage(Integer)
+     * @deprecated
+     */
+    @Deprecated
     @GetMapping("/list")
     public BaseResponse<List<SongInfoVO>> listSongInfoVO() {
         return RespUtil.success(songService.listSongInfoVO());
@@ -55,6 +60,11 @@ public class SongController {
         return RespUtil.success(songService.listSongToAlbum(albumId));
     }
 
+    /**
+     * @see SongController#currBandSongsByPage(Integer, Integer)
+     * @deprecated
+     */
+    @Deprecated
     @GetMapping("/curr")
     public BaseResponse<List<Song>> currBandSongs() {
         return RespUtil.success(songService.currBandSongs());
@@ -75,8 +85,8 @@ public class SongController {
 
     @GetMapping("/album/page")
     public BaseResponse<Page<Song>> getAlbumSongsByPage(@RequestParam(value = "albumId") @NotNull(message = "专辑不能为空") Integer albumId,
-                                                       @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                       @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                        @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                        @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
         return RespUtil.success(songService.getAlbumSongsByPage(albumId, current, size));
     }
 

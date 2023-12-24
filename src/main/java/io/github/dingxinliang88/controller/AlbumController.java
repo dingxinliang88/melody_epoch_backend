@@ -37,18 +37,23 @@ public class AlbumController {
     }
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditAlbumReq req) {
-        return RespUtil.success(albumService.editInfo(req));
+    public BaseResponse<Boolean> editAlbumInfo(@RequestBody @Validated EditAlbumReq req) {
+        return RespUtil.success(albumService.editAlbumInfo(req));
     }
 
+    /**
+     * @see AlbumController#listAlbumInfoByPage(Integer)
+     * @deprecated
+     */
+    @Deprecated
     @GetMapping("/list")
-    public BaseResponse<List<AlbumInfoVO>> listAlbumInfoVO() {
-        return RespUtil.success(albumService.listAlbumInfoVO());
+    public BaseResponse<List<AlbumInfoVO>> listAlbumInfo() {
+        return RespUtil.success(albumService.listAlbumInfo());
     }
 
     @GetMapping("/list/page")
-    public BaseResponse<Page<AlbumInfoVO>> listAlbumInfoVOByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
-        return RespUtil.success(albumService.listAlbumInfoVOByPage(current));
+    public BaseResponse<Page<AlbumInfoVO>> listAlbumInfoByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
+        return RespUtil.success(albumService.listAlbumInfoByPage(current));
     }
 
     @GetMapping("/info")
@@ -57,14 +62,14 @@ public class AlbumController {
     }
 
     @GetMapping("/curr")
-    public BaseResponse<List<AlbumInfoVO>> currBandAllAlbums() {
-        return RespUtil.success(albumService.currBandAllAlbums());
+    public BaseResponse<List<AlbumInfoVO>> getCurrBandAllAlbums() {
+        return RespUtil.success(albumService.getCurrBandAllAlbums());
     }
 
     @GetMapping("/curr/page")
-    public BaseResponse<Page<AlbumInfoVO>> currBandAllAlbumsByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                   @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
-        return RespUtil.success(albumService.currBandAllAlbumsByPage(current, size));
+    public BaseResponse<Page<AlbumInfoVO>> getCurrBandAllAlbumsByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                                      @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(albumService.getCurrBandAllAlbumsByPage(current, size));
     }
 
     @GetMapping("/band/page")

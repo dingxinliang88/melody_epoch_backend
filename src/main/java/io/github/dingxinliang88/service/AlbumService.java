@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.AlbumConstant;
-import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
@@ -34,6 +33,8 @@ import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+
+import static io.github.dingxinliang88.constants.CommonConstant.*;
 
 /**
  * Album Service Implementation
@@ -97,7 +98,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
      * @param req 修改专辑请求
      * @return true - 修改成功
      */
-    public Boolean editInfo(EditAlbumReq req) {
+    public Boolean editAlbumInfo(EditAlbumReq req) {
         // 判断当前登录用户是否是乐队队长
         UserLoginVO currUser = SysUtil.getCurrUser();
         Integer userId = currUser.getUserId();
@@ -113,7 +114,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
      *
      * @return album info vo
      */
-    public List<AlbumInfoVO> listAlbumInfoVO() {
+    public List<AlbumInfoVO> listAlbumInfo() {
         UserLoginVO currUser = SysUtil.getCurrUser();
         Integer userId = currUser.getUserId();
         List<AlbumInfoVO> albumInfoVOList = albumMapper.listAlbumInfoVO();
@@ -133,11 +134,11 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
      * @param current 页码
      * @return album info vo
      */
-    public Page<AlbumInfoVO> listAlbumInfoVOByPage(Integer current) {
+    public Page<AlbumInfoVO> listAlbumInfoByPage(Integer current) {
         LambdaQueryWrapper<Album> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Album::getIsRelease, CommonConstant.RELEASE);
+        queryWrapper.eq(Album::getIsRelease, RELEASE);
 
-        Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, CommonConstant.DEFAULT_PAGE_SIZE), queryWrapper);
+        Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, DEFAULT_PAGE_SIZE), queryWrapper);
 
         return convertAlbumInfoVOPage(albumPage, false);
     }
@@ -148,7 +149,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
      *
      * @return album list
      */
-    public List<AlbumInfoVO> currBandAllAlbums() {
+    public List<AlbumInfoVO> getCurrBandAllAlbums() {
         // 判断当前登录用户是否是乐队队长
         UserLoginVO currUser = SysUtil.getCurrUser();
         Integer userId = currUser.getUserId();
@@ -165,13 +166,13 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
      * @param current 页码
      * @return album list
      */
-    public Page<AlbumInfoVO> currBandAllAlbumsByPage(Integer current, Integer size) {
+    public Page<AlbumInfoVO> getCurrBandAllAlbumsByPage(Integer current, Integer size) {
         // 判断当前登录用户是否是乐队队长
         UserLoginVO currUser = SysUtil.getCurrUser();
         Integer userId = currUser.getUserId();
 
         Band band = bandMapper.queryByLeaderId(userId, true);
-        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "暂无权限！");
         LambdaQueryWrapper<Album> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Album::getBandName, band.getName());
         Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, size), queryWrapper);
@@ -188,7 +189,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
      */
     public Page<AlbumInfoVO> getBandAlbumsByPage(Integer bandId, Integer current, Integer size) {
         Band band = bandMapper.queryByBandId(bandId, false);
-        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "查询无果");
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
         LambdaQueryWrapper<Album> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Album::getBandName, band.getName());
         Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, size), queryWrapper);
@@ -242,16 +243,16 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     public AlbumDetailsVO getAlbumDetailsInfo(Integer albumId) {
         // 获取专辑详细信息
         Album album = albumMapper.queryAlbumByAlbumId(albumId, false);
-        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "专辑不存在！");
+        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
         AlbumDetailsVO albumDetailsVO = new AlbumDetailsVO(album);
-        // 查询专辑的歌曲信息
-        // List<SongInfoVO> songInfoVOList = songMapper.querySongInfoVOByAlbumId(albumId);
-        // albumDetailsVO.setSongInfoList(songInfoVOList);
         // 获取专辑的评论信息
         List<Comment> comments = commentMapper.queryByAlbumId(albumId);
         List<CommentVO> commentVOList = parseComments(comments);
-
         albumDetailsVO.setCommentVOList(commentVOList);
+
+        // 判断当前用户是否可以评论
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        albumDetailsVO.setCanComment(UserRoleType.FAN.getType().equals(currUser.getType()));
 
         return albumDetailsVO;
     }
@@ -268,22 +269,22 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
         Integer userId = currUser.getUserId();
 
         Band band = bandMapper.queryByLeaderId(userId, true);
-        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "暂无权限！");
 
         Integer albumId = req.getAlbumId();
         Album album = albumMapper.queryAlbumByAlbumId(albumId, true);
-        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "专辑不存在！");
-        ThrowUtil.throwIf(!album.getBandName().equals(band.getName()), StatusCode.NO_AUTH_ERROR, "您不是该乐队的队长，无法修改专辑信息!");
+        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
+        ThrowUtil.throwIf(!album.getBandName().equals(band.getName()), StatusCode.NO_AUTH_ERROR, "暂无权限！");
 
         return transactionTemplate.execute(status -> {
             try {
                 String songIdsStr = album.getSongIdsStr();
                 if (StrUtil.isNotEmpty(songIdsStr)) {
-                    List<Integer> songIds = Arrays.stream(songIdsStr.split(","))
+                    List<Integer> songIds = Arrays.stream(songIdsStr.split(SONGS_STR_SEPARATOR))
                             .map(Integer::parseInt).collect(Collectors.toList());
-                    songMapper.updateBatchReleaseStatus(songIds, CommonConstant.RELEASE);
+                    songMapper.updateBatchReleaseStatus(songIds, RELEASE);
                 }
-                return albumMapper.updateAlbumReleaseStatusByAlbumId(albumId, CommonConstant.RELEASE);
+                return albumMapper.updateAlbumReleaseStatusByAlbumId(albumId, RELEASE);
             } catch (Exception e) {
                 status.setRollbackOnly();
                 throw new RuntimeException(e);
@@ -317,7 +318,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     }
 
     // -------------------------------------
-    // util functions
+    // private util functions
     // -------------------------------------
 
     private List<CommentVO> parseComments(List<Comment> comments) {
@@ -353,7 +354,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
         commentVO.setContent(comment.getContent());
         commentVO.setParentId(comment.getParentId());
         commentVO.setUserId(comment.getUserId());
-        commentVO.setUserName(userName); // Set the user name
+        commentVO.setUserName(userName);
         commentVO.setCreateTime(comment.getCreateTime());
         return commentVO;
     }

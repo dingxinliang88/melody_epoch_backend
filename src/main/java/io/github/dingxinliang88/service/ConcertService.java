@@ -18,6 +18,7 @@ import io.github.dingxinliang88.pojo.po.ConcertJoin;
 import io.github.dingxinliang88.pojo.po.SongLike;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertDetailsVO;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
+import io.github.dingxinliang88.pojo.vo.concert.ConcertJoinInfoVO;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -29,6 +30,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.github.dingxinliang88.constants.CommonConstant.SONGS_STR_SEPARATOR;
 
 /**
  * Comment Service Implementation
@@ -260,7 +263,7 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
         // 处理歌曲
         String songIdsStr = concert.getSongIdsStr();
         List<Integer> songIds
-                = Arrays.stream(songIdsStr.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+                = Arrays.stream(songIdsStr.split(SONGS_STR_SEPARATOR)).map(Integer::parseInt).collect(Collectors.toList());
         List<SongInfoVO> songInfoVOList = songMapper.queryBatchBySongId(songIds);
         songInfoVOList = songInfoVOList.stream().peek(songInfoVO -> {
             if (UserRoleType.FAN.getType().equals(currUser.getType())) {
@@ -287,10 +290,11 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
 
         Long concertId = req.getConcertId();
         // 查询演唱会信息是否合法
-        Concert concert = concertMapper.queryByConcertId(concertId);
+        Concert concert = concertMapper.queryByConcertId(concertId, false);
+        ThrowUtil.throwIf(concert == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
         Integer joinedNum = concertJoinMapper.queryCountByConcertId(concertId);
         boolean isExpired = LocalDateTime.now().isAfter(concert.getStartTime());
-        ThrowUtil.throwIf(concert.getMaxNum() <= joinedNum || isExpired, StatusCode.NO_AUTH_ERROR, "禁止的操作");
+        ThrowUtil.throwIf((joinedNum != null && concert.getMaxNum() <= joinedNum) || isExpired, StatusCode.NO_AUTH_ERROR, "禁止的操作");
 
         ConcertJoin concertJoin = new ConcertJoin();
         concertJoin.setConcertId(concertId);
@@ -310,7 +314,8 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
 
         Long concertId = req.getConcertId();
         // 查询演唱会信息是否合法
-        Concert concert = concertMapper.queryByConcertId(concertId);
+        Concert concert = concertMapper.queryByConcertId(concertId, false);
+        ThrowUtil.throwIf(concert == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
         boolean isExpired = LocalDateTime.now().isAfter(concert.getStartTime());
         ThrowUtil.throwIf(isExpired, StatusCode.NO_AUTH_ERROR, "禁止的操作");
 
@@ -318,6 +323,33 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
         ThrowUtil.throwIf(concertJoin == null, StatusCode.NO_AUTH_ERROR, "禁止的操作");
 
         return concertJoinMapper.deleteById(concertJoin.getId()) == 1;
+    }
+
+
+    /**
+     * 获取当前演唱会的加入状态
+     *
+     * @param concertId concert id
+     * @return concert join info vo
+     */
+    public ConcertJoinInfoVO getCurrConcertJoinInfo(Long concertId) {
+        Concert concert = concertMapper.queryByConcertId(concertId, false);
+        ThrowUtil.throwIf(concert == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
+
+        ConcertJoinInfoVO concertJoinInfoVO = new ConcertJoinInfoVO();
+        concertJoinInfoVO.setConcertId(concertId);
+
+        // 设置人数
+        concertJoinInfoVO.setJoinedNum(concertJoinMapper.queryCountByConcertId(concertId));
+
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+            concertJoinInfoVO.setCanJoin(Boolean.TRUE);
+            ConcertJoin concertJoin = concertJoinMapper.queryByConcertIdAndUserId(concertId, currUser.getUserId());
+            concertJoinInfoVO.setIsJoined(concertJoin != null);
+        }
+
+        return concertJoinInfoVO;
     }
 
     // --------------------------
