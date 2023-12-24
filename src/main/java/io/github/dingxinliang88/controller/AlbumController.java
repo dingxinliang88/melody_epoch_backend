@@ -67,6 +67,13 @@ public class AlbumController {
         return RespUtil.success(albumService.currBandAllAlbumsByPage(current, size));
     }
 
+    @GetMapping("/band/page")
+    public BaseResponse<Page<AlbumInfoVO>> getBandAlbumsByPage(@RequestParam(value = "bandId") @NotNull(message = "乐队ID不能为空") Integer bandId,
+                                                               @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                               @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(albumService.getBandAlbumsByPage(bandId, current, size));
+    }
+
     @PutMapping("/songs")
     public BaseResponse<Boolean> addSongsToAlbum(@RequestBody @Validated SongToAlbumReq req) {
         return RespUtil.success(albumService.addSongsToAlbum(req));

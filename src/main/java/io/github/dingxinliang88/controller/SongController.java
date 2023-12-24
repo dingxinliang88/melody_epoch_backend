@@ -50,7 +50,7 @@ public class SongController {
         return RespUtil.success(songService.listSongInfoVOByPage(current));
     }
 
-    @GetMapping("/album")
+    @GetMapping("/album/to")
     public BaseResponse<SongToAlbumVO> listSongToAlbum(@RequestParam("albumId") Integer albumId) {
         return RespUtil.success(songService.listSongToAlbum(albumId));
     }
@@ -64,6 +64,20 @@ public class SongController {
     public BaseResponse<Page<Song>> currBandSongsByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
                                                         @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
         return RespUtil.success(songService.currBandSongsByPage(current, size));
+    }
+
+    @GetMapping("/band/page")
+    public BaseResponse<Page<Song>> getBandSongsByPage(@RequestParam(value = "bandId") @NotNull(message = "乐队ID不能为空") Integer bandId,
+                                                       @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                       @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(songService.getBandSongsByPage(bandId, current, size));
+    }
+
+    @GetMapping("/album/page")
+    public BaseResponse<Page<Song>> getAlbumSongsByPage(@RequestParam(value = "albumId") @NotNull(message = "专辑不能为空") Integer albumId,
+                                                       @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                       @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(songService.getAlbumSongsByPage(albumId, current, size));
     }
 
     @PostMapping("/release")

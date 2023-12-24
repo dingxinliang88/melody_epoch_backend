@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
+import io.github.dingxinliang88.pojo.dto.concert.JoinConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.ReleaseConcertReq;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertDetailsVO;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
-import io.github.dingxinliang88.pojo.dto.concert.JoinConcertReq;
 import io.github.dingxinliang88.service.ConcertService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.Min;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -70,6 +69,13 @@ public class ConcertController {
     public BaseResponse<Page<ConcertInfoVO>> getCurrConcertInfoByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
                                                                       @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
         return RespUtil.success(concertService.getCurrConcertInfoByPage(current, size));
+    }
+
+    @GetMapping("/band/page")
+    public BaseResponse<Page<ConcertInfoVO>> getBandConcertInfoByPage(@RequestParam(value = "bandId") @NotNull(message = "乐队ID不能为空") Integer bandId,
+                                                                      @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
+                                                                      @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+        return RespUtil.success(concertService.getBandConcertInfoByPage(bandId, current, size));
     }
 
     @GetMapping("/all")

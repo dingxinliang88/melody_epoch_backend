@@ -19,14 +19,6 @@
         FROM concert_join
         WHERE concert_id = #{concertId}
         GROUP BY concert_id;
-        WHERE concert_id = #{concertId}
-        AND user_id = #{userId};
     </select>
-    <select id="queryNumByConcertId" resultType="java.lang.Integer">
-        SELECT COUNT(*)
-        FROM concert_join
-        WHERE concert_id = #{concertId};
-    </select>
-
 
 </mapper>

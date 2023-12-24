@@ -1,9 +1,6 @@
 package io.github.dingxinliang88.pojo.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -47,6 +44,7 @@ public class Album {
     /**
      * 歌曲ID List，逗号分隔
      */
+    @TableField(value = "song_ids")
     private String songIdsStr;
 
     /**

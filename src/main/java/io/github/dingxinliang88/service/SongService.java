@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.mapper.AlbumMapper;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.SongLikeMapper;
 import io.github.dingxinliang88.mapper.SongMapper;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.ReleaseSongReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
+import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Song;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
@@ -41,6 +43,8 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
     @Resource
     private BandMapper bandMapper;
 
+    @Resource
+    private AlbumMapper albumMapper;
     @Resource
     private SongLikeMapper songLikeMapper;
 
@@ -164,6 +168,42 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
 
         LambdaQueryWrapper<Song> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Song::getBandId, band.getBandId());
+        return songMapper.selectPage(new Page<>(current, size), queryWrapper);
+    }
+
+    /**
+     * 分页查询指定乐队的歌曲信息
+     *
+     * @param bandId  band id
+     * @param current 页码
+     * @param size    每页数据数量
+     * @return song info
+     */
+    public Page<Song> getBandSongsByPage(Integer bandId, Integer current, Integer size) {
+
+        Band band = bandMapper.queryByBandId(bandId, false);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "查询无果");
+
+        LambdaQueryWrapper<Song> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Song::getBandId, band.getBandId());
+        return songMapper.selectPage(new Page<>(current, size), queryWrapper);
+    }
+
+    /**
+     * 分页查询指定专辑的歌曲信息
+     *
+     * @param albumId album id
+     * @param current 页码
+     * @param size    每页数据数量
+     * @return song info
+     */
+    public Page<Song> getAlbumSongsByPage(Integer albumId, Integer current, Integer size) {
+
+        Album album = albumMapper.queryAlbumByAlbumId(albumId, false);
+        ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "查询无果");
+
+        LambdaQueryWrapper<Song> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Song::getAlbumId, albumId);
         return songMapper.selectPage(new Page<>(current, size), queryWrapper);
     }
 

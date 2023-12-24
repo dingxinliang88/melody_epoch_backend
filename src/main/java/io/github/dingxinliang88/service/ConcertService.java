@@ -218,6 +218,24 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
     }
 
     /**
+     * 分页获取指定乐队的演唱会信息
+     *
+     * @param bandId  band id
+     * @param current 页码
+     * @param size    每页数据量
+     * @return concert info vo page
+     */
+    public Page<ConcertInfoVO> getBandConcertInfoByPage(Integer bandId, Integer current, Integer size) {
+        Band band = bandMapper.queryByBandId(bandId, false);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "查询无果");
+        LambdaQueryWrapper<Concert> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Concert::getBandId, bandId);
+        Page<Concert> concertPage = concertMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertConcertInfoVOPage(concertPage, true);
+    }
+
+    /**
      * 获取当前演唱会信息
      *
      * @param concertId concert id

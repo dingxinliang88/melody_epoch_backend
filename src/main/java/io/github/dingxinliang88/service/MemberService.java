@@ -188,6 +188,21 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
         return convertMemberInfoVOPage(memberPage, true);
     }
 
+    /**
+     * 分页获取指定乐队的所有乐队成员信息
+     *
+     * @return member info vo list
+     */
+    public Page<MemberInfoVO> listMemberInBandByPage(Integer bandId, Integer current, Integer size) {
+        Band band = bandMapper.queryByBandId(bandId, false);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "查询无果");
+
+        LambdaQueryWrapper<Member> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Member::getBandId, band.getBandId());
+        Page<Member> memberPage = memberMapper.selectPage(new Page<>(current, size), queryWrapper);
+        return convertMemberInfoVOPage(memberPage, true);
+    }
+
     // ------------------------
     // private util function
     // ------------------------

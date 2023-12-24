@@ -23,7 +23,6 @@ import io.github.dingxinliang88.pojo.vo.album.AlbumDetailsVO;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.pojo.vo.album.TopAlbumVO;
 import io.github.dingxinliang88.pojo.vo.comment.CommentVO;
-import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
@@ -181,6 +180,23 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     }
 
     /**
+     * 分页获取指定乐队所有的专辑信息
+     *
+     * @param bandId  band id
+     * @param current 页码
+     * @return album list
+     */
+    public Page<AlbumInfoVO> getBandAlbumsByPage(Integer bandId, Integer current, Integer size) {
+        Band band = bandMapper.queryByBandId(bandId, false);
+        ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "查询无果");
+        LambdaQueryWrapper<Album> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Album::getBandName, band.getName());
+        Page<Album> albumPage = albumMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertAlbumInfoVOPage(albumPage, true);
+    }
+
+    /**
      * 歌曲录入专辑
      *
      * @param req 歌曲录入专辑的请求
@@ -229,8 +245,8 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
         ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "专辑不存在！");
         AlbumDetailsVO albumDetailsVO = new AlbumDetailsVO(album);
         // 查询专辑的歌曲信息
-        List<SongInfoVO> songInfoVOList = songMapper.querySongInfoVOByAlbumId(albumId);
-        albumDetailsVO.setSongInfoList(songInfoVOList);
+        // List<SongInfoVO> songInfoVOList = songMapper.querySongInfoVOByAlbumId(albumId);
+        // albumDetailsVO.setSongInfoList(songInfoVOList);
         // 获取专辑的评论信息
         List<Comment> comments = commentMapper.queryByAlbumId(albumId);
         List<CommentVO> commentVOList = parseComments(comments);
