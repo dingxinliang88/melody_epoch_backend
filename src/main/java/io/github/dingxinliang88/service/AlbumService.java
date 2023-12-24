@@ -242,7 +242,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
      */
     public AlbumDetailsVO getAlbumDetailsInfo(Integer albumId) {
         // 获取专辑详细信息
-        Album album = albumMapper.queryAlbumByAlbumId(albumId, false);
+        Album album = albumMapper.queryAlbumByAlbumId(albumId, true);
         ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
         AlbumDetailsVO albumDetailsVO = new AlbumDetailsVO(album);
         // 获取专辑的评论信息

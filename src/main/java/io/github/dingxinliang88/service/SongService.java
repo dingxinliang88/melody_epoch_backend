@@ -199,7 +199,7 @@ public class SongService extends ServiceImpl<SongMapper, Song> {
      */
     public Page<Song> getAlbumSongsByPage(Integer albumId, Integer current, Integer size) {
 
-        Album album = albumMapper.queryAlbumByAlbumId(albumId, false);
+        Album album = albumMapper.queryAlbumByAlbumId(albumId, true);
         ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "查询无果");
 
         LambdaQueryWrapper<Song> queryWrapper = new LambdaQueryWrapper<>();
