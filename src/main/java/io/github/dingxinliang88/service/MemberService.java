@@ -9,9 +9,9 @@ import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
-import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
+
 import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
@@ -84,7 +84,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
      * @param req 离开乐队请求
      * @return true - 离开成功
      */
-    public Boolean leaveBand(LeaveBandReq req) {
+    public Boolean leaveBand(JoinBandReq req) {
         final Integer bandId = req.getBandId();
 
         // 查询Band是否存在

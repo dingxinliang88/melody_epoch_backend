@@ -61,9 +61,24 @@ public class BandDetailsVO implements Serializable {
     private Integer isRelease;
 
     /**
+     * 是否可以喜欢
+     */
+    private Boolean canLike = Boolean.FALSE;
+
+    /**
      * 是否喜欢
      */
-    private Boolean isLiked;
+    private Boolean isLiked = Boolean.FALSE;
+
+    /**
+     * 是否可以加入
+     */
+    private Boolean canJoin = Boolean.FALSE;
+
+    /**
+     * 是否已经加入
+     */
+    private Boolean isJoined = Boolean.FALSE;
 
     /**
      * 成员信息

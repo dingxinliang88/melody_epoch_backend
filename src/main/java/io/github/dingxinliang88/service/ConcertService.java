@@ -9,6 +9,7 @@ import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.concert.AddConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
+import io.github.dingxinliang88.pojo.dto.concert.JoinConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.ReleaseConcertReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
@@ -254,6 +255,51 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
         concertDetailsVO.setSongInfoVOList(songInfoVOList);
 
         return concertDetailsVO;
+    }
+
+    /**
+     * 加入演唱会
+     *
+     * @param req 加入演唱会请求
+     * @return true - 加入成功
+     */
+    public Boolean joinConcert(JoinConcertReq req) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR, "禁止的操作");
+
+        Long concertId = req.getConcertId();
+        // 查询演唱会信息是否合法
+        Concert concert = concertMapper.queryByConcertId(concertId);
+        Integer joinedNum = concertJoinMapper.queryCountByConcertId(concertId);
+        boolean isExpired = LocalDateTime.now().isAfter(concert.getStartTime());
+        ThrowUtil.throwIf(concert.getMaxNum() <= joinedNum || isExpired, StatusCode.NO_AUTH_ERROR, "禁止的操作");
+
+        ConcertJoin concertJoin = new ConcertJoin();
+        concertJoin.setConcertId(concertId);
+        concertJoin.setUserId(currUser.getUserId());
+        return concertJoinMapper.insert(concertJoin) == 1;
+    }
+
+    /**
+     * 取消加入演唱会
+     *
+     * @param req 加入演唱会请求
+     * @return true - 取消成功
+     */
+    public Boolean leaveConcert(JoinConcertReq req) {
+        UserLoginVO currUser = SysUtil.getCurrUser();
+        ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR, "禁止的操作");
+
+        Long concertId = req.getConcertId();
+        // 查询演唱会信息是否合法
+        Concert concert = concertMapper.queryByConcertId(concertId);
+        boolean isExpired = LocalDateTime.now().isAfter(concert.getStartTime());
+        ThrowUtil.throwIf(isExpired, StatusCode.NO_AUTH_ERROR, "禁止的操作");
+
+        ConcertJoin concertJoin = concertJoinMapper.queryByConcertIdAndUserId(concertId, currUser.getUserId());
+        ThrowUtil.throwIf(concertJoin == null, StatusCode.NO_AUTH_ERROR, "禁止的操作");
+
+        return concertJoinMapper.deleteById(concertJoin.getId()) == 1;
     }
 
     // --------------------------

@@ -25,7 +25,7 @@ public class ConcertJoin {
     /**
      * 演唱会ID
      */
-    private Integer concertId;
+    private Long concertId;
 
     /**
      * 歌迷ID

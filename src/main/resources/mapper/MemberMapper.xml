@@ -52,7 +52,7 @@
         WHERE is_delete = 0 AND (member_id = #{memberId});
     </select>
     <select id="queryByMemberIdAndBandId" resultType="io.github.dingxinliang88.pojo.po.Member">
-        SELECT member_id, name, gender, age, part, join_time, leave_time, band_id, band_name, is_delete
+        SELECT member_id, name, gender, age, part, join_time, leave_time, band_id, band_name, is_delete, is_release
         FROM member
         WHERE is_delete = 0 AND (member_id = #{memberId} AND band_id = #{bandId});
     </select>

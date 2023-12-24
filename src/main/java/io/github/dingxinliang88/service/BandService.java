@@ -175,8 +175,22 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
     public BandDetailsVO listBandInfoVO(Integer bandId) {
         // 获取乐队信息
         BandDetailsVO bandDetailsVO = bandMapper.queryBandInfoVOByBandId(bandId, true);
-        BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(bandId, SysUtil.getCurrUser().getUserId());
-        bandDetailsVO.setIsLiked(bandLike != null);
+        UserLoginVO currUser = SysUtil.getCurrUser();
+
+        // TODO 拆分权限为一个新的类，每次前端不需要请求所有的信息，提高性能
+        // 如果当前乐队是FAN, 就可以喜欢乐队
+        if (UserRoleType.FAN.getType().equals(currUser.getType())) {
+            bandDetailsVO.setCanLike(Boolean.TRUE);
+            BandLike bandLike = bandLikeMapper.queryByBandIdAndUserId(bandId, currUser.getUserId());
+            bandDetailsVO.setIsLiked(bandLike != null);
+        }
+
+        // 当前用户如果是Member，就可以加入乐队
+        if (UserRoleType.MEMBER.getType().equals(currUser.getType())) {
+            bandDetailsVO.setCanJoin(Boolean.TRUE);
+            Member member = memberMapper.queryByMemberId(currUser.getUserId());
+            bandDetailsVO.setIsJoined(member.getBandId() != null && bandId.equals(member.getBandId()));
+        }
 
         return bandDetailsVO;
     }

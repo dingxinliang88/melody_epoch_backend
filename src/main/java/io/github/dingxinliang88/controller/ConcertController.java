@@ -7,6 +7,7 @@ import io.github.dingxinliang88.pojo.dto.concert.EditConcertReq;
 import io.github.dingxinliang88.pojo.dto.concert.ReleaseConcertReq;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertDetailsVO;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
+import io.github.dingxinliang88.pojo.dto.concert.JoinConcertReq;
 import io.github.dingxinliang88.service.ConcertService;
 import io.github.dingxinliang88.utils.RespUtil;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.Min;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -75,4 +77,13 @@ public class ConcertController {
         return RespUtil.success(concertService.getCurrConcertDetails(concertId));
     }
 
+    @PostMapping("/join")
+    public BaseResponse<Boolean> joinConcert(@RequestBody @Validated JoinConcertReq req) {
+        return RespUtil.success(concertService.joinConcert(req));
+    }
+
+    @PostMapping("/leave")
+    public BaseResponse<Boolean> leaveConcert(@RequestBody @Validated JoinConcertReq req) {
+        return RespUtil.success(concertService.leaveConcert(req));
+    }
 }

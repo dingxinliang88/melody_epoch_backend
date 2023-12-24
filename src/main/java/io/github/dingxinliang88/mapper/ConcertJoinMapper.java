@@ -27,4 +27,5 @@ public interface ConcertJoinMapper extends BaseMapper<ConcertJoin> {
      */
     Integer queryCountByConcertId(Long concertId);
 
+
 }

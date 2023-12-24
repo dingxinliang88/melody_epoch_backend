@@ -2,9 +2,9 @@ package io.github.dingxinliang88.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.biz.BaseResponse;
+import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
-import io.github.dingxinliang88.pojo.dto.member.LeaveBandReq;
 import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import io.github.dingxinliang88.service.MemberService;
 import io.github.dingxinliang88.utils.RespUtil;
@@ -34,7 +34,7 @@ public class MemberController {
     }
 
     @PostMapping("/leave")
-    public BaseResponse<Boolean> leaveBand(@RequestBody @Validated LeaveBandReq req) {
+    public BaseResponse<Boolean> leaveBand(@RequestBody @Validated JoinBandReq req) {
         return RespUtil.success(memberService.leaveBand(req));
     }
 
