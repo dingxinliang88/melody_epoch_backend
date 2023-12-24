@@ -2,7 +2,6 @@ package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.LikeReq;
-import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.dto.fan.ScoreAlbumReq;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
@@ -29,11 +28,6 @@ public class FanController {
     @Resource
     private FanService fanService;
 
-
-    @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody EditFanReq req) {
-        return RespUtil.success(fanService.editInfo(req));
-    }
 
     @PostMapping("/like")
     public BaseResponse<Boolean> like(@RequestBody @Validated LikeReq req) {

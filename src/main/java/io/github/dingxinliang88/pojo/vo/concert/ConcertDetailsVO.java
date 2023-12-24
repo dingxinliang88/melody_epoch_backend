@@ -1,10 +1,7 @@
 package io.github.dingxinliang88.pojo.vo.concert;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-<<<<<<< HEAD
 import io.github.dingxinliang88.pojo.po.Concert;
-=======
->>>>>>> fea_join
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
-<<<<<<< HEAD
-=======
  * 演唱会信息VO
  *
->>>>>>> fea_join
  * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
  */
 @Getter
@@ -55,33 +49,26 @@ public class ConcertDetailsVO implements Serializable {
     private String place;
 
     /**
-<<<<<<< HEAD
      * 举办乐队ID
      */
     private Integer bandId;
 
     /**
-=======
->>>>>>> fea_join
      * 举办乐队名称
      */
     private String bandName;
 
     /**
-<<<<<<< HEAD
      * 演唱会上限人数
      */
     private Integer maxNum;
 
     /**
-=======
->>>>>>> fea_join
      * 已加入人数
      */
     private Integer joinedNum;
 
     /**
-<<<<<<< HEAD
      * 歌曲信息
      */
     private List<SongInfoVO> songInfoVOList;
@@ -99,34 +86,5 @@ public class ConcertDetailsVO implements Serializable {
         this.bandId = concert.getBandId();
         this.bandName = concert.getBandName();
         this.maxNum = concert.getMaxNum();
-=======
-     * 演唱会上限人数
-     */
-    private Integer maxNum;
-
-    /**
-     * 演唱会歌曲信息
-     */
-    private List<SongInfoVO> songInfoVOList;
-
-    /**
-     * 是否允许加入（目前主要判断时间 和 人数）
-     */
-    private Boolean isAllowedJoin;
-
-    /**
-     * 当前角色是否已经加入该演唱会
-     */
-    private Boolean isJoined;
-
-    public ConcertDetailsVO(Long concertId, String name, LocalDateTime startTime, LocalDateTime endTime, String place, String bandName, Integer maxNum) {
-        this.concertId = concertId;
-        this.name = name;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.place = place;
-        this.bandName = bandName;
-        this.maxNum = maxNum;
->>>>>>> fea_join
     }
 }

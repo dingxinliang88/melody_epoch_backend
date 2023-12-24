@@ -8,7 +8,6 @@ import io.github.dingxinliang88.constants.FanConstant;
 import io.github.dingxinliang88.exception.BizException;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.LikeReq;
-import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.dto.fan.ScoreAlbumReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.*;
@@ -65,30 +64,6 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
             r -> new Thread(r, "Album-Score-" + UUID.randomUUID().toString(true)), new ThreadPoolExecutor.AbortPolicy()
     );
     private static final int MAX_RETRIES = 3;
-
-
-    /**
-     * 乐迷修改自己的信息
-     *
-     * @param req 修改信息请求
-     * @return true - 修改成功
-     */
-    public Boolean editInfo(EditFanReq req) {
-
-        Integer fanId = req.getFanId();
-
-        // 检查是否是本人
-        UserLoginVO currUser = SysUtil.getCurrUser();
-        ThrowUtil.throwIf(!currUser.getUserId().equals(fanId), StatusCode.NO_AUTH_ERROR,
-                "无权修改其他乐迷信息！");
-
-        // 查找相关的成员是否存在
-        Fan fan = fanMapper.queryByFanId(fanId);
-        ThrowUtil.throwIf(fan == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关成员信息！");
-
-        // 更新相关的信息
-        return fanMapper.updateInfoByFanId(req);
-    }
 
     /**
      * 喜欢收藏
