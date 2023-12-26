@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 /**
  * 乐队信息
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 @TableName(value = "band")

@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 修改分工请求（仅队长）
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

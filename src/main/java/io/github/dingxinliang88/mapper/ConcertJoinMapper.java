@@ -5,7 +5,7 @@ import io.github.dingxinliang88.pojo.po.ConcertJoin;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Mapper
 public interface ConcertJoinMapper extends BaseMapper<ConcertJoin> {

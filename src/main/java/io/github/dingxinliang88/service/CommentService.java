@@ -2,6 +2,7 @@ package io.github.dingxinliang88.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
+import io.github.dingxinliang88.manager.SensitiveHandler;
 import io.github.dingxinliang88.mapper.AlbumMapper;
 import io.github.dingxinliang88.mapper.CommentMapper;
 import io.github.dingxinliang88.pojo.dto.comment.AddCommentReq;
@@ -9,6 +10,7 @@ import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Album;
 import io.github.dingxinliang88.pojo.po.Comment;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.ContentUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 /**
  * Comment Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class CommentService extends ServiceImpl<CommentMapper, Comment> {
@@ -30,10 +32,13 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
     @Resource
     private AlbumMapper albumMapper;
 
+    @Resource
+    private SensitiveHandler sensitiveHandler;
+
     /**
      * 用户评论专辑
      *
-     * @param req     评论请求
+     * @param req 评论请求
      * @return comment id
      */
     public Integer addComment(AddCommentReq req) {
@@ -46,7 +51,14 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
         Album album = albumMapper.queryAlbumByAlbumId(albumId, false);
         ThrowUtil.throwIf(album == null, StatusCode.NOT_FOUND_ERROR, "该专辑不存在");
 
-        Comment comment = new Comment(albumId, req.getParentId(), req.getContent(), currUser.getUserId(), LocalDateTime.now());
+        // 过滤评论
+        String content = req.getContent();
+        String cleanContent = ContentUtil.cleanContent(content);
+
+        // 敏感词计数器处理
+        sensitiveHandler.handleAccSensitive(currUser.getUserId(), !content.equals(cleanContent));
+
+        Comment comment = new Comment(albumId, req.getParentId(), cleanContent, currUser.getUserId(), LocalDateTime.now());
         // 顶级评论默认的父级ID
         comment.setParentId(req.getParentId() == null ? 0 : req.getParentId());
         commentMapper.insert(comment);

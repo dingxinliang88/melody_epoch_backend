@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 发布专辑请求
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

@@ -16,7 +16,7 @@ import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_KEY;
 /**
  * 邮件管理
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class EmailManager {

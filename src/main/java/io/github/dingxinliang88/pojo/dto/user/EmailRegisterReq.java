@@ -15,7 +15,7 @@ import static io.github.dingxinliang88.constants.UserConstant.PWD_MIN_LEN;
 /**
  * 邮箱注册
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 public class EmailRegisterReq implements Serializable {

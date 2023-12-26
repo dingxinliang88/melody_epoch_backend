@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 歌曲录入专辑请求
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

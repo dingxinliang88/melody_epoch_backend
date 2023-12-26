@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * top albums info vo
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

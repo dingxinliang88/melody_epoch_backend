@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 专辑打分请求
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

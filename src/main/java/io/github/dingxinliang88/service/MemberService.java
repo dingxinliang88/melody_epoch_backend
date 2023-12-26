@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Band Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class MemberService extends ServiceImpl<MemberMapper, Member> {

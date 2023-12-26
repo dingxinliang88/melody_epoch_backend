@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 /**
  * 管理员模块
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestController
 @RequestMapping("/admin")

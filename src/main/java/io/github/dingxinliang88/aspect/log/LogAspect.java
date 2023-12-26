@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  * 使用AOP记录日志
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Aspect
 @Component

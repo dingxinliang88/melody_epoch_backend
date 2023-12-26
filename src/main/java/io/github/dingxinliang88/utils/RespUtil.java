@@ -6,7 +6,7 @@ import io.github.dingxinliang88.biz.StatusCode;
 /**
  * 结果返回工具类
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public class RespUtil {
     /**

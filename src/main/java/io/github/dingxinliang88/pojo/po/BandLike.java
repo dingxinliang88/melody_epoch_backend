@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 /**
  * 乐迷喜欢乐队信息
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 @TableName(value = "band_like")

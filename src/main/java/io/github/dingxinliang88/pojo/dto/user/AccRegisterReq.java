@@ -13,7 +13,7 @@ import static io.github.dingxinliang88.constants.UserConstant.*;
 /**
  * 账号注册请求体
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 public class AccRegisterReq implements Serializable {

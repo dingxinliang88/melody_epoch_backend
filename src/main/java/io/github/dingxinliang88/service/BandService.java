@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.exception.BizException;
+import io.github.dingxinliang88.manager.SensitiveHandler;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
@@ -16,6 +17,7 @@ import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.vo.band.BandDetailsVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.ContentUtil;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
@@ -32,7 +34,7 @@ import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PRE
 /**
  * Band Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class BandService extends ServiceImpl<BandMapper, Band> {
@@ -57,6 +59,9 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private SensitiveHandler sensitiveHandler;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -119,15 +124,25 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
      * @param req 修改乐队信息请求
      * @return true - 修改成功
      */
-    public Boolean editInfo(EditBandReq req) {
+    public Boolean editBandInfo(EditBandReq req) {
 
         // 获取当前登录用户，判断是否是队长
         UserLoginVO user = SysUtil.getCurrUser();
+        Integer userId = user.getUserId();
 
         Integer bandId = req.getBandId();
         Band band = bandMapper.queryByBandId(bandId, true);
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "未查找到相关乐队信息！");
-        ThrowUtil.throwIf(!band.getLeaderId().equals(user.getUserId()), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改乐队信息！");
+        ThrowUtil.throwIf(!band.getLeaderId().equals(userId), StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改乐队信息！");
+
+        // 过滤简介
+        String profile = req.getProfile();
+        String cleanProfile = ContentUtil.cleanContent(profile);
+
+        req.setProfile(cleanProfile);
+
+        // 触发敏感词计数器
+        sensitiveHandler.handleAccSensitive(userId, !profile.equals(cleanProfile));
 
         return bandMapper.editInfo(req);
     }

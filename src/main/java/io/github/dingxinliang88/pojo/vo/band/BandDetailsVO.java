@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 乐队详细消息
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

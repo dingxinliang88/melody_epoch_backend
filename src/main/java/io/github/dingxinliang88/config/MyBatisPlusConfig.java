@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * MP 配置
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Configuration
 public class MyBatisPlusConfig {

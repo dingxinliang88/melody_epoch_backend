@@ -5,6 +5,7 @@ import io.github.dingxinliang88.mapper.CommentMapper;
 import io.github.dingxinliang88.mapper.UserMapper;
 import io.github.dingxinliang88.pojo.po.Comment;
 import io.github.dingxinliang88.pojo.vo.comment.CommentVO;
+import io.github.dingxinliang88.utils.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -27,6 +28,9 @@ public class AlbumServiceTest {
     @Resource
     private UserMapper userMapper;
 
+    @Resource
+    private RedisUtil redisUtil;
+
 
     @Test
     public void testComment() {
@@ -35,6 +39,14 @@ public class AlbumServiceTest {
         List<CommentVO> commentVOList = parseComments(comments);
         System.out.println(JSONUtil.toJsonStr(commentVOList));
     }
+
+    @Test
+    public void testKeys() {
+        String key = "user:*";
+        Set<String> keys = redisUtil.keys(key);
+        System.out.println(keys);
+    }
+
 
     private List<CommentVO> parseComments(List<Comment> comments) {
         // Step 1: Create a map to store comments grouped by parent comment ID

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 /**
  * 权限校验AOP
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Aspect
 @Component

@@ -3,7 +3,7 @@ package io.github.dingxinliang88.constants;
 /**
  * fan 常量类
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public interface FanConstant {
 

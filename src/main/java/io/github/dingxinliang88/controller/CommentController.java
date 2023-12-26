@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 /**
  * 评论模块
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestController
 @RequestMapping("/comment")

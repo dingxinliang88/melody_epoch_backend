@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 歌曲元素VO （用于选歌）
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

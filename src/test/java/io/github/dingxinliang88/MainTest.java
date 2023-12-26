@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
+import io.github.dingxinliang88.utils.ContentUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import org.junit.Test;
 
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public class MainTest {
 
@@ -72,11 +73,27 @@ public class MainTest {
     }
 
     @Test
+    public void testSensitive() {
+        String originContent = "Hutool是一个小而全的Java工具类库，通过静态方法封装，降低相关API的学习成本，傻逼、蠢蛋吧你，提高工作效率，使Java拥有函数式语言般的优雅，让Java语言也可以“甜甜的”。";
+        String s = ContentUtil.cleanContent(originContent);
+        System.out.println(s);
+    }
+
+
+    @Test
     public void testSet() {
         Set<Object> set = CollectionUtil.newHashSet(1, 2, 3);
         Set<Integer> integers = convertToIntegerSet(set);
         System.out.println(integers);
     }
+
+    @Test
+    public void testSubstring() {
+        String key = "user:auth:22";
+        String userIdStr = key.substring(key.lastIndexOf(":") + 1);
+        System.out.println("userIdStr = " + userIdStr);
+    }
+
 
     private Set<Integer> convertToIntegerSet(Set<Object> objectSet) {
         Set<Integer> integerSet = new HashSet<>();

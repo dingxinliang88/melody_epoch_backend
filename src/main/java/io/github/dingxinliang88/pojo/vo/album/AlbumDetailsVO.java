@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 专辑详细信息
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

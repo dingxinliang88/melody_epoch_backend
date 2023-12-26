@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 乐队模块
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestController
 @RequestMapping("/band")
@@ -34,8 +34,8 @@ public class BandController {
     }
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditBandReq req) {
-        return RespUtil.success(bandService.editInfo(req));
+    public BaseResponse<Boolean> editBandInfo(@RequestBody @Validated EditBandReq req) {
+        return RespUtil.success(bandService.editBandInfo(req));
     }
 
     @GetMapping("/list")

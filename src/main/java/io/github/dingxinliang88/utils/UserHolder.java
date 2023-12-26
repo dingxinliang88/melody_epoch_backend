@@ -5,7 +5,7 @@ import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 /**
  * 用户信息管理
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public class UserHolder {
 

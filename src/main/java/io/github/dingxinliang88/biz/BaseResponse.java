@@ -6,7 +6,7 @@ import lombok.Setter;
 /**
  * 通用返回类
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

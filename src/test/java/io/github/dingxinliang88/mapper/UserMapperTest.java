@@ -2,10 +2,10 @@ package io.github.dingxinliang88.mapper;
 
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.User;
+import io.github.dingxinliang88.utils.SysUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -14,12 +14,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
 
 /**
  * User Mapper Test
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -34,10 +33,11 @@ public class UserMapperTest {
     public void testInsert() {
         String salt = RandomUtil.randomString(16);
         String originPassword = "admin123";
-        String encryptedPassword = DigestUtil.md5Hex(salt + originPassword, StandardCharsets.UTF_8);
+        String encryptedPassword = SysUtil.encryptedPwd(salt, originPassword);
         User user = new User();
         user.setType(UserRoleType.ADMIN.getType());
         user.setAccount("admin");
+        user.setNickname("Admin");
         user.setPassword(encryptedPassword);
         user.setSalt(salt);
         user.setEmail("codejuzi@qq.com");

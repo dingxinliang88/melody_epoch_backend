@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * 乐队成员模块
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestController
 @RequestMapping("/member")

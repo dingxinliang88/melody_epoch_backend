@@ -15,7 +15,7 @@ import static io.github.dingxinliang88.constants.CommonConstant.RELEASE;
 import static org.junit.Assert.*;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

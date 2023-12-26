@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter
@@ -43,7 +43,7 @@ public class UserInfoVO implements Serializable {
     /**
      * 是否被封禁
      */
-    private Boolean isBanned;
+    private Boolean isBanned = Boolean.FALSE;
 
     /**
      * 乐队成员特有的属性

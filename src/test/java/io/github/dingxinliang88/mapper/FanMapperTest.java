@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import static io.github.dingxinliang88.constants.UserConstant.MALE;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)

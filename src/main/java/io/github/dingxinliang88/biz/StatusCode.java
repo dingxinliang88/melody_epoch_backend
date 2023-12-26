@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * 状态码
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 public enum StatusCode {

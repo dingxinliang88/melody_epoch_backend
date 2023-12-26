@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 评论信息VO类
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

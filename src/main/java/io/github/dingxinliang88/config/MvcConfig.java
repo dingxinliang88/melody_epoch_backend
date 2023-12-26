@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 /**
  * 跨域配置
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {

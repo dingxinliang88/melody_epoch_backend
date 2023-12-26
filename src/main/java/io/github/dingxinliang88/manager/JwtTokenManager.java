@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.manager;
 
 import io.github.dingxinliang88.pojo.dto.JwtToken;
+import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.jsonwebtoken.Claims;
@@ -23,7 +24,7 @@ import static io.github.dingxinliang88.constants.UserConstant.*;
 /**
  * JWT token 管理器
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class JwtTokenManager {
@@ -103,6 +104,11 @@ public class JwtTokenManager {
     }
 
     public void revokeToken(UserLoginVO user) {
+        redisUtil.delete(ACCESS_TOKEN_PREFIX + user.getUserId());
+        redisUtil.delete(REFRESH_TOKEN_PREFIX + user.getUserId());
+    }
+
+    public void revokeToken(User user) {
         redisUtil.delete(ACCESS_TOKEN_PREFIX + user.getUserId());
         redisUtil.delete(REFRESH_TOKEN_PREFIX + user.getUserId());
     }

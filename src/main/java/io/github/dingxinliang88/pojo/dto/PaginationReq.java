@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 分页请求体
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

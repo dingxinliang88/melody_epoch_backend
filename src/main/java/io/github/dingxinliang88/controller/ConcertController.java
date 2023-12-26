@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * 演唱会模块
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestController
 @RequestMapping("/concert")
@@ -37,8 +37,8 @@ public class ConcertController {
     }
 
     @PutMapping("/edit")
-    public BaseResponse<Boolean> editInfo(@RequestBody @Validated EditConcertReq req) {
-        return RespUtil.success(concertService.editInfo(req));
+    public BaseResponse<Boolean> editConcertInfo(@RequestBody @Validated EditConcertReq req) {
+        return RespUtil.success(concertService.editConcertInfo(req));
     }
 
     @GetMapping("/list")

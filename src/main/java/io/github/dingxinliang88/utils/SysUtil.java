@@ -12,7 +12,7 @@ import static io.github.dingxinliang88.constants.UserConstant.*;
 /**
  * 系统工具类
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public class SysUtil {
 

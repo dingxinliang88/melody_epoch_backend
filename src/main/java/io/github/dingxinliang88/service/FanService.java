@@ -38,7 +38,7 @@ import static io.github.dingxinliang88.constants.CommonConstant.RELEASE;
 /**
  * Fan Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class FanService extends ServiceImpl<FanMapper, Fan> {

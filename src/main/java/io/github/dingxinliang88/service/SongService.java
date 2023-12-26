@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * Song Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class SongService extends ServiceImpl<SongMapper, Song> {

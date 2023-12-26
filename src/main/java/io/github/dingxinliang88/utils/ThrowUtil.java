@@ -6,7 +6,7 @@ import io.github.dingxinliang88.exception.BizException;
 /**
  * 抛出异常工具类
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public class ThrowUtil {
 

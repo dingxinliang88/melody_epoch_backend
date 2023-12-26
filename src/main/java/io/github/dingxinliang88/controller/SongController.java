@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * 歌曲模块
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestController
 @RequestMapping("/song")

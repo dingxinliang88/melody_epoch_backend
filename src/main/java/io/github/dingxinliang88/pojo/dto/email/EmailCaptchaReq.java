@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 获取邮件（验证码）请求
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 public class EmailCaptchaReq implements Serializable {

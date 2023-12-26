@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * 邮箱登录请求体
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 public class EmailLoginReq implements Serializable {

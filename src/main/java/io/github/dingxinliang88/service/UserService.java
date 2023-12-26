@@ -45,7 +45,7 @@ import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PRE
 /**
  * Default User Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
@@ -226,27 +226,29 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String email = req.getEmail();
         Integer loginType = req.getLoginType();
 
-        synchronized (email.intern()) {
-            ThrowUtil.throwIf(SysUtil.getCurrUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
-            UserLoginVO userLoginVO;
-            if (EmailLoginType.CODE_LOGIN.getCode().equals(loginType)) {
-                userLoginVO = handleEmailCodeLogin(req);
-            } else {
-                userLoginVO = handleEmailPwdLogin(req);
+        try {
+            synchronized (email.intern()) {
+                ThrowUtil.throwIf(SysUtil.getCurrUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
+                UserLoginVO userLoginVO;
+                if (EmailLoginType.CODE_LOGIN.getCode().equals(loginType)) {
+                    userLoginVO = handleEmailCodeLogin(req);
+                } else {
+                    userLoginVO = handleEmailPwdLogin(req);
+                }
+
+                UserHolder.setUser(userLoginVO);
+
+                // 保存用户登陆态
+                String token = jwtTokenManager.genAccessToken(userLoginVO);
+                String refreshToken = jwtTokenManager.genRefreshToken(userLoginVO);
+                JwtToken jwtToken = new JwtToken(token, refreshToken);
+                jwtTokenManager.save2Redis(jwtToken, userLoginVO);
+
+                return token;
             }
-
-            UserHolder.setUser(userLoginVO);
-
-            // 保存用户登陆态
-            String token = jwtTokenManager.genAccessToken(userLoginVO);
-            String refreshToken = jwtTokenManager.genRefreshToken(userLoginVO);
-            JwtToken jwtToken = new JwtToken(token, refreshToken);
-            jwtTokenManager.save2Redis(jwtToken, userLoginVO);
-
+        } finally {
             // 删除code
             redisUtil.delete(EmailConstant.CAPTCHA_KEY + email);
-
-            return token;
         }
     }
 
@@ -347,12 +349,17 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         String email = req.getEmail();
         String code = req.getCode();
 
-        synchronized (email.intern()) {
-            // 获取服务器中的 code
-            String serverCode = (String) redisUtil.get(EmailConstant.CAPTCHA_KEY + email);
-            assert serverCode != null;
-            ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
-            return userMapper.updateEmailByUserId(SysUtil.getCurrUser().getUserId(), email);
+        try {
+            synchronized (email.intern()) {
+                // 获取服务器中的 code
+                String serverCode = (String) redisUtil.get(EmailConstant.CAPTCHA_KEY + email);
+                assert serverCode != null;
+                ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
+                return userMapper.updateEmailByUserId(SysUtil.getCurrUser().getUserId(), email);
+            }
+        } finally {
+            // 删除code
+            redisUtil.delete(EmailConstant.CAPTCHA_KEY + email);
         }
     }
 
@@ -377,7 +384,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         ThrowUtil.throwIf(SysUtil.isBanned(user), StatusCode.DUPLICATE_DATA, "已被封禁！");
 
         Integer bannedType = SysUtil.genBannedType(type);
-        return userMapper.updateTypeByUserId(user.getUserId(), bannedType);
+        Boolean res = userMapper.updateTypeByUserId(user.getUserId(), bannedType);
+
+        // 强制下线用户
+        jwtTokenManager.revokeToken(user);
+
+        return res;
     }
 
     /**
@@ -426,6 +438,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User userInfo;
         synchronized (email.intern()) {
             userInfo = userMapper.queryByEmail(email);
+            ThrowUtil.throwIf(SysUtil.isBanned(userInfo), StatusCode.NO_AUTH_ERROR, "当前账号已被封禁");
             ThrowUtil.throwIf(!SysUtil.checkPwd(userInfo, password), StatusCode.PASSWORD_NOT_MATCH);
         }
 
@@ -443,15 +456,21 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         ThrowUtil.throwIf(code == null, StatusCode.PARAMS_ERROR, "验证码不能为空");
 
         User userInfo;
-        // 加锁
-        synchronized (email.intern()) {
-            // 根据用户的邮箱号查询用户是否存在，不存在即注册，存在即更新
-            userInfo = userMapper.queryByEmail(email);
-            ThrowUtil.throwIf(userInfo == null, StatusCode.NOT_FOUND_ERROR, "用户不存在，请先注册");
-            // 获取服务器中的 code
-            String serverCode = (String) redisUtil.get(EmailConstant.CAPTCHA_KEY + email);
-            assert serverCode != null;
-            ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
+        try {
+            // 加锁
+            synchronized (email.intern()) {
+                // 根据用户的邮箱号查询用户是否存在，不存在即注册，存在即更新
+                userInfo = userMapper.queryByEmail(email);
+                ThrowUtil.throwIf(userInfo == null, StatusCode.NOT_FOUND_ERROR, "用户不存在，请先注册");
+                ThrowUtil.throwIf(SysUtil.isBanned(userInfo), StatusCode.NO_AUTH_ERROR, "当前账号已被封禁");
+                // 获取服务器中的 code
+                String serverCode = (String) redisUtil.get(EmailConstant.CAPTCHA_KEY + email);
+                assert serverCode != null;
+                ThrowUtil.throwIf(!serverCode.equals(code), StatusCode.CODE_NOT_MATCH);
+            }
+        } finally {
+            // 删除code
+            redisUtil.delete(EmailConstant.CAPTCHA_KEY + email);
         }
 
         return UserLoginVO.builder()

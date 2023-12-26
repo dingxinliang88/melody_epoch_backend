@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * 专辑模块
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestController
 @RequestMapping("/album")

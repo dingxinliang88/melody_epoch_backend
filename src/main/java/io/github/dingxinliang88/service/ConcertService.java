@@ -36,7 +36,7 @@ import static io.github.dingxinliang88.constants.CommonConstant.SONGS_STR_SEPARA
 /**
  * Comment Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
@@ -72,7 +72,7 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
         ThrowUtil.throwIf(LocalDateTime.now().isAfter(req.getStartTime()), StatusCode.PARAMS_ERROR, "演出开始时间不能早于当前时间");
         ThrowUtil.throwIf(req.getStartTime().plusHours(2).isAfter(req.getEndTime()), StatusCode.PARAMS_ERROR, "演出时间不能少于2小时");
 
-        String songIdsStr = StrUtil.join(",", req.getSongIdList());
+        String songIdsStr = StrUtil.join(SONGS_STR_SEPARATOR, req.getSongIdList());
 
         Concert concert = new Concert(req.getName(), req.getStartTime(), req.getEndTime(), req.getPlace(),
                 band.getBandId(), band.getName(), songIdsStr, req.getMaxNum());
@@ -88,7 +88,7 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
      * @param req 修改演唱会信息
      * @return true - 修改成功
      */
-    public Boolean editInfo(EditConcertReq req) {
+    public Boolean editConcertInfo(EditConcertReq req) {
         // 判断当前登录用户是否是队长
         UserLoginVO currUser = SysUtil.getCurrUser();
         Band band = bandMapper.queryByLeaderId(currUser.getUserId(), true);
@@ -98,7 +98,7 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
         ThrowUtil.throwIf(LocalDateTime.now().isAfter(req.getStartTime()), StatusCode.PARAMS_ERROR, "演出开始时间不能早于当前时间");
         ThrowUtil.throwIf(req.getStartTime().plusHours(2).isAfter(req.getEndTime()), StatusCode.PARAMS_ERROR, "演出时间不能少于2小时");
 
-        String songIdsStr = StrUtil.join(",", req.getSongIdList());
+        String songIdsStr = StrUtil.join(SONGS_STR_SEPARATOR, req.getSongIdList());
 
         return concertMapper.editInfo(req.getConcertId(), req.getName(), req.getStartTime(),
                 req.getEndTime(), band.getBandId(), req.getPlace(), songIdsStr, req.getMaxNum());
@@ -129,7 +129,6 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
 
         return convertConcertInfoVOPage(concertPage, false);
     }
-
 
     /**
      * 发布演唱会信息

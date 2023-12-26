@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * 全局异常处理器
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {

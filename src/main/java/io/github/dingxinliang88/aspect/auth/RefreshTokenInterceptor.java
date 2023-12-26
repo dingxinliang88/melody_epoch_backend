@@ -20,7 +20,7 @@ import static io.github.dingxinliang88.constants.UserConstant.*;
 /**
  * 刷新token拦截器
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public class RefreshTokenInterceptor implements HandlerInterceptor {
 

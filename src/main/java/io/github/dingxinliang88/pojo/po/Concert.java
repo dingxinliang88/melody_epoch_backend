@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * 演唱会信息
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 @TableName(value = "concert")

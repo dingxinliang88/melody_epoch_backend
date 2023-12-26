@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * 演唱会信息VO
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 @Setter

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.AlbumConstant;
+import io.github.dingxinliang88.manager.SensitiveHandler;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
@@ -23,6 +24,7 @@ import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.pojo.vo.album.TopAlbumVO;
 import io.github.dingxinliang88.pojo.vo.comment.CommentVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.ContentUtil;
 import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
@@ -39,7 +41,7 @@ import static io.github.dingxinliang88.constants.CommonConstant.*;
 /**
  * Album Service Implementation
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Service
 public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
@@ -63,6 +65,9 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private SensitiveHandler sensitiveHandler;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -105,6 +110,14 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
 
         Band band = bandMapper.queryByLeaderId(userId, true);
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法修改专辑信息!");
+
+        // 过滤简介
+        String profile = req.getProfile();
+        String cleanProfile = ContentUtil.cleanContent(profile);
+        req.setProfile(cleanProfile);
+
+        // 触发敏感词计数器
+        sensitiveHandler.handleAccSensitive(userId, !profile.equals(cleanProfile));
 
         return albumMapper.editInfo(req);
     }
