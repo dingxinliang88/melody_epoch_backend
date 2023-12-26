@@ -57,4 +57,19 @@ public class SysUtil {
     public static boolean isBanned() {
         return (UserHolder.getUser().getType() & (1 << BANNED_IDX)) != 0;
     }
+
+    /**
+     * @see io.github.dingxinliang88.pojo.enums.UserRoleType
+     */
+    public static boolean isBanned(User user) {
+        return (user.getType() & (1 << BANNED_IDX)) != 0;
+    }
+
+    public static Integer genBannedType(Integer type) {
+        return type | (1 << BANNED_IDX);
+    }
+
+    public static Integer genUnbannedType(Integer type) {
+        return type & 0b011;
+    }
 }

@@ -12,6 +12,14 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper extends BaseMapper<User> {
 
     /**
+     * 根据用户ID查询用户信息
+     *
+     * @param userId 用户ID
+     * @return 用户信息
+     */
+    User queryByUserId(Integer userId);
+
+    /**
      * 根据邮箱查询用户信息
      *
      * @param email 邮箱信息
@@ -61,4 +69,14 @@ public interface UserMapper extends BaseMapper<User> {
      * @return true - 修改成功
      */
     Boolean updateEmailByUserId(Integer userId, String email);
+
+    /**
+     * 改变用户类型
+     *
+     * @param userId user id
+     * @param type   user type
+     * @return true - 修改成功
+     */
+    Boolean updateTypeByUserId(Integer userId, Integer type);
+
 }

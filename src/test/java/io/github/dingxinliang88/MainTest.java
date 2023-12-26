@@ -66,9 +66,9 @@ public class MainTest {
 
     @Test
     public void testBanned() {
-        int type = 0b110;
+        int type = 0b101;
         System.out.println(type);
-        System.out.println((type & (1 << 2)) != 0);
+        System.out.println(SysUtil.genUnbannedType(type));
     }
 
     @Test

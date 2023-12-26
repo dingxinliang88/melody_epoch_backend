@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.pojo.vo.user;
 
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.fan.FanInfoVO;
 import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import lombok.Getter;
@@ -40,6 +41,11 @@ public class UserInfoVO implements Serializable {
     private Integer type;
 
     /**
+     * 是否被封禁
+     */
+    private Boolean isBanned;
+
+    /**
      * 乐队成员特有的属性
      */
     private MemberInfoVO memberInfoVO;
@@ -48,4 +54,13 @@ public class UserInfoVO implements Serializable {
      * 乐迷特有的属性
      */
     private FanInfoVO fanInfoVO;
+
+    public static UserInfoVO userToVO(User user) {
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setUserId(user.getUserId());
+        userInfoVO.setNickname(user.getNickname());
+        userInfoVO.setEmail(user.getEmail());
+        userInfoVO.setType(user.getType());
+        return userInfoVO;
+    }
 }

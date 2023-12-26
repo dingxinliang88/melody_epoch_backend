@@ -1,6 +1,8 @@
 package io.github.dingxinliang88.service;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.EmailConstant;
@@ -34,6 +36,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PREFIX;
 
@@ -351,6 +356,65 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
     }
 
+    // -----------------------------
+    // admin functions
+    // -----------------------------
+
+    /**
+     * 封禁用户
+     *
+     * @param req 封禁用户请求
+     * @return true - 封禁成功
+     */
+    public Boolean banUser(BanUserReq req) {
+        Integer userId = req.getUserId();
+        User user = userMapper.queryByUserId(userId);
+        ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
+
+        Integer type = user.getType();
+        ThrowUtil.throwIf(UserRoleType.ADMIN.getType().equals(type), StatusCode.NO_AUTH_ERROR, "权限错误！");
+
+        ThrowUtil.throwIf(SysUtil.isBanned(user), StatusCode.DUPLICATE_DATA, "已被封禁！");
+
+        Integer bannedType = SysUtil.genBannedType(type);
+        return userMapper.updateTypeByUserId(user.getUserId(), bannedType);
+    }
+
+    /**
+     * 解禁用户
+     *
+     * @param req 封禁用户请求
+     * @return true - 解禁成功
+     */
+    public Boolean unbanUser(BanUserReq req) {
+        Integer userId = req.getUserId();
+        User user = userMapper.queryByUserId(userId);
+        ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "查询无果！");
+
+        Integer type = user.getType();
+        ThrowUtil.throwIf(UserRoleType.ADMIN.getType().equals(type), StatusCode.NO_AUTH_ERROR, "权限错误！");
+
+        ThrowUtil.throwIf(!SysUtil.isBanned(user), StatusCode.DUPLICATE_DATA, "未被封禁！");
+
+        Integer unbannedType = SysUtil.genUnbannedType(type);
+        return userMapper.updateTypeByUserId(user.getUserId(), unbannedType);
+    }
+
+    /**
+     * 分页获取用户信息
+     *
+     * @param current 页码
+     * @param size    每页数量
+     * @return user info vo page
+     */
+    public Page<UserInfoVO> getUserInfoVOByPage(Integer current, Integer size) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getIsDelete, 0);
+        Page<User> userPage = userMapper.selectPage(new Page<>(current, size), queryWrapper);
+        return convertUserInfoVOPage(userPage);
+    }
+
+
     // ------------------------------
     // private util functions
     // ------------------------------
@@ -407,4 +471,31 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         fanMapper.insert(fan);
     }
 
+    private Page<UserInfoVO> convertUserInfoVOPage(Page<User> userPage) {
+        Page<UserInfoVO> userInfoVOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal(), userPage.searchCount());
+
+        List<UserInfoVO> userInfoVOList = userPage.getRecords().stream().map(user -> {
+            UserInfoVO userInfoVO = UserInfoVO.userToVO(user);
+            Integer type = user.getType();
+            // 设置类别
+            if (SysUtil.isBanned(user)) {
+                userInfoVO.setIsBanned(Boolean.TRUE);
+                type = SysUtil.genUnbannedType(user.getType());
+                userInfoVO.setType(type);
+            }
+
+            // 设置类别信息
+            if (UserRoleType.MEMBER.getType().equals(type)) {
+                MemberInfoVO memberInfoVO = memberMapper.queryMemberInfoByMemberId(user.getUserId());
+                userInfoVO.setMemberInfoVO(memberInfoVO);
+            } else if (UserRoleType.FAN.getType().equals(type)) {
+                FanInfoVO fanInfoVO = fanMapper.queryFanInfoByFanId(user.getUserId());
+                userInfoVO.setFanInfoVO(fanInfoVO);
+            }
+            return userInfoVO;
+        }).collect(Collectors.toList());
+
+        userInfoVOPage.setRecords(userInfoVOList);
+        return userInfoVOPage;
+    }
 }
