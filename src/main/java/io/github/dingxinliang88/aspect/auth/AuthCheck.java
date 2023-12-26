@@ -14,9 +14,7 @@ import java.lang.annotation.*;
 public @interface AuthCheck {
 
     /**
-     * 必须有某个角色
-     *
      * @return 角色
      */
-    String mustRole() default "guest";
+    String role();
 }

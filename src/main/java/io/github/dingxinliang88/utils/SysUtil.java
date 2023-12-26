@@ -5,6 +5,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 
+import static io.github.dingxinliang88.constants.CommonConstant.BANNED_IDX;
 import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_LEN;
 import static io.github.dingxinliang88.constants.UserConstant.*;
 
@@ -48,5 +49,12 @@ public class SysUtil {
 
     public static UserLoginVO getCurrUser() {
         return UserHolder.getUser();
+    }
+
+    /**
+     * @see io.github.dingxinliang88.pojo.enums.UserRoleType
+     */
+    public static boolean isBanned() {
+        return (UserHolder.getUser().getType() & (1 << BANNED_IDX)) != 0;
     }
 }

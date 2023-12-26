@@ -1,7 +1,7 @@
 package io.github.dingxinliang88.pojo.dto.user;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-import io.github.dingxinliang88.constants.UserConstant;
+import io.github.dingxinliang88.pojo.enums.EmailLoginType;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -45,5 +45,5 @@ public class EmailLoginReq implements Serializable {
      */
     @Max(value = 1)
     @Min(value = 0)
-    private Integer loginType = UserConstant.PASSWORD_LOGIN;
+    private Integer loginType = EmailLoginType.PWD_LOGIN.getCode();
 }

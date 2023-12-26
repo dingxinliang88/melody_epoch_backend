@@ -10,12 +10,15 @@ import lombok.Getter;
 @Getter
 public enum UserRoleType {
 
-    // 0 - guest, 1 - admin , 2 - member, 3 - fan
-    GUEST(0, "guest"),
-    ADMIN(1, "admin"),
-    MEMBER(2, "member"),
-    FAN(3, "fan"),
-    ;
+    /**
+     * 001 -> member; => 101 -> baned member;
+     * 010 -> fan; => 110 -> baned fan;
+     * 000 -> admin;
+     */
+    ADMIN(0b000, "admin"),
+    MEMBER(0b001, "member"),
+    FAN(0b010, "fan"),
+    BANNED(0b100, "banned");
 
     final Integer type;
 
@@ -24,5 +27,14 @@ public enum UserRoleType {
     UserRoleType(Integer type, String desc) {
         this.type = type;
         this.desc = desc;
+    }
+
+    public static UserRoleType getByDesc(String desc) {
+        for (UserRoleType roleType : UserRoleType.values()) {
+            if (roleType.getDesc().equals(desc)) {
+                return roleType;
+            }
+        }
+        return BANNED;
     }
 }

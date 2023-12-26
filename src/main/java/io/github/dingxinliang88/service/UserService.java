@@ -14,6 +14,7 @@ import io.github.dingxinliang88.pojo.dto.JwtToken;
 import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.user.*;
+import io.github.dingxinliang88.pojo.enums.EmailLoginType;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Fan;
@@ -34,7 +35,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 
-import static io.github.dingxinliang88.constants.UserConstant.CODE_LOGIN;
 import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PREFIX;
 
 /**
@@ -69,7 +69,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     /**
      * 账号密码注册
      *
-     * @param req     注册信息封装体
+     * @param req 注册信息封装体
      * @return user id
      */
     public Integer userAccRegister(AccRegisterReq req) {
@@ -119,7 +119,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     /**
      * 邮箱密码验证码注册
      *
-     * @param req     注册信息封装体
+     * @param req 注册信息封装体
      * @return user id
      */
     public Integer userEmailRegister(EmailRegisterReq req) {
@@ -177,7 +177,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     /**
      * 账号密码登录
      *
-     * @param req     登录信息封装体
+     * @param req 登录信息封装体
      * @return user info
      */
     public String userAccLogin(AccLoginReq req) {
@@ -213,7 +213,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     /**
      * 邮箱验证码登录
      *
-     * @param req     登录信息封装体
+     * @param req 登录信息封装体
      * @return user info
      */
     @Transactional(rollbackFor = BizException.class)
@@ -224,7 +224,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         synchronized (email.intern()) {
             ThrowUtil.throwIf(SysUtil.getCurrUser() != null, StatusCode.BAD_REQUEST, "已经登录！");
             UserLoginVO userLoginVO;
-            if (CODE_LOGIN.equals(loginType)) {
+            if (EmailLoginType.CODE_LOGIN.getCode().equals(loginType)) {
                 userLoginVO = handleEmailCodeLogin(req);
             } else {
                 userLoginVO = handleEmailPwdLogin(req);
@@ -278,7 +278,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     }
 
     /**
-     * 获取当前登录用户的角色（队长、成员、乐迷、管理员
+     * 获取当前登录用户的角色（队长、乐迷、管理员）
      *
      * @return user type vo
      */
@@ -308,7 +308,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     /**
      * 修改用户信息
      *
-     * @param req     修改用户请求
+     * @param req 修改用户请求
      * @return true - 修改成功
      */
     public Boolean editUserInfo(EditUserReq req) {
@@ -335,7 +335,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     /**
      * 用户绑定邮箱
      *
-     * @param req     绑定邮箱请求
+     * @param req 绑定邮箱请求
      * @return true - 绑定成功
      */
     public Boolean bindEmail(BindEmailReq req) {

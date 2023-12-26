@@ -65,6 +65,13 @@ public class MainTest {
     }
 
     @Test
+    public void testBanned() {
+        int type = 0b110;
+        System.out.println(type);
+        System.out.println((type & (1 << 2)) != 0);
+    }
+
+    @Test
     public void testSet() {
         Set<Object> set = CollectionUtil.newHashSet(1, 2, 3);
         Set<Integer> integers = convertToIntegerSet(set);

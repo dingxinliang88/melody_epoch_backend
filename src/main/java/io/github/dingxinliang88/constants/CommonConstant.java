@@ -52,4 +52,10 @@ public interface CommonConstant {
     String SONGS_STR_SEPARATOR = ",";
 
     // endregion
+
+    // region auth
+
+    Integer BANNED_IDX = 2;
+
+    // endregion
 }
