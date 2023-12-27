@@ -1,7 +1,9 @@
 package io.github.dingxinliang88.controller;
 
 import io.github.dingxinliang88.biz.BaseResponse;
+import io.github.dingxinliang88.pojo.dto.QueryReq;
 import io.github.dingxinliang88.pojo.dto.user.*;
+import io.github.dingxinliang88.pojo.vo.SearchVO;
 import io.github.dingxinliang88.pojo.vo.user.UserAuthType;
 import io.github.dingxinliang88.pojo.vo.user.UserInfoVO;
 import io.github.dingxinliang88.service.UserService;
@@ -66,6 +68,11 @@ public class UserController {
     @PostMapping("/bind/email")
     public BaseResponse<Boolean> bindEmail(@RequestBody @Validated BindEmailReq req) {
         return RespUtil.success(userService.bindEmail(req));
+    }
+
+    @PostMapping("/query")
+    public BaseResponse<SearchVO> queryInfo(@RequestBody QueryReq req) {
+        return RespUtil.success(userService.queryInfo(req));
     }
 
 }

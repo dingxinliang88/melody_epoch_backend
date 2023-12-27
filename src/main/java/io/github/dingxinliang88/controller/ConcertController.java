@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -73,14 +74,14 @@ public class ConcertController {
 
     @GetMapping("/curr/page")
     public BaseResponse<Page<ConcertInfoVO>> getCurrConcertInfoByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                      @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                                      @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(concertService.getCurrConcertInfoByPage(current, size));
     }
 
     @GetMapping("/band/page")
     public BaseResponse<Page<ConcertInfoVO>> getBandConcertInfoByPage(@RequestParam(value = "bandId") @NotNull(message = "乐队ID不能为空") Integer bandId,
                                                                       @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                      @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                                      @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(concertService.getBandConcertInfoByPage(bandId, current, size));
     }
 

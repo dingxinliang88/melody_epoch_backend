@@ -8,11 +8,13 @@ import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.EmailConstant;
 import io.github.dingxinliang88.exception.BizException;
 import io.github.dingxinliang88.manager.JwtTokenManager;
+import io.github.dingxinliang88.manager.query.SearchFacade;
 import io.github.dingxinliang88.mapper.BandMapper;
 import io.github.dingxinliang88.mapper.FanMapper;
 import io.github.dingxinliang88.mapper.MemberMapper;
 import io.github.dingxinliang88.mapper.UserMapper;
 import io.github.dingxinliang88.pojo.dto.JwtToken;
+import io.github.dingxinliang88.pojo.dto.QueryReq;
 import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
 import io.github.dingxinliang88.pojo.dto.member.EditMemberReq;
 import io.github.dingxinliang88.pojo.dto.user.*;
@@ -22,6 +24,7 @@ import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Fan;
 import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.po.User;
+import io.github.dingxinliang88.pojo.vo.SearchVO;
 import io.github.dingxinliang88.pojo.vo.fan.FanInfoVO;
 import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserAuthType;
@@ -64,6 +67,9 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private SearchFacade searchFacade;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -426,6 +432,16 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         return convertUserInfoVOPage(userPage);
     }
 
+    /**
+     * 用户搜索
+     *
+     * @param req 用户搜索条件
+     * @return search vo
+     */
+    public SearchVO queryInfo(QueryReq req) {
+        return searchFacade.doSearch(req);
+    }
+
 
     // ------------------------------
     // private util functions
@@ -517,4 +533,6 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         userInfoVOPage.setRecords(userInfoVOList);
         return userInfoVOPage;
     }
+
+
 }

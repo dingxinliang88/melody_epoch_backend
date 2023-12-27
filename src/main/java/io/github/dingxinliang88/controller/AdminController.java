@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -48,7 +49,7 @@ public class AdminController {
     @GetMapping("/page/user")
     @AuthCheck(role = "admin")
     public BaseResponse<Page<UserInfoVO>> getUserInfoVOByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                              @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                              @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(userService.getUserInfoVOByPage(current, size));
     }
 }

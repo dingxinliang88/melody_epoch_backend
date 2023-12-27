@@ -4,6 +4,8 @@ import io.github.dingxinliang88.constants.CommonConstant;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,9 @@ public class PaginationReq implements Serializable {
     private static final long serialVersionUID = CommonConstant.SYS_SERIALIZABLE_ID;
 
     private Long current = 1L;
+
+    @Min(5)
+    @Max(50)
     private Long pageSize = 10L;
     private String sortedField;
     /**

@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -68,14 +69,14 @@ public class AlbumController {
 
     @GetMapping("/curr/page")
     public BaseResponse<Page<AlbumInfoVO>> getCurrBandAllAlbumsByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                      @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                                      @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(albumService.getCurrBandAllAlbumsByPage(current, size));
     }
 
     @GetMapping("/band/page")
     public BaseResponse<Page<AlbumInfoVO>> getBandAlbumsByPage(@RequestParam(value = "bandId") @NotNull(message = "乐队ID不能为空") Integer bandId,
                                                                @RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                               @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                               @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(albumService.getBandAlbumsByPage(bandId, current, size));
     }
 

@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -58,7 +59,7 @@ public class FanController {
 
     @GetMapping("/like/band/page")
     public BaseResponse<Page<BandInfoVO>> listMyLikedBandByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                                @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(fanService.listMyLikedBandByPage(current, size));
     }
 
@@ -69,7 +70,7 @@ public class FanController {
 
     @GetMapping("/like/album/page")
     public BaseResponse<Page<AlbumInfoVO>> listMyLikedAlbumByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                  @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                                  @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(fanService.listMyLikedAlbumByPage(current, size));
     }
 
@@ -80,13 +81,13 @@ public class FanController {
 
     @GetMapping("/like/song/page")
     public BaseResponse<Page<SongInfoVO>> listMyLikedSongByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                                @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(fanService.listMyLikedSongByPage(current, size));
     }
 
     @GetMapping("/joined/concert/page")
     public BaseResponse<Page<ConcertInfoVO>> listMyJoinedConcertByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current,
-                                                                   @RequestParam(value = "size") @NotNull @Min(5) Integer size) {
+                                                                   @RequestParam(value = "size") @NotNull @Min(5) @Max(50) Integer size) {
         return RespUtil.success(fanService.listMyJoinedConcertByPage(current, size));
     }
 
