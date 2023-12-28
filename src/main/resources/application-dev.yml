@@ -42,19 +42,6 @@ spring:
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 
-
-  # email
-  mail:
-    host: smtp.qq.com
-    username: ${email.username}
-    password: ${email.password}
-    properties:
-      mail:
-        smtp:
-          ssl:
-            enable: true
-    from: ${email.username}
-
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

@@ -18,6 +18,7 @@
         <mybatis.plus.version>3.5.3.1</mybatis.plus.version>
         <druid.starter.version>1.1.22</druid.starter.version>
         <knife4j.version>3.0.3</knife4j.version>
+        <redisson.version>3.25.2</redisson.version>
     </properties>
 
     <parent>
@@ -75,6 +76,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.redisson/redisson -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>${redisson.version}</version>
+        </dependency>
+
 
         <!-- JWT -->
         <dependency>

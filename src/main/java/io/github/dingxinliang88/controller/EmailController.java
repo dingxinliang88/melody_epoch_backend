@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.controller;
 
+import io.github.dingxinliang88.aspect.limiter.MelodyRateLimiter;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.manager.EmailManager;
 import io.github.dingxinliang88.pojo.dto.email.EmailCaptchaReq;
@@ -21,6 +22,7 @@ public class EmailController {
     @Resource
     private EmailManager emailManager;
 
+    @MelodyRateLimiter
     @GetMapping("/captcha")
     public BaseResponse<Boolean> genCaptcha(@Validated EmailCaptchaReq req) {
         return RespUtil.success(emailManager.genCaptcha(req));

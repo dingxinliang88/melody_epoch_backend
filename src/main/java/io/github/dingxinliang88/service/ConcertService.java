@@ -377,6 +377,9 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
                 Integer joinedNum = concertJoinMapper.queryCountByConcertId(concertInfoVO.getConcertId());
                 LocalDateTime startTime = concertInfoVO.getStartTime();
                 boolean validTime = LocalDateTime.now().isBefore(startTime);
+                if (Objects.isNull(joinedNum)) {
+                    joinedNum = 0;
+                }
                 concertInfoVO.setCanJoin(
                         validTime && joinedNum < concertInfoVO.getMaxNum()
                 );

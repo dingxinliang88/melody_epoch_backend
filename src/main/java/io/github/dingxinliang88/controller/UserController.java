@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.controller;
 
+import io.github.dingxinliang88.aspect.limiter.MelodyRateLimiter;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.QueryReq;
 import io.github.dingxinliang88.pojo.dto.user.*;
@@ -25,51 +26,61 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @MelodyRateLimiter
     @PostMapping("/acc_reg")
     public BaseResponse<Integer> userAccRegister(@RequestBody @Validated AccRegisterReq req) {
         return RespUtil.success(userService.userAccRegister(req));
     }
 
+    @MelodyRateLimiter
     @PostMapping("/email_reg")
     public BaseResponse<Integer> userEmailLogin(@RequestBody @Validated EmailRegisterReq req) {
         return RespUtil.success(userService.userEmailRegister(req));
     }
 
+    @MelodyRateLimiter
     @PostMapping("/email_login")
     public BaseResponse<String> userEmailLogin(@RequestBody @Validated EmailLoginReq req) {
         return RespUtil.success(userService.userEmailLogin(req));
     }
 
+    @MelodyRateLimiter
     @PostMapping("/acc_login")
     public BaseResponse<String> userAccLogin(@RequestBody @Validated AccLoginReq req) {
         return RespUtil.success(userService.userAccLogin(req));
     }
 
+    @MelodyRateLimiter
     @GetMapping("/auth")
     public BaseResponse<UserAuthType> getUserAuthType() {
         return RespUtil.success(userService.getUserAuthType());
     }
 
+    @MelodyRateLimiter
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout() {
         return RespUtil.success(userService.userLogout());
     }
 
+    @MelodyRateLimiter
     @GetMapping("/curr")
     public BaseResponse<UserInfoVO> getCurrUser() {
         return RespUtil.success(userService.getCurrUser());
     }
 
+    @MelodyRateLimiter
     @PutMapping("/edit")
     public BaseResponse<Boolean> editUserInfo(@RequestBody @Validated EditUserReq req) {
         return RespUtil.success(userService.editUserInfo(req));
     }
 
+    @MelodyRateLimiter
     @PostMapping("/bind/email")
     public BaseResponse<Boolean> bindEmail(@RequestBody @Validated BindEmailReq req) {
         return RespUtil.success(userService.bindEmail(req));
     }
 
+    @MelodyRateLimiter
     @PostMapping("/query")
     public BaseResponse<SearchVO> queryInfo(@RequestBody QueryReq req) {
         return RespUtil.success(userService.queryInfo(req));

@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.github.dingxinliang88.aspect.limiter.MelodyRateLimiter;
 import io.github.dingxinliang88.biz.BaseResponse;
 import io.github.dingxinliang88.pojo.dto.song.AddSongReq;
 import io.github.dingxinliang88.pojo.dto.song.ReleaseSongReq;
@@ -51,6 +52,7 @@ public class SongController {
         return RespUtil.success(songService.listSongInfoVO());
     }
 
+    @MelodyRateLimiter
     @GetMapping("/list/page")
     public BaseResponse<Page<SongInfoVO>> listSongInfoVOByPage(@RequestParam(value = "curr") @NotNull @Min(1) Integer current) {
         return RespUtil.success(songService.listSongInfoVOByPage(current));
