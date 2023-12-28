@@ -43,6 +43,10 @@ public class MemberController {
         return RespUtil.success(memberService.editMemberPart(req));
     }
 
+    /**
+     * @see MemberController#listMemberInfoVOByPage(Integer)
+     * @deprecated
+     */
     @GetMapping("/list")
     public BaseResponse<List<MemberInfoVO>> listMemberInfoVO() {
         return RespUtil.success(memberService.listMemberInfoVO());

@@ -1,6 +1,7 @@
 package io.github.dingxinliang88.pojo.vo.fan;
 
 import io.github.dingxinliang88.constants.CommonConstant;
+import io.github.dingxinliang88.pojo.po.Fan;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,4 +47,15 @@ public class FanInfoVO implements Serializable {
      * 学历
      */
     private String education;
+
+    public static FanInfoVO fanToVO(Fan fan) {
+        FanInfoVO fanInfoVO = new FanInfoVO();
+        fanInfoVO.setFanId(fan.getFanId());
+        fanInfoVO.setName(fan.getName());
+        fanInfoVO.setGender(fan.getGender());
+        fanInfoVO.setAge(fan.getAge());
+        fanInfoVO.setCareer(fan.getCareer());
+        fanInfoVO.setEducation(fan.getEducation());
+        return fanInfoVO;
+    }
 }

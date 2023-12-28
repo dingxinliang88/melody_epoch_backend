@@ -18,6 +18,7 @@ public class ContentUtil {
         String projectPath = System.getProperty("user.dir");
         String sensitiveWordsFilePath = projectPath + File.separator + "src/main/resources/data/sensitive_words.txt";
         List<String> words = FileUtil.readLines(sensitiveWordsFilePath, StandardCharsets.UTF_8);
+        // 初始化敏感词
         SensitiveUtil.init(words);
     }
 
@@ -25,7 +26,7 @@ public class ContentUtil {
      * 过滤敏感词
      *
      * @param originContent 原始内容
-     * @return 过滤后的内容
+     * @return 过滤后的内容，将敏感的内容替换成 *
      */
     public static String cleanContent(String originContent) {
         return SensitiveUtil.sensitiveFilter(originContent);

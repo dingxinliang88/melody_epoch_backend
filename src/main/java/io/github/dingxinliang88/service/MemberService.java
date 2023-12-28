@@ -15,6 +15,7 @@ import io.github.dingxinliang88.pojo.po.Band;
 import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
+import io.github.dingxinliang88.utils.RedisUtil;
 import io.github.dingxinliang88.utils.SysUtil;
 import io.github.dingxinliang88.utils.ThrowUtil;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PREFIX;
 
 /**
  * Band Service Implementation
@@ -38,6 +41,9 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
 
     @Resource
     private BandMapper bandMapper;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -214,15 +220,21 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
                 // 修改当前member所在乐队信息（离开时间为当前时间，乐队ID、乐队名称置空）
                 memberMapper.updateBandIdAndBandName(member.getMemberId(), null, null,
                         member.getJoinTime(), LocalDateTime.now(), CommonConstant.UN_RELEASE);
+                boolean updateRes;
                 if (secondaryMember == null) {
                     // 解散队伍
-                    return bandMapper.disband(bandId);
+                    updateRes = bandMapper.disband(bandId);
                 } else {
                     // 队长位置顺位给加入乐队第二早的成员
                     bandMapper.updateLeaderId(bandId, secondaryMember.getMemberId());
                     // 乐队人数 - 1
-                    return bandMapper.updateMemberNum(bandId, -1);
+                    updateRes = bandMapper.updateMemberNum(bandId, -1);
                 }
+                if (updateRes) {
+                    // 回收队长权限
+                    redisUtil.delete(USER_AUTH_TYPE_PREFIX + member.getMemberId());
+                }
+                return updateRes;
             } catch (Exception e) {
                 status.setRollbackOnly();
                 throw e;

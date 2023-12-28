@@ -67,6 +67,16 @@ public class ConcertInfoVO implements Serializable {
     private Integer isRelease;
 
     /**
+     * 是否可以加入
+     */
+    private Boolean canJoin = Boolean.FALSE;
+
+    /**
+     * 是否可以退出
+     */
+    private Boolean canLeave = Boolean.FALSE;
+
+    /**
      * 是否允许修改
      * 开始时间前一个小时不让修改了
      */

@@ -16,6 +16,7 @@ import io.github.dingxinliang88.pojo.po.*;
 import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
 import io.github.dingxinliang88.pojo.vo.band.BandInfoVO;
 import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
+import io.github.dingxinliang88.pojo.vo.fan.FanInfoVO;
 import io.github.dingxinliang88.pojo.vo.fan.LikeAlbumStatusVO;
 import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
@@ -322,6 +323,103 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
         return convertConcertInfoVOPage(concertPage);
     }
 
+    /**
+     * 分页查看乐队的歌迷
+     *
+     * @param bandId  band id
+     * @param current 页码
+     * @param size    每页数据量
+     * @return fan info vo page
+     */
+    public Page<FanInfoVO> getLikedFanByBandIdAndPage(Integer bandId, Integer current, Integer size) {
+        // 获取当前登录用户，判断是否是队长
+        UserLoginVO user = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(user.getUserId(), false);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止该操作");
+
+        /*
+            SELECT *
+            FROM fan
+            WHERE fan_id IN (
+                SELECT user_id
+                FROM band_like
+                WHERE band_id = 10
+            )
+         */
+        LambdaQueryWrapper<Fan> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Fan::getFanId, "SELECT user_id FROM band_like WHERE band_id = " + bandId);
+        Page<Fan> fanPage = fanMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertFanInfoVOPage(fanPage);
+    }
+
+    /**
+     * 分页查看专辑的歌迷
+     *
+     * @param albumId album id
+     * @param current 页码
+     * @param size    每页数据量
+     * @return fan info vo page
+     */
+    public Page<FanInfoVO> getAlbumFansByBandIdAndPage(Integer albumId, Integer current, Integer size) {
+        // 获取当前登录用户，判断是否是队长
+        UserLoginVO user = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(user.getUserId(), false);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止该操作");
+
+        LambdaQueryWrapper<Fan> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Fan::getFanId, "SELECT user_id FROM album_like WHERE album_id = " + albumId);
+        Page<Fan> fanPage = fanMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertFanInfoVOPage(fanPage);
+    }
+
+    /**
+     * 分页查看歌曲的歌迷
+     *
+     * @param songId  song id
+     * @param current 页码
+     * @param size    每页数据量
+     * @return fan info vo page
+     */
+    public Page<FanInfoVO> getSongFansByBandIdAndPage(Integer songId, Integer current, Integer size) {
+        // 获取当前登录用户，判断是否是队长
+        UserLoginVO user = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(user.getUserId(), false);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止该操作");
+
+        LambdaQueryWrapper<Fan> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Fan::getFanId, "SELECT user_id FROM song_like WHERE song_id = " + songId);
+        Page<Fan> fanPage = fanMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertFanInfoVOPage(fanPage);
+    }
+
+    /**
+     * 分页查看参加演唱会的歌迷
+     *
+     * @param concertId concert id
+     * @param current   页码
+     * @param size      每页数据量
+     * @return fan info vo page
+     */
+    public Page<FanInfoVO> getConcertFansByBandIdAndPage(Long concertId, Integer current, Integer size) {
+        // 获取当前登录用户，判断是否是队长
+        UserLoginVO user = SysUtil.getCurrUser();
+
+        Band band = bandMapper.queryByLeaderId(user.getUserId(), false);
+        ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "禁止该操作");
+
+        LambdaQueryWrapper<Fan> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Fan::getFanId, "SELECT user_id FROM concert_join WHERE concert_id = " + concertId);
+        Page<Fan> fanPage = fanMapper.selectPage(new Page<>(current, size), queryWrapper);
+
+        return convertFanInfoVOPage(fanPage);
+    }
+
 
     // ---------------------------------
     // private util function
@@ -432,6 +530,14 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
         List<ConcertInfoVO> concertInfoVOList = concertPage.getRecords().stream().map(ConcertInfoVO::concertToVO).collect(Collectors.toList());
         concertInfoVOPage.setRecords(concertInfoVOList);
         return concertInfoVOPage;
+    }
+
+    private Page<FanInfoVO> convertFanInfoVOPage(Page<Fan> fanPage) {
+        Page<FanInfoVO> fanInfoVOPage = new Page<>(fanPage.getCurrent(), fanPage.getSize(), fanPage.getTotal(), fanPage.searchCount());
+        List<FanInfoVO> fanInfoVOList = fanPage.getRecords().stream().map(FanInfoVO::fanToVO).collect(Collectors.toList());
+        fanInfoVOPage.setRecords(fanInfoVOList);
+
+        return fanInfoVOPage;
     }
 
 

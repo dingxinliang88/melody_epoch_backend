@@ -1,6 +1,9 @@
 package io.github.dingxinliang88.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.github.dingxinliang88.pojo.dto.fan.EditFanReq;
+import io.github.dingxinliang88.pojo.po.Fan;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +35,14 @@ public class FanMapperTest {
         req.setEducation("本科");
 
         fanMapper.updateInfoByFanId(req);
+    }
+
+    @Test
+    public void testPage() {
+        LambdaQueryWrapper<Fan> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.inSql(Fan::getFanId, "SELECT user_id FROM concert_join WHERE concert_id = " + 16);
+        Page<Fan> fanPage = fanMapper.selectPage(new Page<>(1, 5), queryWrapper);
+        System.out.println(fanPage);
     }
 
 }

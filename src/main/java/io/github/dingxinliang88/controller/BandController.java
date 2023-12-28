@@ -38,6 +38,11 @@ public class BandController {
         return RespUtil.success(bandService.editBandInfo(req));
     }
 
+    /**
+     * @see BandController#listBandBriefInfoByPage(Integer)
+     * @deprecated
+     */
+    @Deprecated
     @GetMapping("/list")
     public BaseResponse<List<BandInfoVO>> listBandBriefInfo() {
         return RespUtil.success(bandService.listBandBriefInfo());

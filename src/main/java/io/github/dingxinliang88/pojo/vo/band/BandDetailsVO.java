@@ -1,17 +1,12 @@
 package io.github.dingxinliang88.pojo.vo.band;
 
 import io.github.dingxinliang88.constants.CommonConstant;
-import io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO;
-import io.github.dingxinliang88.pojo.vo.concert.ConcertInfoVO;
-import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
-import io.github.dingxinliang88.pojo.vo.song.SongInfoVO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 乐队详细消息
@@ -79,24 +74,4 @@ public class BandDetailsVO implements Serializable {
      * 是否已经加入
      */
     private Boolean isJoined = Boolean.FALSE;
-
-    /**
-     * 成员信息
-     */
-    private List<MemberInfoVO> members;
-
-    /**
-     * 歌曲信息
-     */
-    private List<SongInfoVO> songs;
-
-    /**
-     * 专辑信息
-     */
-    private List<AlbumInfoVO> albums;
-
-    /**
-     * 演唱会信息
-     */
-    private List<ConcertInfoVO> concerts;
 }

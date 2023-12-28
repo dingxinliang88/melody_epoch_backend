@@ -33,5 +33,5 @@ public class ConcertJoinInfoVO implements Serializable {
     /**
      * 是否已经加入
      */
-    private Boolean isJoined = Boolean.FALSE;
+    private Boolean canLeave = Boolean.FALSE;
 }

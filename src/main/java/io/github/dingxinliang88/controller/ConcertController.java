@@ -42,6 +42,11 @@ public class ConcertController {
         return RespUtil.success(concertService.editConcertInfo(req));
     }
 
+    /**
+     * @see ConcertController#listConcertInfoVOByPage(Integer)
+     * @deprecated
+     */
+    @Deprecated
     @GetMapping("/list")
     public BaseResponse<List<ConcertInfoVO>> listConcertInfoVO() {
         return RespUtil.success(concertService.listConcertInfoVO());

@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static io.github.dingxinliang88.constants.CommonConstant.SONGS_STR_SEPARATOR;
@@ -343,16 +344,19 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
 
         UserLoginVO currUser = SysUtil.getCurrUser();
         if (UserRoleType.FAN.getType().equals(currUser.getType())) {
-            concertJoinInfoVO.setCanJoin(Boolean.TRUE);
+            LocalDateTime startTime = concert.getStartTime();
+            boolean validTime = LocalDateTime.now().isBefore(startTime);
             ConcertJoin concertJoin = concertJoinMapper.queryByConcertIdAndUserId(concertId, currUser.getUserId());
-            concertJoinInfoVO.setIsJoined(concertJoin != null);
+            concertJoinInfoVO.setCanJoin(validTime && Objects.isNull(concertJoin));
+            // 设置是否退出
+            concertJoinInfoVO.setCanLeave(validTime && Objects.nonNull(concertJoin));
         }
 
         return concertJoinInfoVO;
     }
 
     // --------------------------
-    // private util function
+    // private util functions
     // --------------------------
 
     private Page<ConcertInfoVO> convertConcertInfoVOPage(Page<Concert> concertPage, boolean curr) {
@@ -366,6 +370,19 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
                 concertInfoVO.setCanEdit(
                         LocalDateTime.now().isBefore(startTime.minusHours(1))
                 );
+            }).collect(Collectors.toList());
+        } else {
+            // 设置是否可以参加
+            concertInfoVOList = concertInfoVOList.stream().peek(concertInfoVO -> {
+                Integer joinedNum = concertJoinMapper.queryCountByConcertId(concertInfoVO.getConcertId());
+                LocalDateTime startTime = concertInfoVO.getStartTime();
+                boolean validTime = LocalDateTime.now().isBefore(startTime);
+                concertInfoVO.setCanJoin(
+                        validTime && joinedNum < concertInfoVO.getMaxNum()
+                );
+                // 设置是否退出
+                ConcertJoin concertJoin = concertJoinMapper.queryByConcertIdAndUserId(concertInfoVO.getConcertId(), SysUtil.getCurrUser().getUserId());
+                concertInfoVO.setCanLeave(validTime && Objects.nonNull(concertJoin));
             }).collect(Collectors.toList());
         }
         concertInfoVOPage.setRecords(concertInfoVOList);
