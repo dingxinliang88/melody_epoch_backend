@@ -81,4 +81,13 @@ public interface AlbumMapper extends BaseMapper<Album> {
      * @return top album vo info list
      */
     List<TopAlbumVO> queryTopAlbums(int topN);
+
+    /**
+     * 更新专辑歌曲信息 song_ids
+     *
+     * @param albumId    album id
+     * @param songIdsStr song ids str
+     * @return true - 更新成功
+     */
+    Boolean updateSongIdsByAlbumId(Integer albumId, String songIdsStr);
 }

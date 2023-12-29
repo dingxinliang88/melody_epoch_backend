@@ -1,6 +1,5 @@
 package io.github.dingxinliang88.config;
 
-import io.github.dingxinliang88.aspect.auth.RefreshTokenInterceptor;
 import io.github.dingxinliang88.manager.JwtTokenManager;
 import io.github.dingxinliang88.utils.RedisUtil;
 import org.springframework.context.annotation.Configuration;

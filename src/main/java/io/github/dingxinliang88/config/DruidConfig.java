@@ -54,7 +54,7 @@ public class DruidConfig {
 
 
     /**
-     * 配置 Druid 监控 之  web 监控的 filter
+     * 配置 Druid 监控 web 监控的 filter
      * WebStatFilter：用于配置Web和Druid数据源之间的管理关联监控统计
      *
      * @return FilterRegistrationBean
@@ -69,7 +69,7 @@ public class DruidConfig {
         initParams.put("exclusions", "*.js,*.css,/druid/*,/jdbc/*");
         bean.setInitParameters(initParams);
 
-        //"/*" 表示过滤所有请求
+        // "/*" 表示过滤所有请求
         bean.setUrlPatterns(Arrays.asList("/*", "/api/*", "/admin/*"));
         return bean;
     }

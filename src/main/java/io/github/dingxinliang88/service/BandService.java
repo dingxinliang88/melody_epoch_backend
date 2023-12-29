@@ -1,5 +1,6 @@
 package io.github.dingxinliang88.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.dingxinliang88.constants.CommonConstant.DEFAULT_PROFILE;
 import static io.github.dingxinliang88.constants.UserConstant.USER_AUTH_TYPE_PREFIX;
 
 /**
@@ -77,6 +79,7 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
         Integer leaderId = req.getLeaderId();
         String profile = req.getProfile();
 
+
         // 获取当前登录用户
         UserLoginVO currUser = SysUtil.getCurrUser();
 
@@ -100,9 +103,10 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
         ThrowUtil.throwIf(bandFromDB != null, StatusCode.DUPLICATE_DATA, "该队长已经加入乐队了！");
 
         final Integer leader = leaderId;
+        final String finalProfile = StrUtil.isEmpty(profile) ? DEFAULT_PROFILE : profile;
         return transactionTemplate.execute(status -> {
             try {
-                Band band = new Band(bandName, leader, profile, LocalDateTime.now());
+                Band band = new Band(bandName, leader, finalProfile, LocalDateTime.now());
                 band.setMemberNum(1);
                 bandMapper.insert(band);
                 // 修改对应的member信息，band_id、band_name

@@ -73,7 +73,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     private TransactionTemplate transactionTemplate;
 
     private static final ExecutorService CACHE_TOP_ALBUMS_THREAD_POOL = new ThreadPoolExecutor(
-            1, 2, 5000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(50),
+            1, 2, 5000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(50),
             r -> new Thread(r, "Top-Album-" + UUID.randomUUID().toString(true)), new ThreadPoolExecutor.AbortPolicy()
     );
 
@@ -90,8 +90,9 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
 
         Band band = bandMapper.queryByLeaderId(userId, true);
         ThrowUtil.throwIf(band == null, StatusCode.NO_AUTH_ERROR, "您不是乐队队长，无法创建专辑!");
-
-        Album album = new Album(req.getName(), req.getCompany(), band.getName(), req.getProfile());
+        String profile = req.getProfile();
+        profile = StrUtil.isEmpty(profile) ? DEFAULT_PROFILE : profile;
+        Album album = new Album(req.getName(), req.getCompany(), band.getName(), profile);
         albumMapper.insert(album);
 
         return album.getAlbumId();
@@ -239,7 +240,9 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
                 if (!selectedSongIds.isEmpty()) {
                     songMapper.editBatchSongAlbumInfo(selectedSongIds, albumId, album.getName());
                 }
-                return Boolean.TRUE;
+                // 更新 Album song_ids 字段
+                String songIdsStr = StrUtil.join(SONGS_STR_SEPARATOR, selectedSongIds);
+                return albumMapper.updateSongIdsByAlbumId(albumId, songIdsStr);
             } catch (Exception e) {
                 status.setRollbackOnly();
                 throw e;

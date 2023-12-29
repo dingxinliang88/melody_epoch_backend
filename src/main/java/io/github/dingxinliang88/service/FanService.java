@@ -77,7 +77,7 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     private SongLikeMapper songLikeMapper;
 
     private static final ExecutorService UPDATE_ALBUM_SCORE_THREAD_POOL = new ThreadPoolExecutor(
-            1, 2, 5000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(100),
+            1, 2, 5000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(100),
             r -> new Thread(r, "Album-Score-" + UUID.randomUUID().toString(true)), new ThreadPoolExecutor.AbortPolicy()
     );
     private static final int MAX_RETRIES = 3;

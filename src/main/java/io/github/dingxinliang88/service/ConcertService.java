@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -70,12 +72,19 @@ public class ConcertService extends ServiceImpl<ConcertMapper, Concert> {
         ThrowUtil.throwIf(band == null, StatusCode.NOT_FOUND_ERROR, "您不是队长，无法添加演出");
 
         // 判断演出时间是否合理（晚于当前时间，至少持续两个小时）
-        ThrowUtil.throwIf(LocalDateTime.now().isAfter(req.getStartTime()), StatusCode.PARAMS_ERROR, "演出开始时间不能早于当前时间");
-        ThrowUtil.throwIf(req.getStartTime().plusHours(2).isAfter(req.getEndTime()), StatusCode.PARAMS_ERROR, "演出时间不能少于2小时");
+        LocalDateTime startTime = req.getStartTime();
+        LocalDateTime endTime = req.getEndTime();
+        // 将起始时间和结束时间转换为东八区的时区
+        ZoneId shanghaiZone = ZoneId.of("Asia/Shanghai");
+        startTime = startTime.atZone(ZoneOffset.UTC).withZoneSameInstant(shanghaiZone).toLocalDateTime();
+        endTime = endTime.atZone(ZoneOffset.UTC).withZoneSameInstant(shanghaiZone).toLocalDateTime();
+
+        ThrowUtil.throwIf(LocalDateTime.now().isAfter(startTime), StatusCode.PARAMS_ERROR, "演出开始时间不能早于当前时间");
+        ThrowUtil.throwIf(startTime.plusHours(2).isAfter(endTime), StatusCode.PARAMS_ERROR, "演出时间不能少于2小时");
 
         String songIdsStr = StrUtil.join(SONGS_STR_SEPARATOR, req.getSongIdList());
 
-        Concert concert = new Concert(req.getName(), req.getStartTime(), req.getEndTime(), req.getPlace(),
+        Concert concert = new Concert(req.getName(), startTime, endTime, req.getPlace(),
                 band.getBandId(), band.getName(), songIdsStr, req.getMaxNum());
 
         concertMapper.insert(concert);

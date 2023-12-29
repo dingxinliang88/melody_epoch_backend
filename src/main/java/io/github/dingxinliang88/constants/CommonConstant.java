@@ -44,12 +44,18 @@ public interface CommonConstant {
 
     // endregion
 
-    // region biz pattern
+    // region biz
 
     /**
      * 歌曲列表分隔符
      */
     String SONGS_STR_SEPARATOR = ",";
+
+
+    /**
+     * 默认简介信息
+     */
+    String DEFAULT_PROFILE = "这个作者很懒，什么也没有写……";
 
     // endregion
 

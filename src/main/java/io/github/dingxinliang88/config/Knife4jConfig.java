@@ -25,7 +25,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ConfigurationProperties(prefix = "knife4j.conf")
 public class Knife4jConfig {
     private static final String DEFAULT_VAL = "";
-    private String title = "API接口文档";
+
+    private String title = "接口文档";
     private String description = DEFAULT_VAL;
     private String version = "0.0.1";
     private String contactName = DEFAULT_VAL;

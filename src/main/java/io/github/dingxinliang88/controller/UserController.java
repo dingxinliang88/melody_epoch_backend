@@ -26,43 +26,36 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @MelodyRateLimiter
     @PostMapping("/acc_reg")
     public BaseResponse<Integer> userAccRegister(@RequestBody @Validated AccRegisterReq req) {
         return RespUtil.success(userService.userAccRegister(req));
     }
 
-    @MelodyRateLimiter
     @PostMapping("/email_reg")
     public BaseResponse<Integer> userEmailLogin(@RequestBody @Validated EmailRegisterReq req) {
         return RespUtil.success(userService.userEmailRegister(req));
     }
 
-    @MelodyRateLimiter
     @PostMapping("/email_login")
     public BaseResponse<String> userEmailLogin(@RequestBody @Validated EmailLoginReq req) {
         return RespUtil.success(userService.userEmailLogin(req));
     }
 
-    @MelodyRateLimiter
     @PostMapping("/acc_login")
     public BaseResponse<String> userAccLogin(@RequestBody @Validated AccLoginReq req) {
         return RespUtil.success(userService.userAccLogin(req));
     }
 
-    @MelodyRateLimiter
     @GetMapping("/auth")
     public BaseResponse<UserAuthType> getUserAuthType() {
         return RespUtil.success(userService.getUserAuthType());
     }
 
-    @MelodyRateLimiter
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout() {
         return RespUtil.success(userService.userLogout());
     }
 
-    @MelodyRateLimiter
     @GetMapping("/curr")
     public BaseResponse<UserInfoVO> getCurrUser() {
         return RespUtil.success(userService.getCurrUser());

@@ -36,6 +36,9 @@
     <update id="updateAvgScore">
         UPDATE album SET avg_score = #{avgScore} WHERE album_id = #{albumId};
     </update>
+    <update id="updateSongIdsByAlbumId">
+        UPDATE album SET song_ids = #{songIdsStr} WHERE album_id = #{albumId};
+    </update>
     <select id="listAlbumInfoVO" resultType="io.github.dingxinliang88.pojo.vo.album.AlbumInfoVO">
         SELECT album_id, name, company, band_name, avg_score
         FROM album

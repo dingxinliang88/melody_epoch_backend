@@ -1,4 +1,4 @@
-package io.github.dingxinliang88.aspect.auth;
+package io.github.dingxinliang88.config;
 
 import cn.hutool.core.util.StrUtil;
 import io.github.dingxinliang88.biz.StatusCode;
@@ -52,7 +52,8 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
             // 生成新的 access_token
             String accessToken = jwtTokenManager.genAccessToken(userLoginVO);
-            redisUtil.set(ACCESS_TOKEN_PREFIX + userLoginVO.getUserId(), accessToken, TOKEN_EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+            redisUtil.set(ACCESS_TOKEN_PREFIX + userLoginVO.getUserId(), accessToken,
+                    TOKEN_EXPIRATION_TIME, TimeUnit.MILLISECONDS);
 
             response.setHeader("Authorization", accessToken);
             UserHolder.setUser(userLoginVO);

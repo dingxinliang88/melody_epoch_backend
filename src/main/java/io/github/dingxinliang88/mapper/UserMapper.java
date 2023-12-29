@@ -56,7 +56,7 @@ public interface UserMapper extends BaseMapper<User> {
      * 根据用户ID修改用户昵称
      *
      * @param userId   user id
-     * @param nickname nick name
+     * @param nickname nickname
      * @return true - 修改成功
      */
     Boolean updateNickNameByUserId(Integer userId, String nickname);

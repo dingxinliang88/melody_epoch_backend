@@ -7,8 +7,10 @@ package io.github.dingxinliang88.constants;
  */
 public interface FanConstant {
 
+    // region like type
     int LIKE_BAND = 0;
     int LIKE_ALBUM = 1;
     int LIKE_SONG = 2;
 
+    // endregion
 }

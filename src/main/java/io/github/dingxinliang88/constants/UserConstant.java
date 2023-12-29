@@ -2,10 +2,7 @@ package io.github.dingxinliang88.constants;
 
 import cn.hutool.core.lang.UUID;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 用户常量类
@@ -30,6 +27,7 @@ public interface UserConstant {
     String REFRESH_TOKEN_PREFIX = "user:refresh_token:";
     long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000; // 24h => ms
     long REFRESH_TOKEN_EXPIRATION_TIME = 30L * 24 * 60 * 60 * 1000; // 24h => ms
+
     // endregion
 
     // user role type
@@ -55,7 +53,7 @@ public interface UserConstant {
     int EXPIRE_ONE_MONTH = 30;
 
     ExecutorService USER_SENSITIVE_ACC_POOL = new ThreadPoolExecutor(
-            1, 2, 5000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(50),
+            1, 2, 5000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(50),
             r -> new Thread(r, "user-sensitive-acc-" + UUID.randomUUID().toString(true)), new ThreadPoolExecutor.AbortPolicy()
     );
 
