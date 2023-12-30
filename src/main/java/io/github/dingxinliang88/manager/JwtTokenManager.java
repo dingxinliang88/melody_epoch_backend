@@ -113,6 +113,11 @@ public class JwtTokenManager {
         redisUtil.delete(REFRESH_TOKEN_PREFIX + user.getUserId());
     }
 
+    public void revokeToken(Integer userId) {
+        redisUtil.delete(ACCESS_TOKEN_PREFIX + userId);
+        redisUtil.delete(REFRESH_TOKEN_PREFIX + userId);
+    }
+
     public boolean isTokenExpired(String token) {
         Date expiration = Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)))

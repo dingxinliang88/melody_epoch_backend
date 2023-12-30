@@ -42,8 +42,7 @@
         </trim>
     </update>
     <update id="updateReleaseStatusByBandId">
-        UPDATE concert SET is_release = #{release} WHERE band_id = #{bandId} AND concert_id = #{concertId} AND is_delete
-        = 0;
+        UPDATE concert SET is_release = #{release} WHERE band_id = #{bandId} AND is_delete = 0;
     </update>
     <update id="updateReleaseStatusByConcertId">
         UPDATE concert SET is_release = #{release} WHERE concert_id = #{concertId} AND is_delete = 0;

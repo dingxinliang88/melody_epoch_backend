@@ -28,9 +28,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -66,6 +68,9 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
 
     @Resource
     private ConcertMapper concertMapper;
+
+    @Resource
+    private ConcertJoinMapper concertJoinMapper;
 
     @Resource
     private BandLikeMapper bandLikeMapper;
@@ -528,6 +533,17 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
     private Page<ConcertInfoVO> convertConcertInfoVOPage(Page<Concert> concertPage) {
         Page<ConcertInfoVO> concertInfoVOPage = new Page<>(concertPage.getCurrent(), concertPage.getSize(), concertPage.getTotal(), concertPage.searchCount());
         List<ConcertInfoVO> concertInfoVOList = concertPage.getRecords().stream().map(ConcertInfoVO::concertToVO).collect(Collectors.toList());
+        concertInfoVOList = concertInfoVOList.stream().peek(concertInfoVO -> {
+            Integer joinedNum = concertJoinMapper.queryCountByConcertId(concertInfoVO.getConcertId());
+            LocalDateTime startTime = concertInfoVO.getStartTime();
+            boolean validTime = LocalDateTime.now().isBefore(startTime);
+            concertInfoVO.setCanJoin(
+                    validTime && joinedNum < concertInfoVO.getMaxNum()
+            );
+            // 设置是否退出
+            ConcertJoin concertJoin = concertJoinMapper.queryByConcertIdAndUserId(concertInfoVO.getConcertId(), SysUtil.getCurrUser().getUserId());
+            concertInfoVO.setCanLeave(validTime && Objects.nonNull(concertJoin));
+        }).collect(Collectors.toList());
         concertInfoVOPage.setRecords(concertInfoVOList);
         return concertInfoVOPage;
     }

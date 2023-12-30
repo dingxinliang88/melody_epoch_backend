@@ -24,7 +24,7 @@ public class RateLimiterManager {
     private RedissonClient redissonClient;
 
     /**
-     * 执行限流，设定每秒最多访问一次
+     * 执行限流，设定每秒最多访问十次
      *
      * @param key 限流key
      * @return true - 可以操作
@@ -32,11 +32,10 @@ public class RateLimiterManager {
     public boolean doRateLimit(String key) {
         RRateLimiter rateLimiter = redissonClient.getRateLimiter(key);
 
-        boolean rateRes = rateLimiter.trySetRate(RateType.OVERALL, 1, 1, RateIntervalUnit.SECONDS);
-        if (rateRes) {
-            log.info("init rate: {}, interval: {}", rateLimiter.getConfig().getRate(), rateLimiter.getConfig().getRateInterval());
-        }
+        rateLimiter.trySetRate(RateType.OVERALL, 10, 1, RateIntervalUnit.SECONDS);
+
         // 每一个操作来，申请一个令牌
         return rateLimiter.tryAcquire(1);
     }
+
 }

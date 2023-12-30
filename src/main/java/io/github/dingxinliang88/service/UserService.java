@@ -200,6 +200,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             User user = userMapper.queryByAccount(account);
 
             ThrowUtil.throwIf(user == null, StatusCode.NOT_FOUND_ERROR, "账号不存在！");
+            ThrowUtil.throwIf(SysUtil.isBanned(user), StatusCode.NO_AUTH_ERROR, "账号异常！");
             // 校验密码
             ThrowUtil.throwIf(!SysUtil.checkPwd(user, password), StatusCode.PASSWORD_NOT_MATCH, "密码错误！");
 

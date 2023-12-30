@@ -11,7 +11,6 @@ import io.github.dingxinliang88.pojo.dto.member.EditPartReq;
 import io.github.dingxinliang88.pojo.dto.member.JoinBandReq;
 import io.github.dingxinliang88.pojo.enums.UserRoleType;
 import io.github.dingxinliang88.pojo.po.Band;
-
 import io.github.dingxinliang88.pojo.po.Member;
 import io.github.dingxinliang88.pojo.vo.member.MemberInfoVO;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
@@ -224,11 +223,15 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
                 if (secondaryMember == null) {
                     // 解散队伍
                     updateRes = bandMapper.disband(bandId);
+
                 } else {
                     // 队长位置顺位给加入乐队第二早的成员
                     bandMapper.updateLeaderId(bandId, secondaryMember.getMemberId());
                     // 乐队人数 - 1
                     updateRes = bandMapper.updateMemberNum(bandId, -1);
+
+                    // 删除第二早的成员权限信息
+                    redisUtil.delete(USER_AUTH_TYPE_PREFIX + secondaryMember.getMemberId());
                 }
                 if (updateRes) {
                     // 回收队长权限

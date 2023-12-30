@@ -50,6 +50,7 @@ public class BizJob {
      * 条件：期间打分过多（需要更新）
      */
     @Scheduled(cron = "0 0 */1 * * ?")
+    // @Scheduled(cron = "10 * * * * ?")
     public void clearTopAlbumsCache() {
         try {
             int scoreNum = Integer.parseInt(redisUtil.get(AlbumConstant.TOP_ALBUM_CACHE_EPOCH_KEY).toString());
@@ -66,8 +67,10 @@ public class BizJob {
      * 每2小时处理敏感词触发过多的用户，执行封号处理
      */
     @Scheduled(cron = "0 0 */2 * * ?")
+    // @Scheduled(cron = "10 * * * * ?")
     public void handleSensitive() {
         String pattern = UserConstant.SENSITIVE_ACC_PREFIX + "*";
+        logger.info("触发封号。{}", pattern);
         try {
             Set<String> keys = redisUtil.keys(pattern);
             for (String key : keys) {
@@ -77,6 +80,9 @@ public class BizJob {
                     String userIdStr = key.substring(key.lastIndexOf(":") + 1);
                     Integer userId = Integer.parseInt(userIdStr);
                     sensitiveHandler.doBanUser(userId);
+                    jwtTokenManager.revokeToken(userId);
+                    // 删除key
+                    redisUtil.delete(UserConstant.SENSITIVE_ACC_PREFIX + userId);
                 }
             }
         } catch (Exception e) {
