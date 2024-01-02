@@ -63,5 +63,8 @@ public interface CommonConstant {
 
     Integer BANNED_IDX = 2;
 
+    Integer BANNED = 1 << BANNED_IDX;
+    Integer UNBANNED = 0b011;
+
     // endregion
 }

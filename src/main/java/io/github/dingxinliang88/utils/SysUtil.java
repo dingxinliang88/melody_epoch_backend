@@ -5,7 +5,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import io.github.dingxinliang88.pojo.po.User;
 import io.github.dingxinliang88.pojo.vo.user.UserLoginVO;
 
-import static io.github.dingxinliang88.constants.CommonConstant.BANNED_IDX;
+import static io.github.dingxinliang88.constants.CommonConstant.*;
 import static io.github.dingxinliang88.constants.EmailConstant.CAPTCHA_LEN;
 import static io.github.dingxinliang88.constants.UserConstant.*;
 
@@ -55,21 +55,21 @@ public class SysUtil {
      * @see io.github.dingxinliang88.pojo.enums.UserRoleType
      */
     public static boolean isBanned() {
-        return (UserHolder.getUser().getType() & (1 << BANNED_IDX)) != 0;
+        return (UserHolder.getUser().getType() & BANNED) != 0;
     }
 
     /**
      * @see io.github.dingxinliang88.pojo.enums.UserRoleType
      */
     public static boolean isBanned(User user) {
-        return (user.getType() & (1 << BANNED_IDX)) != 0;
+        return (user.getType() & BANNED) != 0;
     }
 
     public static Integer genBannedType(Integer type) {
-        return type | (1 << BANNED_IDX);
+        return type | BANNED;
     }
 
     public static Integer genUnbannedType(Integer type) {
-        return type & 0b011;
+        return type & UNBANNED;
     }
 }
