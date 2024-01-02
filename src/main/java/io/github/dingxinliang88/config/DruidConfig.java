@@ -3,6 +3,8 @@ package io.github.dingxinliang88.config;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -19,8 +21,16 @@ import java.util.Map;
  *
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
+@ConfigurationProperties(prefix = "melody.druid")
 @Configuration
+@Setter
+@Getter
 public class DruidConfig {
+
+
+    private String username;
+
+    private String password;
 
     @ConfigurationProperties(prefix = "spring.datasource")
     @Bean
@@ -37,8 +47,8 @@ public class DruidConfig {
         // 这些参数可以在 com.alibaba.druid.support.http.StatViewServlet
         // 的父类 com.alibaba.druid.support.http.ResourceServlet 中找到
         Map<String, String> initParams = new HashMap<>();
-        initParams.put("loginUsername", "admin"); // 后台管理界面的登录账号
-        initParams.put("loginPassword", "admin123"); // 后台管理界面的登录密码
+        initParams.put("loginUsername", username); // 后台管理界面的登录账号
+        initParams.put("loginPassword", password); // 后台管理界面的登录密码
 
         // 后台允许谁可以访问
         // value - localhost：表示只有本机可以访问
