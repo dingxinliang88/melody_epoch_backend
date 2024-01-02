@@ -28,8 +28,14 @@ import java.util.Map;
 public class DruidConfig {
 
 
+    /**
+     * druid dashboard username
+     */
     private String username;
 
+    /**
+     * druid dashboard password
+     */
     private String password;
 
     @ConfigurationProperties(prefix = "spring.datasource")
@@ -38,8 +44,12 @@ public class DruidConfig {
         return new DruidDataSource();
     }
 
-    // 配置 Druid 监控管理后台的Servlet；
-    // 内置 Servlet 容器时没有web.xml文件，所以使用 Spring Boot 的注册 Servlet 方式
+    /**
+     * 配置 Druid 监控管理后台的Servlet；
+     * 内置 Servlet 容器时没有web.xml文件，所以使用 Spring Boot 的注册 Servlet 方式
+     *
+     * @return ServletRegistrationBean
+     */
     @Bean
     public ServletRegistrationBean<StatViewServlet> statViewServlet() {
         ServletRegistrationBean<StatViewServlet> bean = new ServletRegistrationBean<>(new StatViewServlet(), "/druid/*");
@@ -54,6 +64,7 @@ public class DruidConfig {
         // value - localhost：表示只有本机可以访问
         // 为空或者为null时，表示允许所有访问
         initParams.put("allow", "");
+
         // deny：Druid 后台拒绝谁访问
         // initParams.put("deny", "192.168.1.20");表示禁止此ip访问
 

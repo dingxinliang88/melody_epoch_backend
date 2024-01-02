@@ -61,6 +61,7 @@ public class LogAspect {
 
         // 停止计时
         stopWatch.stop();
+
         // 输出响应日志
         long totalTimeMillis = stopWatch.getTotalTimeMillis();
         logger.info("<======== request stop, id: {}, cost: {}ms", reqId, totalTimeMillis);

@@ -26,16 +26,16 @@ public class RateLimiterAspect {
 
     @Before("@annotation(io.github.dingxinliang88.aspect.limiter.MelodyRateLimiter)")
     public void doAuthCheck(JoinPoint joinPoint) {
-        String limitTarget;
+        String limitKey;
         UserLoginVO currUser = SysUtil.getCurrUser();
         if (currUser == null) {
             // 针对方法限流
-            limitTarget = joinPoint.getSignature().getName();
+            limitKey = joinPoint.getSignature().getName();
         } else {
             // 针对用户限流
-            limitTarget = currUser.getUserId().toString();
+            limitKey = currUser.getUserId().toString();
         }
-        boolean limitRes = limiterManager.doRateLimit(limitTarget);
+        boolean limitRes = limiterManager.doRateLimit(limitKey);
         if (!limitRes) {
             throw new BizException(StatusCode.TOO_MANY_REQUEST, "请求过于频繁，请稍后重试");
         }

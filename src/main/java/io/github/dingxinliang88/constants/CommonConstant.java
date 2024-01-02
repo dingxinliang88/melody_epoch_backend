@@ -61,10 +61,10 @@ public interface CommonConstant {
 
     // region auth
 
-    Integer BANNED_IDX = 2;
+    int BANNED_IDX = 2;
 
-    Integer BANNED = 1 << BANNED_IDX;
-    Integer UNBANNED = 0b011;
+    int BANNED = 1 << BANNED_IDX;
+    int UNBANNED = 0b011;
 
     // endregion
 }

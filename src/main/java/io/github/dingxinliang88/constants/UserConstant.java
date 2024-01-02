@@ -35,13 +35,6 @@ public interface UserConstant {
 
     // endregion
 
-    // region gender
-    Integer MALE = 1;
-
-    Integer FEMALE = 0;
-
-    // endregion
-
     // region access sensitive threshold
 
     String SENSITIVE_ACC_PREFIX = "user:sensitive:";

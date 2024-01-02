@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.annotation.Resource;
 
 /**
- * 跨域配置
+ * Spring MVC 配置
  *
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
@@ -23,7 +23,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Resource
     private JwtTokenManager jwtTokenManager;
 
-    
+
     public void addCorsMappings(CorsRegistry registry) {
         registry
                 // 覆盖所有请求
@@ -38,7 +38,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     }
 
-    
+
     public void addInterceptors(InterceptorRegistry registry) {
         registry
                 .addInterceptor(new RefreshTokenInterceptor(jwtTokenManager, redisUtil))
@@ -64,7 +64,7 @@ public class MvcConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 
-    
+
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");

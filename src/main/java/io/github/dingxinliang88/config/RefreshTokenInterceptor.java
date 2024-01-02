@@ -40,15 +40,15 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         }
         // 从请求头中获取 JWT access_token
         String token = request.getHeader("Authorization");
-        ThrowUtil.throwIf(StrUtil.isEmpty(token), StatusCode.NOT_LOGIN_ERROR, "Missing Token");
+        ThrowUtil.throwIf(StrUtil.isEmpty(token), StatusCode.NOT_LOGIN_ERROR);
 
         // 解析校验token
         UserLoginVO userLoginVO = jwtTokenManager.validateToken(token);
-        ThrowUtil.throwIf(userLoginVO == null, StatusCode.NOT_LOGIN_ERROR, "请重新登录！");
+        ThrowUtil.throwIf(userLoginVO == null, StatusCode.NOT_LOGIN_ERROR);
         if (jwtTokenManager.isTokenExpired(token)) {
             // token 过期，通过refresh_token生成全新的access_token
             String refreshToken = String.valueOf(redisUtil.get(REFRESH_TOKEN_PREFIX + userLoginVO.getUserId()));
-            ThrowUtil.throwIf(jwtTokenManager.isTokenExpired(refreshToken), StatusCode.NOT_LOGIN_ERROR, "请重新登录!");
+            ThrowUtil.throwIf(jwtTokenManager.isTokenExpired(refreshToken), StatusCode.NOT_LOGIN_ERROR);
 
             // 生成新的 access_token
             String accessToken = jwtTokenManager.genAccessToken(userLoginVO);

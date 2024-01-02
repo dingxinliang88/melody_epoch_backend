@@ -11,8 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 
-import static io.github.dingxinliang88.constants.UserConstant.MALE;
-
 /**
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
@@ -29,7 +27,6 @@ public class FanMapperTest {
         EditFanReq req = new EditFanReq();
         req.setFanId(2);
         req.setName("张三");
-        req.setGender(MALE);
         req.setAge(20);
         req.setCareer("IT");
         req.setEducation("本科");

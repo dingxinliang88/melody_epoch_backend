@@ -23,7 +23,7 @@ public interface AlbumConstant {
 
     String TOP_ALBUM_CACHE_EPOCH_KEY = "album:top:epoch";
 
-    int EPOCH = 15; // 1111
+    int EPOCH = 15;
 
     int INIT_EPOCH = 0;
 

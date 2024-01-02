@@ -43,7 +43,9 @@ public class GlobalExceptionHandler {
         return RespUtil.error(StatusCode.BAD_REQUEST.getCode(), String.join(",", errMsg));
     }
 
-    // <2> 处理 json 请求体调用接口校验失败抛出的异常
+    /**
+     * 处理 json 请求体调用接口校验失败抛出的异常
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public BaseResponse<?> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
@@ -54,7 +56,9 @@ public class GlobalExceptionHandler {
         return RespUtil.error(StatusCode.BAD_REQUEST);
     }
 
-    // <3> 处理单个参数校验失败抛出的异常
+    /**
+     * 处理单个参数校验失败抛出的异常
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     public BaseResponse<?> constraintViolationExceptionHandler(ConstraintViolationException e) {
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
