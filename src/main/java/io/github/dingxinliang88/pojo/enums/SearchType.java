@@ -3,7 +3,7 @@ package io.github.dingxinliang88.pojo.enums;
 import lombok.Getter;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Getter
 public enum SearchType {

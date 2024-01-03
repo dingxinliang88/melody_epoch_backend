@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Data
 @Configuration

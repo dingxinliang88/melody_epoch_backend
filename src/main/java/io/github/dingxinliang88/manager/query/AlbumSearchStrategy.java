@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * 搜索专辑信息策略
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class AlbumSearchStrategy implements SearchStrategy {

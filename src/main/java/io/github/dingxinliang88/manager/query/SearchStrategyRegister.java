@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 搜索策略注册器
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class SearchStrategyRegister {
@@ -38,7 +38,6 @@ public class SearchStrategyRegister {
         SEARCH_STRATEGY_MAP.put(SearchType.CONCERT.getType(), concertSearchStrategy);
     }
 
-
     /**
      * 根据获取搜索策略
      *
@@ -48,5 +47,4 @@ public class SearchStrategyRegister {
     public SearchStrategy getSearchStrategy(SearchType type) {
         return SEARCH_STRATEGY_MAP.get(type.getType());
     }
-
 }

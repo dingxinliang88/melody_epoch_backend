@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 /**
  * 搜索门面
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class SearchFacade {

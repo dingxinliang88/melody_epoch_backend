@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 /**
  * 限流AOP
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Aspect
 @Component

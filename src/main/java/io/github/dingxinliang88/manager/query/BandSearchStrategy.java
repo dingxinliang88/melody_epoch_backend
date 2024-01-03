@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * 搜索乐队信息策略
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class BandSearchStrategy implements SearchStrategy {

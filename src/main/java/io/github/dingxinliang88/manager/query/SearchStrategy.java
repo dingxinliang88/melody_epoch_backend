@@ -6,7 +6,7 @@ import io.github.dingxinliang88.pojo.vo.SearchVO;
 /**
  * 查询接口
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 public interface SearchStrategy {
 

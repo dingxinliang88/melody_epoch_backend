@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * 搜索歌曲信息策略
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class SongSearchStrategy implements SearchStrategy {

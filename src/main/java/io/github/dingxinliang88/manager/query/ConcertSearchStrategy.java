@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 /**
  * 搜索演唱会信息策略
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 public class ConcertSearchStrategy implements SearchStrategy {

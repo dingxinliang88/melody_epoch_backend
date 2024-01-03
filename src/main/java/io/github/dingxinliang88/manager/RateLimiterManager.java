@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 /**
  * 限流管理类
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
 @Slf4j

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Comment Service Implementation
@@ -60,7 +61,7 @@ public class CommentService extends ServiceImpl<CommentMapper, Comment> {
 
         Comment comment = new Comment(albumId, req.getParentId(), cleanContent, currUser.getUserId(), LocalDateTime.now());
         // 顶级评论默认的父级ID
-        comment.setParentId(req.getParentId() == null ? 0 : req.getParentId());
+        comment.setParentId(Objects.nonNull(req.getParentId()) ? req.getParentId() : 0);
         commentMapper.insert(comment);
 
         return comment.getCommentId();

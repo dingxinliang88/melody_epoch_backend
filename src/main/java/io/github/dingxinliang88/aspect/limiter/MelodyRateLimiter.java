@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * 标记注解，限流
  *
- * @author <a href="https://github.com/dingxinliang88">codejuzi</a>
+ * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

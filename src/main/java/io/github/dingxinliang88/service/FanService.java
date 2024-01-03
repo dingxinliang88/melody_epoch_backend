@@ -172,9 +172,11 @@ public class FanService extends ServiceImpl<FanMapper, Fan> {
      * @return true - 打分成功
      */
     public Boolean scoreAlbum(ScoreAlbumReq req) {
+        // 乐迷身份校验
         UserLoginVO currUser = SysUtil.getCurrUser();
         ThrowUtil.throwIf(!UserRoleType.FAN.getType().equals(currUser.getType()), StatusCode.NO_AUTH_ERROR);
 
+        // 查询是否已经收藏和评分
         final Integer albumId = req.getAlbumId();
         AlbumLike albumLike = albumLikeMapper.queryByAlbumIdAndUserId(albumId, currUser.getUserId());
         ThrowUtil.throwIf(albumLike == null, StatusCode.NOT_FOUND_ERROR, "该专辑还未被喜欢");

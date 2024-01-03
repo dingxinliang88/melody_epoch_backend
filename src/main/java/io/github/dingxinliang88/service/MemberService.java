@@ -69,6 +69,7 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
         ThrowUtil.throwIf(member.getBandId() != null, StatusCode.NO_AUTH_ERROR, "您已加入乐队！");
 
         return transactionTemplate.execute(status -> {
+            // 事务保证
             try {
                 // 修改当前member所在乐队信息
                 memberMapper.updateBandIdAndBandName(currUser.getUserId(), bandId, band.getName(),
@@ -80,7 +81,6 @@ public class MemberService extends ServiceImpl<MemberMapper, Member> {
                 throw e;
             }
         });
-
     }
 
     /**

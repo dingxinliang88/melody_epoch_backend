@@ -232,6 +232,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
         List<Integer> noneSelectedSongIds = req.getNoneSelectedSongIds();
         List<Integer> selectedSongIds = req.getSelectedSongIds();
 
+        // 事务保证
         return transactionTemplate.execute(status -> {
             try {
                 if (!noneSelectedSongIds.isEmpty()) {
