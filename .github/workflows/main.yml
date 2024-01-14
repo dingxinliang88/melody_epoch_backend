@@ -20,9 +20,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          # Configure which types are allowed (newline-delimited).
+          types: |
+            fix
+            feat
+            docs
+            style
+            ci
+            refactor
+            perf
+            test
+            chore
+            build
+            revert
           requireScope: true
-          subjectPattern: ^[A-Z]{3}-[0-9]+ .+$
-          subjectPatternError: |
-            The subject "{subject}" found in the pull request title "{title}"
-            didn't include linear issue, such as AUT-128. Please create an issue in linear
-            and add it to the pull request title.
+
