@@ -123,6 +123,7 @@ docker run -p 8999:8999 your-docker-image-name
 
 1. 在项目中提出 [Issue](https://github.com/dingxinliang88/melody_epoch_backend/issues)。
 2. 如果你希望修复问题或增加新特性，请 [Fork](https://github.com/dingxinliang88/melody_epoch_backend/fork) 项目并提交 [Pull Request](https://github.com/dingxinliang88/melody_epoch_backend/pulls)。
+3. 提交的 PR 需要符合 [Conventional Commits 规范](https://www.conventionalcommits.org/en/v1.0.0/)，以方便我们对项目进行版本控制。
 
 感谢你的参与！
 
