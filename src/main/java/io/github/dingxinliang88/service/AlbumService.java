@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.AlbumConstant;
-import io.github.dingxinliang88.manager.SensitiveHandler;
+import io.github.dingxinliang88.manager.SensitiveHandlerManager;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.album.AddAlbumReq;
 import io.github.dingxinliang88.pojo.dto.album.EditAlbumReq;
@@ -67,7 +67,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
     private RedisUtil redisUtil;
 
     @Resource
-    private SensitiveHandler sensitiveHandler;
+    private SensitiveHandlerManager sensitiveHandlerManager;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -118,7 +118,7 @@ public class AlbumService extends ServiceImpl<AlbumMapper, Album> {
         req.setProfile(cleanProfile);
 
         // 触发敏感词计数器
-        sensitiveHandler.handleAccSensitive(userId, !profile.equals(cleanProfile));
+        sensitiveHandlerManager.handleAccSensitive(userId, !profile.equals(cleanProfile));
 
         return albumMapper.editInfo(req);
     }

@@ -15,7 +15,7 @@ import static io.github.dingxinliang88.constants.UserConstant.*;
  * @author <a href="https://github.com/dingxinliang88">youyi</a>
  */
 @Component
-public class SensitiveHandler {
+public class SensitiveHandlerManager {
 
     @Resource
     private RedisUtil redisUtil;
