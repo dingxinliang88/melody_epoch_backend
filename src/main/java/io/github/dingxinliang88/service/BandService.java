@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.github.dingxinliang88.biz.StatusCode;
 import io.github.dingxinliang88.constants.CommonConstant;
 import io.github.dingxinliang88.exception.BizException;
-import io.github.dingxinliang88.manager.SensitiveHandler;
+import io.github.dingxinliang88.manager.SensitiveHandlerManager;
 import io.github.dingxinliang88.mapper.*;
 import io.github.dingxinliang88.pojo.dto.band.AddBandReq;
 import io.github.dingxinliang88.pojo.dto.band.EditBandReq;
@@ -63,7 +63,7 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
     private RedisUtil redisUtil;
 
     @Resource
-    private SensitiveHandler sensitiveHandler;
+    private SensitiveHandlerManager sensitiveHandlerManager;
 
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -146,7 +146,7 @@ public class BandService extends ServiceImpl<BandMapper, Band> {
         req.setProfile(cleanProfile);
 
         // 触发敏感词计数器
-        sensitiveHandler.handleAccSensitive(userId, !profile.equals(cleanProfile));
+        sensitiveHandlerManager.handleAccSensitive(userId, !profile.equals(cleanProfile));
 
         return bandMapper.editInfo(req);
     }

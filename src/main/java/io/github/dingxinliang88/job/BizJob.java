@@ -3,7 +3,7 @@ package io.github.dingxinliang88.job;
 import io.github.dingxinliang88.constants.AlbumConstant;
 import io.github.dingxinliang88.constants.UserConstant;
 import io.github.dingxinliang88.manager.JwtTokenManager;
-import io.github.dingxinliang88.manager.SensitiveHandler;
+import io.github.dingxinliang88.manager.SensitiveHandlerManager;
 import io.github.dingxinliang88.utils.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +27,13 @@ public class BizJob {
 
     private final RedisUtil redisUtil;
 
-    private final SensitiveHandler sensitiveHandler;
+    private final SensitiveHandlerManager sensitiveHandlerManager;
 
     @Autowired
-    public BizJob(JwtTokenManager jwtTokenManager, RedisUtil redisUtil, SensitiveHandler sensitiveHandler) {
+    public BizJob(JwtTokenManager jwtTokenManager, RedisUtil redisUtil, SensitiveHandlerManager sensitiveHandlerManager) {
         this.jwtTokenManager = jwtTokenManager;
         this.redisUtil = redisUtil;
-        this.sensitiveHandler = sensitiveHandler;
+        this.sensitiveHandlerManager = sensitiveHandlerManager;
     }
 
 
@@ -79,7 +79,7 @@ public class BizJob {
                     // 执行封号处理
                     String userIdStr = key.substring(key.lastIndexOf(":") + 1);
                     Integer userId = Integer.parseInt(userIdStr);
-                    sensitiveHandler.doBanUser(userId);
+                    sensitiveHandlerManager.doBanUser(userId);
                     jwtTokenManager.revokeToken(userId);
                     // 删除key
                     redisUtil.delete(UserConstant.SENSITIVE_ACC_PREFIX + userId);

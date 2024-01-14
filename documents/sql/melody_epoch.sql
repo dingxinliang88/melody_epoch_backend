@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 21/12/2023 22:28:46
+ Date: 30/12/2023 22:43:20
 */
 
 SET NAMES utf8mb4;
@@ -28,13 +28,14 @@ CREATE TABLE `album` (
   `release_time` datetime DEFAULT NULL COMMENT '发表时间，跟随发布标志一起',
   `band_name` varchar(32) DEFAULT NULL COMMENT '乐队名称',
   `song_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '专辑歌曲ID清单',
-  `profile` varchar(255) DEFAULT NULL COMMENT '专辑介绍',
-  `avg_score` float DEFAULT '0' COMMENT '专辑平均分',
+  `profile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '专辑介绍',
+  `avg_score` float NOT NULL DEFAULT '0' COMMENT '专辑平均分',
   `is_release` tinyint NOT NULL DEFAULT '0' COMMENT '是否已经发布， 0 - 未发布， 1 - 发布',
   `is_delete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除字段 0 - 未删除，1 - 删除',
   PRIMARY KEY (`album_id`),
-  KEY `idx_band_name` (`band_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='专辑表';
+  KEY `idx_band_name` (`band_name`),
+  KEY `idx_avg_score` (`avg_score`,`name`,`band_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='专辑表';
 
 -- ----------------------------
 -- Table structure for album_like
@@ -47,18 +48,7 @@ CREATE TABLE `album_like` (
   `score` float NOT NULL DEFAULT '0' COMMENT '打分',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `un_idx_album_user_id` (`album_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='喜欢专辑表';
-
--- ----------------------------
--- Table structure for album_rank
--- ----------------------------
-DROP TABLE IF EXISTS `album_rank`;
-CREATE TABLE `album_rank` (
-  `album_id` int NOT NULL COMMENT '专辑ID',
-  `album_name` varchar(32) NOT NULL COMMENT '专辑名称',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`album_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='最佳专辑排行表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='喜欢专辑表';
 
 -- ----------------------------
 -- Table structure for band
@@ -69,14 +59,14 @@ CREATE TABLE `band` (
   `name` varchar(32) NOT NULL COMMENT '乐队名称',
   `found_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '成立时间',
   `leader_id` int DEFAULT NULL COMMENT '队长ID',
-  `profile` varchar(255) DEFAULT NULL COMMENT '乐队介绍',
+  `profile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '乐队介绍',
   `member_num` tinyint DEFAULT NULL COMMENT '乐队人数',
   `is_release` tinyint NOT NULL DEFAULT '0' COMMENT '是否已经发布  0 - 未发布 ，1 - 发布',
   `is_delete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除字段 0 - 未删除，1 - 删除',
   PRIMARY KEY (`band_id`),
   UNIQUE KEY `uk_band_name` (`name`),
   KEY `idx_leader_id` (`leader_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='乐队表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='乐队表';
 
 -- ----------------------------
 -- Table structure for band_like
@@ -88,7 +78,7 @@ CREATE TABLE `band_like` (
   `band_id` int NOT NULL COMMENT '乐队ID',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `un_idx_user_band_id` (`user_id`,`band_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='喜欢乐队表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='喜欢乐队表';
 
 -- ----------------------------
 -- Table structure for comment
@@ -105,7 +95,7 @@ CREATE TABLE `comment` (
   `is_delete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除字段 0 - 未删除，1 - 删除',
   PRIMARY KEY (`comment_id`),
   KEY `idx_album_id` (`album_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='乐评表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='乐评表';
 
 -- ----------------------------
 -- Table structure for concert
@@ -125,7 +115,7 @@ CREATE TABLE `concert` (
   `is_delete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除字段 0 - 未删除，1 - 删除',
   PRIMARY KEY (`concert_id`),
   KEY `idx_band_id` (`band_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='演唱会表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='演唱会表';
 
 -- ----------------------------
 -- Table structure for concert_join
@@ -137,7 +127,7 @@ CREATE TABLE `concert_join` (
   `concert_id` int NOT NULL COMMENT '演唱会ID',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_concert_id` (`concert_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='参加演唱会表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='参加演唱会表';
 
 -- ----------------------------
 -- Table structure for fan
@@ -189,7 +179,7 @@ CREATE TABLE `song` (
   `is_delete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除字段 0 - 未删除，1 - 删除',
   PRIMARY KEY (`song_id`),
   KEY `un_idx_band_album_id` (`band_id`,`album_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='歌曲表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='歌曲表';
 
 -- ----------------------------
 -- Table structure for song_like
@@ -201,7 +191,7 @@ CREATE TABLE `song_like` (
   `song_id` int NOT NULL COMMENT '歌曲ID',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `un_idx_user_song_id` (`user_id`,`song_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='喜欢歌曲表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='喜欢歌曲表';
 
 -- ----------------------------
 -- Table structure for user
@@ -219,6 +209,6 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `uk_acc` (`account`),
   UNIQUE KEY `uk_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表';
 
 SET FOREIGN_KEY_CHECKS = 1;
