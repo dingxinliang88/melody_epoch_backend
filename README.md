@@ -47,45 +47,43 @@
   配置文件模板`conf.properties`：
 
   ```properties
-  # MySQL
-  dev.mysql.username=your username
-  dev.mysql.password=your password
-  dev.mysql.url=jdbc:mysql://xxx.xxx.xxx.xxx:xxxx/database_name
-  
-  # Redis 配置
-  spring.redis.host=xxx.xxx.xxx.xxx
-  spring.redis.port=xxxx
-  spring.redis.password=xxxxxx
-  spring.redis.database=x
-  
-  # Redisson
-  melody.redis.host=xxx.xxx.xxx.xxx
-  melody.redis.port=xxxx
-  melody.redis.password=xxxxxx
-  melody.redis.database=x
-  
-  # JWT 随机生成
-  jwt.secret_key=xxxx
-  
-  # email 需要申请
-  email.username=xxx@example.com
-  email.password=xxxxxx
-  
-  
-  # knife4j
-  knife4j.conf.base-package=io.github.dingxinliang88
-  knife4j.conf.title=Melody_Epoch接口文档
-  knife4j.conf.description=音律纪元
-  knife4j.conf.version=0.0.1
-  knife4j.conf.contact-name=codejuzi
-  knife4j.conf.contact-email=codejuzi@qq.com
-  knife4j.conf.contact-url=https://codejuzi.icu
-  knife4j.conf.license=Apache License 2.0
-  knife4j.conf.license-url=https://www.apache.org/licenses/LICENSE-2.0
-  
-  # druid
-  melody.druid.username=admin
-  melody.druid.password=admin123
+# MySQL
+dev.mysql.username=your username
+dev.mysql.password=your password
+dev.mysql.url=jdbc:mysql://xxx.xxx.xxx.xxx:xxxx/database_name
+
+# Redis 配置
+spring.redis.host=xxx.xxx.xxx.xxx
+spring.redis.port=xxxx
+spring.redis.password=xxxxxx
+spring.redis.database=x
+# Redisson
+melody.redis.host=xxx.xxx.xxx.xxx
+melody.redis.port=xxxx
+melody.redis.password=xxxxxx
+melody.redis.database=x
+
+# JWT 随机生成
+jwt.secret_key=xxxx
+
+# email 需要申请, smtp 服务
+email.username=xxx@example.com
+email.password=xxxxxx
+
+# knife4j
+knife4j.conf.base-package=io.github.dingxinliang88
+knife4j.conf.title=Melody_Epoch API Documents
+knife4j.conf.description=The project aims to establish a complete database system of bands, band members, albums, songs, concerts, music critics and fans. The database system will provide a complete set of data structures to support the efficient management and query of the band and its related information.
+knife4j.conf.version=0.0.1
+knife4j.conf.contact-name=codejuzi
+knife4j.conf.contact-email=codejuzi@qq.com
+knife4j.conf.contact-url=https://codejuzi.icu
+knife4j.conf.license=Apache License 2.0
+knife4j.conf.license-url=https://www.apache.org/licenses/LICENSE-2.0
+
+# druid
+melody.druid.username=admin
+melody.druid.password=admin123
   ```
 
 4. mvn 打包启动
@@ -99,7 +97,7 @@
 5. 访问接口文档：在项目启动后，可以访问 http://localhost:8999/api/doc.html 查看API文档
 
 6. 访问Druid控制台
-  在项目启动后，可以访问 http://localhost:8999/api/druid ，账号密码为在配置文件中配置的账号密码，登录即可访问到Druid DashBoard
+    在项目启动后，可以访问 http://localhost:8999/api/druid ，账号密码为在配置文件中配置的账号密码，登录即可访问到Druid DashBoard
 
 除此之外，本项目还提供了**Dockerfile**，你可以根据该文件构建出一份属于你自己的Docker镜像，构建之前，请修改其中的配置项，然后执行下列命令。
 
